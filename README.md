@@ -1,14 +1,27 @@
-# Welcome to your CDK TypeScript project!
+# APSI bug tracker
+TODO: description
 
-This is a blank project for TypeScript development with CDK.
+## Contribution guide
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+### Dev tools
+Currently used dev tools:
 
-## Useful commands
+* Commitizen CLI [installed globally](https://github.com/commitizen/cz-cli#installing-the-command-line-tool)
 
- * `npm run build`   compile typescript to js
- * `npm run watch`   watch for changes and compile
- * `npm run test`    perform the jest unit tests
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk synth`       emits the synthesized CloudFormation template
+### Commit convention
+
+Please consider these guidelines when filing a pull request:
+
+*  Commits follow the [Angular commit convention](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#-git-commit-guidelines)
+*  Features and bug fixes should be covered by test cases
+
+### Creating releases
+
+The project uses [semantic-release](https://github.com/semantic-release/semantic-release)
+to release new versions automatically.
+
+*  Commits of type `fix` will trigger bugfix releases, think `0.0.1`
+*  Commits of type `feat` will trigger feature releases, think `0.1.0`
+*  Commits with `BREAKING CHANGE` in body or footer will trigger breaking releases, think `1.0.0`
+
+All other commit types will trigger no new release.
