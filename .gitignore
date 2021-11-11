@@ -1,3 +1,7 @@
+# IDE/editors settings
+.vscode
+
+# Node.js/TypeScirpt/JavaScript
 *.js
 !jest.config.js
 *.d.ts
@@ -7,5 +11,7 @@ node_modules
 .cdk.staging
 cdk.out
 
-# IDE/editors settings
-.vscode
+# Python
+venv
+__pycache__
+.mypy_cache
