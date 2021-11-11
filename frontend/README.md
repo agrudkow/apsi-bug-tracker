@@ -1,3 +1,6 @@
+# Routes
+- \<host>/examples -  [Material UI template](https://material-ui.com/store/items/paperbase/)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
