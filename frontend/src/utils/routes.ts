@@ -1,3 +1,3 @@
 export enum Routes {
-  Example = 'example',
+  Paperbase = 'paperbase',
 }
