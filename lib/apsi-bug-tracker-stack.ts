@@ -37,11 +37,11 @@ export class APSIBugTrackerStack extends cdk.Stack {
     IDExampleRoute.addMethod('GET', exampleLambdaIntegration);
 	
 	// Create DB security group
-	const vpc = ec2.Vpc.fromLookup(this, 'VPC', {isDefault: true})
+    const vpc = ec2.Vpc.fromLookup(this, 'VPC', {isDefault: true})
 	
-	const APSIBugTrackerSG = new ec2.SecurityGroup(this, 'ApsiBugTracker-sg', {
+    const APSIBugTrackerSG = new ec2.SecurityGroup(this, 'ApsiBugTracker-sg', {
       vpc,
-	  allowAllOutbound: true,
+      allowAllOutbound: true,
       description: 'security group for the APSIBugTracker',
     });
 
@@ -50,23 +50,23 @@ export class APSIBugTrackerStack extends cdk.Stack {
       ec2.Port.allTraffic(),
     );
 
-	APSIBugTrackerSG.addIngressRule(
+    APSIBugTrackerSG.addIngressRule(
       ec2.Peer.anyIpv6(),
       ec2.Port.allTraffic(),
     );
 
 	// Create database instance
-	const instance = new rds.DatabaseInstance(this, 'Instance', {
+    const instance = new rds.DatabaseInstance(this, 'Instance', {
       engine: rds.DatabaseInstanceEngine.mysql({ version: rds.MysqlEngineVersion.VER_8_0_26 }),
       instanceType: ec2.InstanceType.of(ec2.InstanceClass.BURSTABLE2, ec2.InstanceSize.MICRO),
-	  allocatedStorage: 20,
-	  vpc,
-	  vpcSubnets: {
-	    subnetType: ec2.SubnetType.PUBLIC,
-	  },
-	  securityGroups: [APSIBugTrackerSG],
-	  databaseName: 'apsidb',
-	  backupRetention: cdk.Duration.days(0)
-	});
+      allocatedStorage: 20,
+      vpc,
+      vpcSubnets: {
+        subnetType: ec2.SubnetType.PUBLIC,
+      },
+      securityGroups: [APSIBugTrackerSG],
+      databaseName: 'apsidb',
+      backupRetention: cdk.Duration.days(0)
+    });
   }
 }
