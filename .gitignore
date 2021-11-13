@@ -1,5 +1,6 @@
 # IDE/editors settings
 .vscode
+.vs
 
 # Node.js/TypeScirpt/JavaScript
 *.js
@@ -10,6 +11,7 @@ node_modules
 # CDK asset staging directory
 .cdk.staging
 cdk.out
+cdk.context.json
 
 # Python
 venv
