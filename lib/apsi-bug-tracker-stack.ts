@@ -36,7 +36,7 @@ export class APSIBugTrackerStack extends cdk.Stack {
     const IDExampleRoute = exampleRoute.addResource('{id}');
     IDExampleRoute.addMethod('GET', exampleLambdaIntegration);
 	
-	// Create DB security group
+    // Create DB security group
     const vpc = ec2.Vpc.fromLookup(this, 'VPC', {isDefault: true})
 	
     const APSIBugTrackerSG = new ec2.SecurityGroup(this, 'ApsiBugTracker-sg', {
@@ -55,7 +55,7 @@ export class APSIBugTrackerStack extends cdk.Stack {
       ec2.Port.allTraffic(),
     );
 
-	// Create database instance
+    // Create database instance
     const instance = new rds.DatabaseInstance(this, 'Instance', {
       engine: rds.DatabaseInstanceEngine.mysql({ version: rds.MysqlEngineVersion.VER_8_0_26 }),
       instanceType: ec2.InstanceType.of(ec2.InstanceClass.BURSTABLE2, ec2.InstanceSize.MICRO),
