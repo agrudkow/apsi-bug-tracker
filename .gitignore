@@ -15,3 +15,7 @@ cdk.out
 venv
 __pycache__
 .mypy_cache
+.env
+
+# Docker
+Dockerfile
