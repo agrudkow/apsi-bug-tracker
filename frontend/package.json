@@ -6,7 +6,6 @@
     "@emotion/react": "^11.5.0",
     "@emotion/style": "^0.8.0",
     "@emotion/styled": "^11.3.0",
-    "@material-ui/icons": "^4.11.2",
     "@mui/icons-material": "^5.1.0",
     "@mui/material": "^5.1.0",
     "@testing-library/jest-dom": "^5.14.1",
@@ -42,5 +41,7 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
   }
 }
