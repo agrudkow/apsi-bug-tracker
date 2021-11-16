@@ -5,6 +5,7 @@ import List from '@mui/material/List';
 import Box from '@mui/material/Box';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
+import Button from '@mui/material/Button';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import HomeIcon from '@mui/icons-material/Home';
@@ -62,6 +63,10 @@ const itemCategory = {
   px: 3,
 };
 
+const buttonView = {
+  px: 3,
+}
+
 export default function Navigator(props: DrawerProps) {
   const { ...other } = props;
 
@@ -69,17 +74,22 @@ export default function Navigator(props: DrawerProps) {
     <Drawer variant="permanent" {...other}>
       <List disablePadding>
         <ListItem
-          sx={{ ...item, ...itemCategory, fontSize: 22, color: '#fff' }}
+          sx={{ ...item, ...itemCategory, fontSize: 24, color: '#fff' }}
         >
-          Paperbase
+          BugTracker
         </ListItem>
         <ListItem sx={{ ...item, ...itemCategory }}>
           <ListItemIcon>
             <HomeIcon />
           </ListItemIcon>
-          <ListItemText>Project Overview</ListItemText>
+          <ListItemText>Problems Dashboard</ListItemText>
         </ListItem>
-        {categories.map(({ id, children }) => (
+        <ListItem>
+          <Button variant="contained" size="large" sx={{ ...buttonView, fontSize: 20, margin: 0.5, padding: 1.5 }}>
+                Report new problem
+          </Button>
+        </ListItem>
+        {/* {categories.map(({ id, children }) => (
           <Box key={id} sx={{ bgcolor: '#101F33' }}>
             <ListItem sx={{ py: 2, px: 3 }}>
               <ListItemText sx={{ color: '#fff' }}>{id}</ListItemText>
@@ -94,7 +104,7 @@ export default function Navigator(props: DrawerProps) {
             ))}
             <Divider sx={{ mt: 2 }} />
           </Box>
-        ))}
+        ))} */}
       </List>
     </Drawer>
   );

@@ -39,7 +39,7 @@ export default function Header(props: HeaderProps) {
               </IconButton>
             </Grid>
             <Grid item xs />
-            <Grid item>
+            {/* <Grid item>
               <Link
                 href="/"
                 variant="body2"
@@ -55,13 +55,18 @@ export default function Header(props: HeaderProps) {
               >
                 Go to docs
               </Link>
-            </Grid>
-            <Grid item>
+            </Grid> */}
+            {/* <Grid item>
               <Tooltip title="Alerts • No alerts">
                 <IconButton color="inherit">
                   <NotificationsIcon />
                 </IconButton>
               </Tooltip>
+            </Grid> */}
+            <Grid item>
+              <Typography color="inherit">
+                Hello, Jan
+              </Typography>
             </Grid>
             <Grid item>
               <IconButton color="inherit" sx={{ p: 0.5 }}>
@@ -82,10 +87,10 @@ export default function Header(props: HeaderProps) {
           <Grid container alignItems="center" spacing={1}>
             <Grid item xs>
               <Typography color="inherit" variant="h5" component="h1">
-                Authentication
+                Problems Dashboard
               </Typography>
             </Grid>
-            <Grid item>
+            {/* <Grid item>
               <Button
                 sx={{ borderColor: lightColor }}
                 variant="outlined"
@@ -101,7 +106,7 @@ export default function Header(props: HeaderProps) {
                   <HelpIcon />
                 </IconButton>
               </Tooltip>
-            </Grid>
+            </Grid> */}
           </Grid>
         </Toolbar>
       </AppBar>
@@ -111,12 +116,12 @@ export default function Header(props: HeaderProps) {
         elevation={0}
         sx={{ zIndex: 0 }}
       >
-        <Tabs value={0} textColor="inherit">
+        {/* <Tabs value={0} textColor="inherit">
           <Tab label="Users" />
           <Tab label="Sign-in method" />
           <Tab label="Templates" />
           <Tab label="Usage" />
-        </Tabs>
+        </Tabs> */}
       </AppBar>
     </React.Fragment>
   );
