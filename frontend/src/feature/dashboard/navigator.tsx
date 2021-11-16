@@ -1,10 +1,7 @@
 import * as React from 'react';
-import Divider from '@mui/material/Divider';
 import Drawer, { DrawerProps } from '@mui/material/Drawer';
 import List from '@mui/material/List';
-import Box from '@mui/material/Box';
 import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
 import Button from '@mui/material/Button';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -18,35 +15,6 @@ import SettingsInputComponentIcon from '@mui/icons-material/SettingsInputCompone
 import TimerIcon from '@mui/icons-material/Timer';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PhonelinkSetupIcon from '@mui/icons-material/PhonelinkSetup';
-
-const categories = [
-  {
-    id: 'Build',
-    children: [
-      {
-        id: 'Authentication',
-        icon: <PeopleIcon />,
-        active: true,
-      },
-      { id: 'Database', icon: <DnsRoundedIcon /> },
-      { id: 'Storage', icon: <PermMediaOutlinedIcon /> },
-      { id: 'Hosting', icon: <PublicIcon /> },
-      { id: 'Functions', icon: <SettingsEthernetIcon /> },
-      {
-        id: 'Machine learning',
-        icon: <SettingsInputComponentIcon />,
-      },
-    ],
-  },
-  {
-    id: 'Quality',
-    children: [
-      { id: 'Analytics', icon: <SettingsIcon /> },
-      { id: 'Performance', icon: <TimerIcon /> },
-      { id: 'Test Lab', icon: <PhonelinkSetupIcon /> },
-    ],
-  },
-];
 
 const item = {
   py: '2px',
@@ -65,7 +33,7 @@ const itemCategory = {
 
 const buttonView = {
   px: 3,
-}
+};
 
 export default function Navigator(props: DrawerProps) {
   const { ...other } = props;
@@ -76,7 +44,7 @@ export default function Navigator(props: DrawerProps) {
         <ListItem
           sx={{ ...item, ...itemCategory, fontSize: 24, color: '#fff' }}
         >
-          BugTracker
+          APSI BugTracker
         </ListItem>
         <ListItem sx={{ ...item, ...itemCategory }}>
           <ListItemIcon>
@@ -85,26 +53,14 @@ export default function Navigator(props: DrawerProps) {
           <ListItemText>Problems Dashboard</ListItemText>
         </ListItem>
         <ListItem>
-          <Button variant="contained" size="large" sx={{ ...buttonView, fontSize: 20, margin: 0.5, padding: 1.5 }}>
-                Report new problem
+          <Button
+            variant="contained"
+            size="large"
+            sx={{ ...buttonView, fontSize: 20, margin: 0.5, padding: 1.5 }}
+          >
+            Report new problem
           </Button>
         </ListItem>
-        {/* {categories.map(({ id, children }) => (
-          <Box key={id} sx={{ bgcolor: '#101F33' }}>
-            <ListItem sx={{ py: 2, px: 3 }}>
-              <ListItemText sx={{ color: '#fff' }}>{id}</ListItemText>
-            </ListItem>
-            {children.map(({ id: childId, icon, active }) => (
-              <ListItem disablePadding key={childId}>
-                <ListItemButton selected={active} sx={item}>
-                  <ListItemIcon>{icon}</ListItemIcon>
-                  <ListItemText>{childId}</ListItemText>
-                </ListItemButton>
-              </ListItem>
-            ))}
-            <Divider sx={{ mt: 2 }} />
-          </Box>
-        ))} */}
       </List>
     </Drawer>
   );
