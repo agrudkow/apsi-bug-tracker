@@ -21,13 +21,8 @@ __pycache__
 # Docker
 Dockerfile
 
-<<<<<<< Updated upstream
 .env
 
 =======
 # AWS CDK Runtime context
 cdk.context.json
-
-# AWS Lambda handler
-rds_config.py
->>>>>>> Stashed changes
