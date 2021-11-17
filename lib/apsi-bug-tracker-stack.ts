@@ -14,30 +14,28 @@ export class APSIBugTrackerStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // Create example Lambda func
-    const exampleLambda = new PythonFunction(this, 'ExampleLambda', {
-      entry: path.join('lambda', 'example_lambda'), // required
-      index: 'index.py', // Optional, defaults to 'index.py'
-      handler: 'handler', // Optional, defaults to 'handler'
-      runtime: lambda.Runtime.PYTHON_3_9, // Optional, defaults to lambda.Runtime.PYTHON_3_7
+    //Lambda to GET all issues from 'zgloszenia' table
+    const getAllIssuesLambda = new PythonFunction(this, 'GetAllIssuesLambda', {
+      entry: path.join('lambda'), // path to file with lambda handler
+      index: 'handler.py', // file with lambda handler
+      handler: 'lambda_handler', // name of lambda handler function
+      runtime: lambda.Runtime.PYTHON_3_9,
       environment: {
-        LOG_LEVEL: '10', // Debug log level - https://docs.python.org/3/library/logging.html
+        LOG_LEVEL: '10', // Debug log level
       },
     });
 
-    // Integrate Lambda with API Gateway
-    const exampleLambdaIntegration = new LambdaIntegration(exampleLambda);
+    // Integrate GetAllIssuesLambda with API Gateway
+    const getAllIssuesLambdaIntegration = new LambdaIntegration(getAllIssuesLambda);
 
     // Create API Gateway resource
     const apiGateway = new RestApi(this, 'APSIBugTrackerAPI', {
       restApiName: 'APSI BugTracker',
     });
 
-    // Attach Lambda integration to API Gateway
-    const exampleRoute = apiGateway.root.addResource('example');
-    exampleRoute.addMethod('GET', exampleLambdaIntegration);
-    const IDExampleRoute = exampleRoute.addResource('{id}');
-    IDExampleRoute.addMethod('GET', exampleLambdaIntegration);
+    // Attach GetAllIssuesLambda integration to API Gateway
+    const getAllIssuesRoute = apiGateway.root.addResource('zgloszenia');
+    getAllIssuesRoute.addMethod('GET', getAllIssuesLambdaIntegration);
 	
     // Create DB security group
     const vpc = ec2.Vpc.fromLookup(this, 'VPC', {isDefault: true})
