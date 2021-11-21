@@ -1,3 +1,4 @@
 export enum Routes {
-  Paperbase = 'paperbase',
+  Dashboard = 'dashboard',
+  Login = 'login',
 }
