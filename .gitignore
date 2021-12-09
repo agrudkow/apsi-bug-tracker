@@ -17,4 +17,4 @@ cdk.context.json
 venv
 __pycache__
 .mypy_cache
-.env
+*.env
