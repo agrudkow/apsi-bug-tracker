@@ -184,6 +184,10 @@ export default function ColumnGroupingTable() {
     setPage(0);
   };
 
+  const buttonView = {
+    px: 3,
+  };
+
   function Row(props: { row: ReturnType<typeof createData> }) {
     const { row } = props;
     const [open, setOpen] = React.useState(false);
@@ -238,7 +242,15 @@ export default function ColumnGroupingTable() {
                 <Typography variant="body2" align="left">
                   {row.description}
                 </Typography>
+                <Button
+                variant="contained"
+                size="large"
+                sx={{ ...buttonView, fontSize: 12, marginY:1, paddingX: 1, paddingY: 0.5 }}
+                >
+                  Go to form
+                </Button>
               </Box>
+
             </Collapse>
           </TableCell>
         </TableRow>
@@ -247,7 +259,7 @@ export default function ColumnGroupingTable() {
   }
 
   return (
-    <Paper sx={{ maxWidth: 936, margin: 'auto', overflow: 'hidden' }}>
+    <Paper sx={{ maxWidth: 'lg', margin: 'auto', overflow: 'hidden' }}>
       <AppBar
         position="static"
         color="default"
@@ -284,7 +296,7 @@ export default function ColumnGroupingTable() {
         </Toolbar>
       </AppBar>
       <Paper sx={{ width: '100%' }}>
-        <TableContainer sx={{ maxHeight: 400 }}>
+        <TableContainer sx={{ maxHeight: 600 }}>
           <Table stickyHeader aria-label="collapsible table">
             <TableHead>
               <TableRow>
