@@ -23,7 +23,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 interface Column {
-  id: 'number' | 'date' | 'title' | 'status';
+  id: 'number' | 'date' | 'type' | 'status';
   label: string;
   minWidth?: number;
   align?: 'right';
@@ -42,7 +42,7 @@ const columns: Column[] = [
     label: 'Creation date',
     minWidth: 152.5,
   },
-  { id: 'title', label: 'Title', minWidth: 152.5 },
+  { id: 'type', label: 'Type', minWidth: 152.5 },
   {
     id: 'status',
     label: 'Status',
@@ -53,7 +53,7 @@ const columns: Column[] = [
 interface Data {
   number: number;
   date: string;
-  title: string;
+  type: string;
   status: string;
   description: string;
 }
@@ -61,11 +61,11 @@ interface Data {
 function createData(
   number: number,
   date: string,
-  title: string,
+  type: string,
   status: string,
   description: string
 ): Data {
-  return { number, date, title, status, description };
+  return { number, date, type, status, description };
 }
 
 const rows = [
@@ -221,7 +221,7 @@ export default function ColumnGroupingTable() {
             {row.date}
           </TableCell>
           <TableCell align="left" sx={{ py: 1 }}>
-            {row.title}
+            {row.type}
           </TableCell>
           <TableCell align="left" sx={{ py: 1 }}>
             {row.status}

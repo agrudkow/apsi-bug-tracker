@@ -4,6 +4,11 @@ import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import { display } from '@mui/system';
 import Button from '@mui/material/Button';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DatePicker from '@mui/lab/DatePicker';
+import plLocale from 'date-fns/locale/pl';
+
 
 const problems = [
   {
@@ -66,11 +71,66 @@ const urgencies = [
   }
 ];
 
+
 export default function FormPropsTextFields() {
   const [problem, setProblem] = React.useState('');
   const [urgency, setUrgency] = React.useState('');
   const [weight, setWeight] = React.useState('');
   const [description, setDescription] = React.useState('');
+  const [resp_person, setResponsiblePerson] = React.useState('');
+  const [date_value, setDateValue] = React.useState<Date | null>(null);
+  const [observers, setObservers] = React.useState('');
+  const [keywords, setKeywords] = React.useState('');
+  const [status, setStatus] = React.useState('New');
+  const [related_problems, setRelatedProblems] = React.useState('');
+  const [product, setProduct] = React.useState('');
+  const [component, setComponent] = React.useState('');
+  const [version, setVersion] = React.useState('')
+
+  const handleChangeObservers = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setObservers(event.target.value);
+  };
+
+  const handleChangeKeywords = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setKeywords(event.target.value);
+  };
+
+  const handleChangeStatus = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setStatus(event.target.value);
+  };
+
+  const handleChangeRelProblems = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRelatedProblems(event.target.value);
+  };
+
+  const handleChangeProduct = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setProduct(event.target.value);
+
+    if (event.target.value ==='app' && problem === 'B'){
+      setResponsiblePerson("Jeff Bezos");
+   }
+   else {
+    setResponsiblePerson('');
+ }
+  };
+
+  const handleChangeComponent = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setComponent(event.target.value);
+    if (event.target.value ==='interface' && product === 'sys'){
+      setResponsiblePerson("Steve Jobs");
+   }
+   else if (event.target.value ==='database' && product === 'sys'){
+    setResponsiblePerson("Andrzej Duda");
+   }
+   else {
+    setResponsiblePerson('');
+ }
+
+  };
+
+  const handleChangeVersion = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setVersion(event.target.value);
+  };
 
   const handleChangeDescription = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDescription(event.target.value);
@@ -78,6 +138,16 @@ export default function FormPropsTextFields() {
 
   const handleChangeProblem = (event: React.ChangeEvent<HTMLInputElement>) => {
     setProblem(event.target.value);
+    if (event.target.value ==='S'){
+        setResponsiblePerson("Bill Gates");
+    }
+    else if (event.target.value ==='I'){
+      setResponsiblePerson("Elon Musk");
+   }
+   else if (event.target.value ==='B'){
+    setResponsiblePerson("");
+ };
+
   };
 
   const handleChangeWeight = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,6 +156,10 @@ export default function FormPropsTextFields() {
 
   const handleChangeUrgency = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUrgency(event.target.value);
+  };
+
+  const handleChangeRespPerson = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setResponsiblePerson(event.target.value);
   };
 
     return (
@@ -111,7 +185,9 @@ export default function FormPropsTextFields() {
         <TextField
         id="Observers"
         label="Observers"
-        defaultValue = ""
+        multiline
+        value={observers}
+        onChange={handleChangeObservers}
         helperText="Add problem observers by username"
       />
       </div>
@@ -167,30 +243,33 @@ export default function FormPropsTextFields() {
         required
         id="product" 
         label="Product"
-        defaultValue = ""
+        value={product}
+        onChange={handleChangeProduct}
         helperText="Add name of product related to the problem"
       />  
               <TextField
         id="component"
         label="Component"
-        defaultValue = ""
+        value={component}
+        onChange={handleChangeComponent}
         helperText="Add name of product's component related to the problem"
       />
         <TextField
         id="version"
         label="Version"
-        defaultValue = ""
+        value={version}
+        onChange={handleChangeVersion}
         placeholder='X.X'
         helperText="Add version of product or its component related to the problem"
       />
-        </div>
-}
+        </div>}
         <div style={{display: "flex", flexDirection: "row"}}>
         <TextField
         required
         id="keywords"
         label="Keywords"
-        defaultValue = ""
+        value={keywords}
+        onChange={handleChangeKeywords}
         helperText="Name problem keywords using comma"
       />
       </div>
@@ -209,21 +288,54 @@ export default function FormPropsTextFields() {
         <TextField
         id="related_problems"
         label="Related problems"
-        defaultValue = ""
+        value={related_problems}
+        onChange={handleChangeRelProblems}
         helperText="Add related problems by problem ID "
       />
+      <LocalizationProvider dateAdapter={AdapterDateFns} locale={plLocale}>
+        <DatePicker
+          disablePast
+          label="Proposed deadline"
+          openTo="year"
+          mask='__.__.____'
+          views={['day']}
+          value = {date_value}
+          onChange={(newValue) => {
+            setDateValue(newValue);
+          }}
+          renderInput={(params) => <TextField  helperText='dd.mm.yyyy' {...params}  />}
+        />
+        </LocalizationProvider>
+      </div>
+      <div style={{display: "flex", flexDirection: "row"}}>
         <TextField
-        id="Deadline"
-        label="Deadline"
-        defaultValue = ""
-        helperText="DD.MM.YYYY"
+          required
+          disabled
+          id="status"
+          label="Status"
+          value={status}
+          onChange={handleChangeStatus}
+          InputProps={{
+            readOnly: true,
+          }}
+        />
+        <TextField
+         required
+         disabled
+         id="responsible_person"
+         label="Responsible person"
+         value={resp_person}
+        onChange={handleChangeRespPerson}
+         InputProps={{
+           readOnly: true,
+         }}
       />
       </div>
       <div style={{display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
       <Button
             variant="contained"
             size="medium"
-            sx={{fontSize: 20, margin: 0.5, padding: 1, width: "20%" }}
+            sx={{fontSize: 20, margin: 0.5, marginTop: 3, padding: 1, width: "20%" }}
           >
             Submit
           </Button>
