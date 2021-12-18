@@ -9,10 +9,12 @@ import Typography from '@mui/material/Typography';
 
 interface HeaderProps {
   onDrawerToggle: () => void;
+  headerDescription: string;
 }
 
-export default function Header(props: HeaderProps) {
+export function Header(props: HeaderProps) {
   const { onDrawerToggle } = props;
+  const { headerDescription } = props;
 
   return (
     <React.Fragment>
@@ -52,7 +54,7 @@ export default function Header(props: HeaderProps) {
           <Grid container alignItems="center" spacing={1}>
             <Grid item xs>
               <Typography color="inherit" variant="h5" component="h1">
-                New problem form
+                {headerDescription}
               </Typography>
             </Grid>
           </Grid>
