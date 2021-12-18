@@ -247,7 +247,7 @@ export default function ColumnGroupingTable() {
                 size="large"
                 sx={{ ...buttonView, fontSize: 12, marginY:1, paddingX: 1, paddingY: 0.5 }}
                 >
-                  Go to form
+                  Go to details
                 </Button>
               </Box>
 

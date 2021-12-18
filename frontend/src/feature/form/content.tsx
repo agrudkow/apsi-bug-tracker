@@ -2,7 +2,6 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
-import { display } from '@mui/system';
 import Button from '@mui/material/Button';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
@@ -51,26 +50,47 @@ const weights = [
 const urgencies = [
   {
     value: '1',
-    label: '1 - very urgent',
+    label: '1',
   },
   {
     value: '2',
-    label: '2 - urgent',
+    label: '2',
   },
   {
     value: '3',
-    label: '3 - moderatly urgent',
+    label: '3',
   },
   {
     value: '4',
-    label: '4 - not too urgent',
+    label: '4',
   },
   {
     value: '5',
-    label: '5 - not urgent',
+    label: '5',
   }
 ];
 
+const products = [
+  {
+    value: 'A',
+    label: 'PetApp',
+  },
+  {
+    value: 'S',
+    label: 'SmartPet',
+  }
+];
+
+const components = [
+  {
+    value: 'I',
+    label: 'Interface',
+  },
+  {
+    value: 'D',
+    label: 'Database',
+  }
+];
 
 export default function FormPropsTextFields() {
   const [problem, setProblem] = React.useState('');
@@ -106,7 +126,7 @@ export default function FormPropsTextFields() {
   const handleChangeProduct = (event: React.ChangeEvent<HTMLInputElement>) => {
     setProduct(event.target.value);
 
-    if (event.target.value ==='app' && problem === 'B'){
+    if (event.target.value ==='S' && problem === 'B'){
       setResponsiblePerson("Jeff Bezos");
    }
    else {
@@ -116,10 +136,10 @@ export default function FormPropsTextFields() {
 
   const handleChangeComponent = (event: React.ChangeEvent<HTMLInputElement>) => {
     setComponent(event.target.value);
-    if (event.target.value ==='interface' && product === 'sys'){
+    if (event.target.value ==='I' && product === 'A'){
       setResponsiblePerson("Steve Jobs");
    }
-   else if (event.target.value ==='database' && product === 'sys'){
+   else if (event.target.value ==='D' && product === 'A'){
     setResponsiblePerson("Andrzej Duda");
    }
    else {
@@ -227,6 +247,7 @@ export default function FormPropsTextFields() {
           id="urgency"
           select
           label="Urgency"
+          helperText="Select 1 if not urgent or 5 if highly urgent"
           value={urgency}
           onChange={handleChangeUrgency}
         >
@@ -237,31 +258,58 @@ export default function FormPropsTextFields() {
           ))}
         </TextField>
         </div>
+
         {problem === "B" &&
         <div style={{display: "flex", flexDirection: "row"}}>
         <TextField
         required
+        select
         id="product" 
         label="Product"
         value={product}
         onChange={handleChangeProduct}
-        helperText="Add name of product related to the problem"
-      />  
-              <TextField
+        >
+        {products.map((option) => (
+          <MenuItem key={option.value} value={option.value}>
+            {option.label}
+          </MenuItem>
+        ))}
+        </TextField>
+
+        {product === "A" && <TextField
+        select
+        required
         id="component"
         label="Component"
         value={component}
         onChange={handleChangeComponent}
-        helperText="Add name of product's component related to the problem"
-      />
-        <TextField
+        >
+                 {components.map((option) => (
+          <MenuItem key={option.value} value={option.value}>
+            {option.label}
+          </MenuItem>
+        ))} 
+        </TextField>}
+
+        {product === "S" && <TextField
         id="version"
+        required
         label="Version"
         value={version}
         onChange={handleChangeVersion}
-        placeholder='X.X'
-        helperText="Add version of product or its component related to the problem"
-      />
+        placeholder='X.X.X'
+        helperText="Add version of product related to the problem"
+      />}
+
+        {product === "A" && <TextField
+        id="version"
+        required
+        label="Version"
+        value={version}
+        onChange={handleChangeVersion}
+        placeholder='X.X.X'
+        helperText="Add version of product's component related to the problem"
+      />}
         </div>}
         <div style={{display: "flex", flexDirection: "row"}}>
         <TextField
