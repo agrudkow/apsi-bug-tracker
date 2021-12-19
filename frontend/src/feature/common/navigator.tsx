@@ -45,7 +45,7 @@ export function Navigator(props: DrawerProps) {
     <Drawer variant="permanent" {...other}>
       <List disablePadding>
         <ListItem
-          sx={{ ...item, ...itemCategory, fontSize: 45, color: '#fff', p: 0 }}
+          sx={{ ...item, ...itemCategory, fontSize: 45, color: '#fff', p: 0,  }}
         >
           <Logo_white/>
         </ListItem>

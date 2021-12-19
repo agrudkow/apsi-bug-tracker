@@ -21,6 +21,8 @@ import TableRow from '@mui/material/TableRow';
 import Collapse from '@mui/material/Collapse';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { Routes } from '../../utils';
+import { useNavigate } from 'react-router';
 
 interface Column {
   id: 'number' | 'date' | 'type' | 'status';
@@ -172,6 +174,7 @@ const rows = [
 export default function ColumnGroupingTable() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const navigate = useNavigate();
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -183,6 +186,10 @@ export default function ColumnGroupingTable() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+  const userDetailFormHandler = () =>{
+    navigate(`../${Routes.UserDetailForm}`, { replace: true });
+  }
 
   const buttonView = {
     px: 3,
@@ -246,6 +253,7 @@ export default function ColumnGroupingTable() {
                 variant="contained"
                 size="large"
                 sx={{ ...buttonView, fontSize: 12, marginY:1, paddingX: 1, paddingY: 0.5 }}
+                onClick={userDetailFormHandler}
                 >
                   Go to details
                 </Button>

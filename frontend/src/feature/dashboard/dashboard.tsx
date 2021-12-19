@@ -9,6 +9,7 @@ import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Routes } from '../../utils';
 import FormContent from './formContent';
+import UserDetailFormContent from './userDetailsContent';
 
 const drawerWidth = 256;
 
@@ -28,6 +29,9 @@ export function Dashboard() {
     }
     else if (id === Routes.Form){
       setHeaderDescription('New problem form')
+    }
+    else if (id === Routes.UserDetailForm){
+      setHeaderDescription('Problem details')
     }
   }, [id]);
 
@@ -60,6 +64,7 @@ export function Dashboard() {
           >
          {id===Routes.Dashboard && <Content />}
          {id===Routes.Form && <FormContent />}
+         {id===Routes.UserDetailForm && <UserDetailFormContent />}
          
           </Box>
           <Box component="footer" sx={{ p: 2, bgcolor: '#eaeff1' }}>
