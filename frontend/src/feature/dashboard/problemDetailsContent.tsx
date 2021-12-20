@@ -6,20 +6,25 @@ import Divider from '@mui/material/Divider';
 import { useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import { Routes } from '../../utils';
+import { Roles } from '../../interface/enums';
 import { useNavigate } from 'react-router-dom';
-
-
 
 interface Data {
   definition: string;
   description: string;
 }
 
-export default function FormPropsTextFields() {
+interface Props{
+  role: string;
+}
 
+export const FormPropsTextFields: React.FC<Props> = ({role}) => {
+
+  const navigate = useNavigate();
   const [comment, setComment] = React.useState('');
   const [showNewCommentField, setShowNewCommentField] = React.useState<boolean>(false);
-  const [activeFormButton, setActiveFormButton] = React.useState<boolean>(false);
+  const [activeFormButton, setActiveFormButton] = React.useState<boolean>(true);
+  
 
   const handleComment = (event: React.ChangeEvent<HTMLInputElement>) => {
     setComment(event.target.value);
@@ -29,7 +34,13 @@ export default function FormPropsTextFields() {
   }
   const commentSendingHandler = () =>{
     setShowNewCommentField(false);
-    //send comment to backend + refresh list above
+    //send comment to backend + refresh list above + view an information
+  }
+  const deleteProblemHandler = () =>{
+    //send delete to backend + actualize view + view an information
+  }
+  const editFormHandler = () =>{
+      navigate(`../${Routes.ProblemEditForm}`, { replace: true });
   }
 
   function Row(props: { row: Data }) {
@@ -70,7 +81,7 @@ const jsonFromDatabase = {
   "Description": "I can't get the proper output",
   "Related problems": "23, 241",
   "Proposed deadline": "20.12.2021",
-  "Status": "Resolved",
+  "Status": "New",
   "Responsible person": "Andrzej Duda"
 }
   let dataList: Data[] = [];
@@ -79,9 +90,9 @@ const jsonFromDatabase = {
       definition: key,
       description: value
     }
-    if (dataRow.definition === "Status" && dataRow.description === "New")
+    if (role === Roles.User && dataRow.definition === "Status" && dataRow.description !== "New")
     {
-        setActiveFormButton(true);
+        setActiveFormButton(false);
     }
     dataList.push(dataRow)
   })
@@ -110,6 +121,7 @@ const jsonFromDatabase = {
               variant="contained"
               size="medium"
               sx={{ fontSize: 15, margin: 0.5, marginTop: 3, padding: 1, width: "15%" }}
+              onClick={deleteProblemHandler}
             >
               Delete issue
             </Button>
@@ -117,6 +129,7 @@ const jsonFromDatabase = {
               variant="contained"
               size="medium"
               sx={{ fontSize: 15, margin: 0.5, marginTop: 3, padding: 1, width: "15%" }}
+              onClick={editFormHandler}
             >
               Edit form
             </Button>}
@@ -146,3 +159,5 @@ const jsonFromDatabase = {
 
     );
   }
+
+  export default FormPropsTextFields;

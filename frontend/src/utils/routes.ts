@@ -2,5 +2,6 @@ export enum Routes {
   Dashboard = 'dashboard',
   Login = 'login',
   Form = 'form',
-  UserDetailForm = "userDetailFrom"
+  ProblemDetails = "problemDetails",
+  ProblemEditForm = "problemEditForm",
 }

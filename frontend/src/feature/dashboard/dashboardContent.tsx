@@ -187,8 +187,8 @@ export default function ColumnGroupingTable() {
     setPage(0);
   };
 
-  const userDetailFormHandler = () =>{
-    navigate(`../${Routes.UserDetailForm}`, { replace: true });
+  const problemDetailsHandler = () =>{
+    navigate(`../${Routes.ProblemDetails}`, { replace: true });
   }
 
   const buttonView = {
@@ -253,7 +253,7 @@ export default function ColumnGroupingTable() {
                 variant="contained"
                 size="large"
                 sx={{ ...buttonView, fontSize: 12, marginY:1, paddingX: 1, paddingY: 0.5 }}
-                onClick={userDetailFormHandler}
+                onClick={problemDetailsHandler}
                 >
                   Go to details
                 </Button>

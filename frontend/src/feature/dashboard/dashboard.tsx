@@ -8,12 +8,17 @@ import { theme, Copyright, Navigator, Header } from '../common';
 import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Routes } from '../../utils';
-import FormContent from './formContent';
-import UserDetailFormContent from './userDetailsContent';
+import NewFormContent from './newFormContent';
+import ProblemDetailsContent from './problemDetailsContent';
+import ProblemForm from './problemForm';
 
 const drawerWidth = 256;
 
-export function Dashboard() {
+interface Props{
+  role: string;
+}
+
+export const Dashboard: React.FC<Props> = ({role}) => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [headerDescription, setHeaderDescription] = React.useState<string>('');
   let { id } = useParams();
@@ -30,8 +35,11 @@ export function Dashboard() {
     else if (id === Routes.Form){
       setHeaderDescription('New problem form')
     }
-    else if (id === Routes.UserDetailForm){
+    else if (id === Routes.ProblemDetails){
       setHeaderDescription('Problem details')
+    }
+    else if (id === Routes.ProblemEditForm){
+      setHeaderDescription('Problem form')
     }
   }, [id]);
 
@@ -63,8 +71,9 @@ export function Dashboard() {
             sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}
           >
          {id===Routes.Dashboard && <Content />}
-         {id===Routes.Form && <FormContent />}
-         {id===Routes.UserDetailForm && <UserDetailFormContent />}
+         {id===Routes.Form && <NewFormContent />}
+         {id===Routes.ProblemDetails && <ProblemDetailsContent role={role}/>}
+         {id===Routes.ProblemEditForm && <ProblemForm/>}
          
           </Box>
           <Box component="footer" sx={{ p: 2, bgcolor: '#eaeff1' }}>
