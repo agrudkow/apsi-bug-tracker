@@ -385,7 +385,7 @@ export default function ProblemForm() {
             size="medium"
             sx={{fontSize: 20, margin: 0.5, marginTop: 3, padding: 1, width: "20%" }}
           >
-            Submit
+            Submit changes
           </Button>
       </div>
       </Box>

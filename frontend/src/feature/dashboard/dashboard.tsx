@@ -10,7 +10,7 @@ import { useEffect } from 'react';
 import { Routes } from '../../utils';
 import NewFormContent from './newFormContent';
 import ProblemDetailsContent from './problemDetailsContent';
-import ProblemForm from './problemForm';
+import ProblemForm from './problemFormContent';
 
 const drawerWidth = 256;
 

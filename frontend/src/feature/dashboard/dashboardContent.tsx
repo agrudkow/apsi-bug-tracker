@@ -23,6 +23,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { Routes } from '../../utils';
 import { useNavigate } from 'react-router';
+import { useEffect, useState } from 'react';
 
 interface Column {
   id: 'number' | 'date' | 'type' | 'status';
@@ -60,118 +61,9 @@ interface Data {
   description: string;
 }
 
-function createData(
-  number: number,
-  date: string,
-  type: string,
-  status: string,
-  description: string
-): Data {
-  return { number, date, type, status, description };
-}
 
-const rows = [
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-];
 
-export default function ColumnGroupingTable() {
+export default function ProblemsTable() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const navigate = useNavigate();
@@ -195,7 +87,40 @@ export default function ColumnGroupingTable() {
     px: 3,
   };
 
-  function Row(props: { row: ReturnType<typeof createData> }) {
+  //const rows: Data[] = []
+  const [dataRows, setDataRows] = useState<Data[]>([]);
+
+  useEffect(() => {
+    //async axios zapytanie  ->  const jsonFromDatabase = axios.get("backend.com/problem/details/1562")
+const jsonFromDatabase: Data[] = [{
+  number: 123,
+  date: '20.12.2021',
+  type:'incident',
+  status:'new',
+  description:'nooo'},
+    {number: 124,
+    date: '22.19.2015',
+    type:'bug',
+    status:'resolved',
+    description:'yeeessss'
+}]
+  
+let dataList: Data[] = [];
+jsonFromDatabase.forEach((singleEntry: Data)=>{
+ const data: Data = {
+   number: singleEntry.number,
+   date: singleEntry.date,
+   type: singleEntry.type,
+   status: singleEntry.status,
+   description: singleEntry.description
+ }
+ dataRows.push(data);
+}) 
+  setDataRows(dataRows)
+  
+  },);
+
+  function Row(props: { row: Data }) {
     const { row } = props;
     const [open, setOpen] = React.useState(false);
 
@@ -321,7 +246,7 @@ export default function ColumnGroupingTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows
+              {dataRows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   return <Row key={`${row.number}-${index}`} row={row} />;
@@ -332,7 +257,7 @@ export default function ColumnGroupingTable() {
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
-          count={rows.length}
+          count={dataRows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
