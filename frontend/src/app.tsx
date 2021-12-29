@@ -5,7 +5,7 @@ import { Routes } from './utils';
 
 
 function App() {
-  const [role, setRole]=React.useState<string>("User");
+  const [role, setRole]=React.useState<string>("");
 
   return (
     <RouterRoutes>

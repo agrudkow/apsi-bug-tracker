@@ -532,12 +532,19 @@ newProblemData.Responsible_person = "Andrzej Duda";
       <div style={{display: "flex", flexDirection: "row"}}>
         <TextField
           required
+          select
           disabled = {role === Roles.User}
           id="status"
           label="Status"
           value={problemData.Status}
           onChange={handleChangeStatus}
-        />
+          >
+          {statuses.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </TextField>
         <TextField
          required
          disabled = {role === Roles.User}
