@@ -7,42 +7,46 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
 import plLocale from 'date-fns/locale/pl';
+import { Roles } from '../../interface/enums';
+import { useEffect } from 'react';
+import { ProblemData } from '../../interface';
+import { setDate } from 'date-fns/esm';
 
 
 const problems = [
   {
-    value: 'S',
+    value: 'Service',
     label: 'Service',
   },
   {
-    value: 'B',
+    value: 'Bug',
     label: 'Bug',
   },
   {
-    value: 'I',
+    value: 'Incident',
     label: 'Incident',
   },
 ];
 
 const weights = [
   {
-    value: 'M',
+    value: 'Minor',
     label: 'Minor'
   },
   {
-    value: 'N',
+    value: 'Normal',
     label: 'Normal'
   },
   {
-    value: 'S',
+    value: 'Significant',
     label: 'Significant'
   },
   {
-    value: 'B',
+    value: 'Blocking',
     label: 'Blocking'
   },
   {
-    value: 'C',
+    value: 'Critical',
     label: 'Critical',
   },
 ];
@@ -72,114 +76,272 @@ const urgencies = [
 
 const products = [
   {
-    value: 'A',
+    value: 'PetApp',
     label: 'PetApp',
   },
   {
-    value: 'S',
+    value: 'SmartPet',
     label: 'SmartPet',
   }
 ];
 
 const components = [
   {
-    value: 'I',
+    value: 'Interface',
     label: 'Interface',
   },
   {
-    value: 'D',
+    value: 'Database',
     label: 'Database',
   }
 ];
 
-export default function ProblemForm() {
-  const [problem, setProblem] = React.useState('');
-  const [urgency, setUrgency] = React.useState('');
-  const [weight, setWeight] = React.useState('');
-  const [description, setDescription] = React.useState('');
-  const [resp_person, setResponsiblePerson] = React.useState('');
-  const [date_value, setDateValue] = React.useState<Date | null>(null);
-  const [observers, setObservers] = React.useState('');
-  const [keywords, setKeywords] = React.useState('');
-  const [status, setStatus] = React.useState('New');
-  const [related_problems, setRelatedProblems] = React.useState('');
-  const [product, setProduct] = React.useState('');
-  const [component, setComponent] = React.useState('');
-  const [version, setVersion] = React.useState('')
+
+const statuses = [
+  {
+    value: 'New',
+    label: 'New'
+  },
+  {
+    value: 'Assigned',
+    label: 'Assigned'
+  },
+  {
+    value: 'Analyzed',
+    label: 'Analyzed'
+  },
+  {
+    value: 'Diagnosed',
+    label: 'Diagnosed'
+  },
+  {
+    value: 'Undiagnosed',
+    label: 'Undiagnosed',
+  },
+  {
+    value: 'Resolved',
+    label: 'Resolved'
+  },
+  {
+    value: 'Unresolved',
+    label: 'Unresolved',
+  },
+];
+
+interface Data {
+  Problem_ID: number,
+  Username: string,
+  Observers: string,
+  Problem_type: string,
+  Weight: string,
+  Urgency: string,
+  Product: string,
+  Component: string,
+  Version: string,
+  Keywords: string,
+  Description: string,
+  Related_problems: string,
+  Proposed_deadline: string,
+  Status: string,
+  Responsible_person: string
+}
+
+interface Props{
+  role: string;
+}
+
+export const FormTextFields: React.FC<Props> = ({role}) => {
+
+
+    //async axios zapytanie  ->  const jsonFromDatabase = axios.get("backend.com/problem/details/1562")
+const getFieldsData = async ()=> {
+  const jsonFromDatabase: ProblemData = {
+    Problem_ID: 231,
+    Username:"Jan",
+    Observers:"Kasia, Basia",
+    Problem_type: "Bug",
+    Weight: "Minor",
+    Urgency: "1",
+    Product:"PetApp",
+    Component:"Database",
+    Version: "1.2.1",
+    Keywords: "output",
+    Description: "I can't get the proper output",
+    Related_problems: "23, 241",
+    Proposed_deadline: new Date("2021-12-31"),
+    Status: "New",
+    Responsible_person: "Andrzej Duda"};
+
+    const problemData: ProblemData = {
+      Problem_ID: jsonFromDatabase.Problem_ID,
+      Username: jsonFromDatabase.Username,
+      Observers: jsonFromDatabase.Observers,
+      Problem_type: jsonFromDatabase.Problem_type,
+      Weight: jsonFromDatabase.Weight,
+      Urgency: jsonFromDatabase.Urgency,
+      Product: jsonFromDatabase.Product,
+      Component: jsonFromDatabase.Component,
+      Version: jsonFromDatabase.Version,
+      Keywords: jsonFromDatabase.Keywords,
+      Description: jsonFromDatabase.Description,
+      Related_problems: jsonFromDatabase.Related_problems,
+      Proposed_deadline: jsonFromDatabase.Proposed_deadline,
+      Status: jsonFromDatabase.Status,
+      Responsible_person: jsonFromDatabase.Responsible_person
+    }
+    setProblemData(problemData)
+}
+
+useEffect(()=>{
+  getFieldsData()
+}, [])    
+
+const [problemData, setProblemData] = React.useState<ProblemData>({
+  Problem_ID: 1,
+  Username: "",
+  Observers: "",
+  Problem_type: "",
+  Weight: "",
+  Urgency: "",
+  Product: "",
+  Component: "",
+  Version: "",
+  Keywords: "",
+  Description: "",
+  Related_problems: "",
+  Proposed_deadline: new Date(),
+  Status: "",
+  Responsible_person: ""
+});
+
+const sendData = async() => {
+  // await axios
+  // .post("backend.pl/data", problemData)
+  // .then((res) => {
+  //   console.log(res);
+  // })
+  // .catch((error) => {
+  //   console.log(error);
+  // });
+}
+
+  const handleChangeUser = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newProblemData: ProblemData = {...problemData};
+    newProblemData.Username = event.target.value;
+    setProblemData(newProblemData);
+  };
 
   const handleChangeObservers = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setObservers(event.target.value);
+    const newProblemData: ProblemData = {...problemData};
+    newProblemData.Observers = event.target.value;
+    setProblemData(newProblemData);
   };
 
   const handleChangeKeywords = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setKeywords(event.target.value);
+    const newProblemData: ProblemData = {...problemData};
+    newProblemData.Keywords = event.target.value;
+    setProblemData(newProblemData);
   };
 
   const handleChangeStatus = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setStatus(event.target.value);
+    const newProblemData: ProblemData = {...problemData};
+    newProblemData.Status = event.target.value;
+    setProblemData(newProblemData);
   };
 
   const handleChangeRelProblems = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRelatedProblems(event.target.value);
+    const newProblemData: ProblemData = {...problemData};
+    newProblemData.Related_problems = event.target.value;
+    setProblemData(newProblemData);
   };
 
   const handleChangeProduct = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setProduct(event.target.value);
+    const newProblemData: ProblemData = {...problemData};
+    newProblemData.Product = event.target.value;
 
-    if (event.target.value ==='S' && problem === 'B'){
-      setResponsiblePerson("Jeff Bezos");
+    if (event.target.value ==='SmartPet' && problemData.Problem_type === 'Bug'){
+      newProblemData.Responsible_person = "Jeff Bezos";
+   }
+   else if (event.target.value ==='PetApp' && problemData.Problem_type === 'Bug' && problemData.Component === 'Interface'){
+    newProblemData.Responsible_person = "Steve Jobs";
+   }
+   else if (event.target.value ==='PetApp' && problemData.Problem_type === 'Bug' && problemData.Component === 'Database'){
+    newProblemData.Responsible_person = "Andrzej Duda";
    }
    else {
-    setResponsiblePerson('');
+    newProblemData.Responsible_person = "";
  }
+
+ setProblemData(newProblemData);
   };
 
   const handleChangeComponent = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setComponent(event.target.value);
-    if (event.target.value ==='I' && product === 'A'){
-      setResponsiblePerson("Steve Jobs");
+    const newProblemData: ProblemData = {...problemData};
+    newProblemData.Component = event.target.value;
+    if (event.target.value ==='Interface' && problemData.Product === 'PetApp'){
+      newProblemData.Responsible_person = "Steve Jobs";
    }
-   else if (event.target.value ==='D' && product === 'A'){
-    setResponsiblePerson("Andrzej Duda");
+   else if (event.target.value ==='Database' && problemData.Product === 'PetApp'){
+    newProblemData.Responsible_person = "Andrzej Duda";
    }
    else {
-    setResponsiblePerson('');
+    newProblemData.Responsible_person = "";
  }
-
+ setProblemData(newProblemData);
   };
 
   const handleChangeVersion = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setVersion(event.target.value);
+    const newProblemData: ProblemData = {...problemData};
+    newProblemData.Version = event.target.value;
+    setProblemData(newProblemData);
   };
 
   const handleChangeDescription = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDescription(event.target.value);
+    const newProblemData: ProblemData = {...problemData};
+    newProblemData.Description = event.target.value;
+    setProblemData(newProblemData);
   };
 
   const handleChangeProblem = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setProblem(event.target.value);
-    if (event.target.value ==='S'){
-        setResponsiblePerson("Bill Gates");
+    const newProblemData: ProblemData = {...problemData};
+    newProblemData.Problem_type = event.target.value;
+    if (event.target.value ==='Service'){
+      newProblemData.Responsible_person = "Bill Gates";
     }
-    else if (event.target.value ==='I'){
-      setResponsiblePerson("Elon Musk");
+    else if (event.target.value ==='Incident'){
+      newProblemData.Responsible_person = "Elon Musk";
    }
-   else if (event.target.value ==='B'){
-    setResponsiblePerson("");
- };
-
+   else if (event.target.value ==='Bug'){
+    newProblemData.Responsible_person = "";
+ }
+ if (problemData.Product ==='SmartPet' && event.target.value === 'Bug'){
+  newProblemData.Responsible_person = "Jeff Bezos";
+}
+else if (problemData.Product ==='PetApp' && event.target.value === 'Bug' && problemData.Component === 'Interface'){
+newProblemData.Responsible_person = "Steve Jobs";
+}
+else if (problemData.Product ==='PetApp' && event.target.value === 'Bug' && problemData.Component === 'Database'){
+newProblemData.Responsible_person = "Andrzej Duda";
+}
+ setProblemData(newProblemData);
   };
 
   const handleChangeWeight = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setWeight(event.target.value);
+    const newProblemData: ProblemData = {...problemData};
+    newProblemData.Weight = event.target.value;
+    setProblemData(newProblemData);
   };
 
   const handleChangeUrgency = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUrgency(event.target.value);
+    const newProblemData: ProblemData = {...problemData};
+    newProblemData.Weight = event.target.value;
+    setProblemData(newProblemData);
   };
 
   const handleChangeRespPerson = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setResponsiblePerson(event.target.value);
+    const newProblemData: ProblemData = {...problemData};
+    newProblemData.Responsible_person = event.target.value;
+    setProblemData(newProblemData);
   };
 
     return (
@@ -194,19 +356,18 @@ export default function ProblemForm() {
       <div style={{display: "flex", flexDirection: "row"}}>
         <TextField
           required
-          disabled
+          disabled 
           id="Username"
           label="Username"
-          defaultValue="Jan"
-          InputProps={{
-            readOnly: true,
-          }}
+          value={problemData.Username}
+          onChange={handleChangeUser}
         />
         <TextField
         id="Observers"
         label="Observers"
+        disabled = {role === Roles.Admin}
         multiline
-        value={observers}
+        value={problemData.Observers}
         onChange={handleChangeObservers}
         helperText="Add problem observers by username"
       />
@@ -214,10 +375,11 @@ export default function ProblemForm() {
       <div style={{display: "flex", flexDirection: "row"}}>
         <TextField
           required
+          disabled = {role === Roles.Admin}
           id="problem_type"
           select
           label="Problem type"
-          value={problem}
+          value={problemData.Problem_type}
           onChange={handleChangeProblem}
         >
           {problems.map((option) => (
@@ -229,10 +391,11 @@ export default function ProblemForm() {
 
         <TextField
           required
+          disabled = {role === Roles.Admin}
           id="weight"
           select
           label="Weight"
-          value={weight}
+          value={problemData.Weight}
           onChange={handleChangeWeight}
         >
           {weights.map((option) => (
@@ -244,11 +407,12 @@ export default function ProblemForm() {
         
         <TextField
           required
+          disabled = {role === Roles.Admin}
           id="urgency"
           select
           label="Urgency"
           helperText="Select 1 if not urgent or 5 if highly urgent"
-          value={urgency}
+          value={problemData.Urgency}
           onChange={handleChangeUrgency}
         >
           {urgencies.map((option) => (
@@ -259,14 +423,15 @@ export default function ProblemForm() {
         </TextField>
         </div>
 
-        {problem === "B" &&
+        {problemData.Problem_type === "Bug" &&
         <div style={{display: "flex", flexDirection: "row"}}>
         <TextField
         required
+        disabled = {role === Roles.Admin}
         select
         id="product" 
         label="Product"
-        value={product}
+        value={problemData.Product}
         onChange={handleChangeProduct}
         >
         {products.map((option) => (
@@ -276,12 +441,13 @@ export default function ProblemForm() {
         ))}
         </TextField>
 
-        {product === "A" && <TextField
+        {problemData.Product === "PetApp" && <TextField
         select
         required
+        disabled = {role === Roles.Admin}
         id="component"
         label="Component"
-        value={component}
+        value={problemData.Component}
         onChange={handleChangeComponent}
         >
                  {components.map((option) => (
@@ -291,21 +457,23 @@ export default function ProblemForm() {
         ))} 
         </TextField>}
 
-        {product === "S" && <TextField
+        {problemData.Product === "SmartPet" && <TextField
         id="version"
         required
+        disabled = {role === Roles.Admin}
         label="Version"
-        value={version}
+        value={problemData.Version}
         onChange={handleChangeVersion}
         placeholder='X.X.X'
         helperText="Add version of product related to the problem"
       />}
 
-        {product === "A" && <TextField
+        {problemData.Product === "PetApp" && <TextField
         id="version"
         required
+        disabled = {role === Roles.Admin}
         label="Version"
-        value={version}
+        value={problemData.Version}
         onChange={handleChangeVersion}
         placeholder='X.X.X'
         helperText="Add version of product's component related to the problem"
@@ -314,9 +482,10 @@ export default function ProblemForm() {
         <div style={{display: "flex", flexDirection: "row"}}>
         <TextField
         required
+        disabled = {role === Roles.Admin}
         id="keywords"
         label="Keywords"
-        value={keywords}
+        value={problemData.Keywords}
         onChange={handleChangeKeywords}
         helperText="Name problem keywords using comma"
       />
@@ -324,32 +493,37 @@ export default function ProblemForm() {
       <div style={{display: "flex", flexDirection: "row"}}>
       <TextField
         required
+        disabled = {role === Roles.Admin}
         id="description"
         label="Description"
         multiline
         rows={6}
-        value={description}
+        value={problemData.Description}
         onChange={handleChangeDescription}
       />
       </div>
       <div style={{display: "flex", flexDirection: "row"}}>
         <TextField
+        disabled = {role === Roles.Admin}
         id="related_problems"
         label="Related problems"
-        value={related_problems}
+        value={problemData.Related_problems}
         onChange={handleChangeRelProblems}
         helperText="Add related problems by problem ID "
       />
       <LocalizationProvider dateAdapter={AdapterDateFns} locale={plLocale}>
         <DatePicker
           disablePast
+          disabled = {role === Roles.Admin}
           label="Proposed deadline"
           openTo="year"
           mask='__.__.____'
           views={['day']}
-          value = {date_value}
+          value = {problemData.Proposed_deadline}
           onChange={(newValue) => {
-            setDateValue(newValue);
+            const newProblemData: ProblemData = {...problemData};
+            if (newValue) newProblemData.Proposed_deadline = newValue;
+            setProblemData(newProblemData);
           }}
           renderInput={(params) => <TextField  helperText='dd.mm.yyyy' {...params}  />}
         />
@@ -358,25 +532,19 @@ export default function ProblemForm() {
       <div style={{display: "flex", flexDirection: "row"}}>
         <TextField
           required
-          disabled
+          disabled = {role === Roles.User}
           id="status"
           label="Status"
-          value={status}
+          value={problemData.Status}
           onChange={handleChangeStatus}
-          InputProps={{
-            readOnly: true,
-          }}
         />
         <TextField
          required
-         disabled
+         disabled = {role === Roles.User}
          id="responsible_person"
          label="Responsible person"
-         value={resp_person}
+         value={problemData.Responsible_person}
         onChange={handleChangeRespPerson}
-         InputProps={{
-           readOnly: true,
-         }}
       />
       </div>
       <div style={{display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
@@ -391,3 +559,5 @@ export default function ProblemForm() {
       </Box>
     );
   }
+
+  export default FormTextFields;

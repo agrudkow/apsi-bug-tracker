@@ -87,7 +87,7 @@ export default function ProblemsTable() {
     px: 3,
   };
 
-  //const rows: Data[] = []
+  
   const [dataRows, setDataRows] = useState<Data[]>([]);
 
   useEffect(() => {
@@ -105,7 +105,7 @@ const jsonFromDatabase: Data[] = [{
     description:'yeeessss'
 }]
   
-let dataList: Data[] = [];
+
 jsonFromDatabase.forEach((singleEntry: Data)=>{
  const data: Data = {
    number: singleEntry.number,

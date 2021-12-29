@@ -73,7 +73,7 @@ export const Dashboard: React.FC<Props> = ({role}) => {
          {id===Routes.Dashboard && <Content />}
          {id===Routes.Form && <NewFormContent />}
          {id===Routes.ProblemDetails && <ProblemDetailsContent role={role}/>}
-         {id===Routes.ProblemEditForm && <ProblemForm/>}
+         {id===Routes.ProblemEditForm && <ProblemForm role={role}/>}
          
           </Box>
           <Box component="footer" sx={{ p: 2, bgcolor: '#eaeff1' }}>
