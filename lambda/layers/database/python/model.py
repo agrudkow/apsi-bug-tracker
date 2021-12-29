@@ -3,9 +3,9 @@ from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 from sqlalchemy import UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.schema import Table
-from database import *
+
+Base = declarative_base()
 
 report_keyword_association_table = Table('report_keyword_association', Base.metadata,
                                          Column('key_word_id', ForeignKey(

@@ -52,6 +52,11 @@ export class APSIBugTrackerStack extends cdk.Stack {
       backupRetention: cdk.Duration.days(0),
     });
 
+    // Create database lambda layer
+    const databaseLayer = new lambda.LayerVersion(this, 'database-layer', {
+        code: lambda.Code.fromAsset('lambda/layers/database'),
+    });
+
     // Get all issues lambda
     const getIssuesLambda = new PythonFunction(this, 'GetIssues', {
       entry: path.join('lambda', 'get_issues'), // required
@@ -80,6 +85,7 @@ export class APSIBugTrackerStack extends cdk.Stack {
         DB_PASSWORD: DB_PASSWORD,
         DB_NAME: DB_NAME,
       },
+      layers: [databaseLayer],
     });
 
     const getIssuesLambdaIntegration = new LambdaIntegration(getIssuesLambda);
