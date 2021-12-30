@@ -105,6 +105,7 @@ const jsonFromDatabase: Data[] = [{
     description:'yeeessss'
 }]
   
+const newDataRows: Data[] = []
 
 jsonFromDatabase.forEach((singleEntry: Data)=>{
  const data: Data = {
@@ -114,11 +115,11 @@ jsonFromDatabase.forEach((singleEntry: Data)=>{
    status: singleEntry.status,
    description: singleEntry.description
  }
- dataRows.push(data);
+ newDataRows.push(data);
 }) 
-  setDataRows(dataRows)
+  setDataRows(newDataRows)
   
-  },);
+  },[]);
 
   function Row(props: { row: Data }) {
     const { row } = props;

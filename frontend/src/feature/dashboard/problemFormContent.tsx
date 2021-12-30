@@ -334,7 +334,7 @@ newProblemData.Responsible_person = "Andrzej Duda";
 
   const handleChangeUrgency = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newProblemData: ProblemData = {...problemData};
-    newProblemData.Weight = event.target.value;
+    newProblemData.Urgency = event.target.value;
     setProblemData(newProblemData);
   };
 
