@@ -14,9 +14,10 @@ export class APSIBugTrackerStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const DB_NAME = process.env.DB_NAME ?? 'apsidb'
-    const DB_USERNAME = process.env.DB_USERNAME ?? 'user'
-    const DB_PASSWORD = process.env.DB_PASSWORD ?? 'password'
+    const DB_NAME = process.env.DB_NAME ?? 'apsidb';
+    const DB_USERNAME = process.env.DB_USERNAME ?? 'user';
+    const DB_PASSWORD = process.env.DB_PASSWORD ?? 'password';
+    const DB_PORT = process.env.DB_PORT ?? '3306';
 
     // Create DB security group
     const vpc = ec2.Vpc.fromLookup(this, 'VPC', { isDefault: true });
@@ -54,14 +55,34 @@ export class APSIBugTrackerStack extends cdk.Stack {
 
     // Create database lambda layer
     const databaseLayer = new lambda.LayerVersion(this, 'database-layer', {
-        code: lambda.Code.fromAsset('lambda/layers/database'),
+      code: lambda.Code.fromAsset(
+        path.join('lambda', 'database'),
+        {
+          bundling: {
+            image: lambda.Runtime.PYTHON_3_9.bundlingImage,
+            command: [
+              'bash',
+              '-c',
+              'pip install . -t /asset-output/python',
+            ],
+          },
+        }
+      ),
     });
 
     // Get all issues lambda
-    const getIssuesLambda = new PythonFunction(this, 'GetIssues', {
-      entry: path.join('lambda', 'get_issues'), // required
-      index: 'index.py', // Optional, defaults to 'index.py'
-      handler: 'handler', // Optional, defaults to 'handler'
+    const getIssuesLambda = new lambda.Function(this, 'GetIssues', {
+      code: lambda.Code.fromAsset(path.join('lambda', 'get_issues'), {
+        bundling: {
+          image: lambda.Runtime.PYTHON_3_9.bundlingImage,
+          command: [
+            'bash',
+            '-c',
+            'pip install -r requirements.txt -t /asset-output &&  rsync -av --progress . /asset-output --exclude-from=.dockerignore',
+          ],
+        },
+      }),
+      handler: 'index.handler', // Optional, defaults to 'handler'
       runtime: lambda.Runtime.PYTHON_3_9, // Optional, defaults to lambda.Runtime.PYTHON_3_7
       environment: {
         LOG_LEVEL: '10', // Debug log level - https://docs.python.org/3/library/logging.html
@@ -69,14 +90,23 @@ export class APSIBugTrackerStack extends cdk.Stack {
         DB_USERNAME: DB_USERNAME,
         DB_PASSWORD: DB_PASSWORD,
         DB_NAME: DB_NAME,
+        DB_PORT: DB_PORT,
       },
     });
 
     // Create issues lambda
-    const createIssuesLambda = new PythonFunction(this, 'CreateIssues', {
-      entry: path.join('lambda', 'create_issues'), // required
-      index: 'index.py', // Optional, defaults to 'index.py'
-      handler: 'handler', // Optional, defaults to 'handler'
+    const createIssuesLambda = new lambda.Function(this, 'CreateIssues', {
+      code: lambda.Code.fromAsset(path.join('lambda', 'create_issues'), {
+        bundling: {
+          image: lambda.Runtime.PYTHON_3_9.bundlingImage,
+          command: [
+            'bash',
+            '-c',
+            'pip install -r requirements.txt -t /asset-output &&  rsync -av --progress . /asset-output --exclude-from=.dockerignore',
+          ],
+        },
+      }),
+      handler: 'index.handler', // Optional, defaults to 'handler'
       runtime: lambda.Runtime.PYTHON_3_9, // Optional, defaults to lambda.Runtime.PYTHON_3_7
       environment: {
         LOG_LEVEL: '10', // Debug log level - https://docs.python.org/3/library/logging.html
@@ -84,12 +114,15 @@ export class APSIBugTrackerStack extends cdk.Stack {
         DB_USERNAME: DB_USERNAME,
         DB_PASSWORD: DB_PASSWORD,
         DB_NAME: DB_NAME,
+        DB_PORT: DB_PORT,
       },
       layers: [databaseLayer],
     });
 
     const getIssuesLambdaIntegration = new LambdaIntegration(getIssuesLambda);
-    const createIssuesLambdaIntegration = new LambdaIntegration(createIssuesLambda);
+    const createIssuesLambdaIntegration = new LambdaIntegration(
+      createIssuesLambda
+    );
 
     // Create API Gateway resource
     const apiGateway = new RestApi(this, 'APSIBugTrackerAPI', {

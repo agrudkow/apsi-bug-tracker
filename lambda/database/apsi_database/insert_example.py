@@ -1,11 +1,10 @@
-from apsi_database.database import SessionLocal
+from apsi_database.database import get_db_session
 from apsi_database.model import Bug, KeyWord, Module, Report, ReportClass, Status, Urgency, User, Weight
 from datetime import date
 
 kw = KeyWord()
 kw.id = '1'
 kw.text = '1'
-
 
 weight = Weight()
 weight.name = '1'
@@ -52,8 +51,8 @@ report.report_class = '1',
 report.bug_id = '1'
 report.module_id = '1'
 
-session = SessionLocal()
-try:
+with get_db_session() as session:
+  try:
     session.add(kw)
     session.add(weight)
     session.add(status)
@@ -64,7 +63,5 @@ try:
     session.add(rp)
     session.add(report)
     session.commit()
-except:
+  except:
     print("Can not add.")
-finally:
-    session.close()

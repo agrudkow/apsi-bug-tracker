@@ -1,4 +1,6 @@
+from contextlib import contextmanager
 from typing import Generator
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -19,15 +21,10 @@ SessionLocal = sessionmaker(
 Base = declarative_base()
 
 
-def get_db() -> Generator[Session, None, None]:
-    """
-    Getter for sqlalchemy's Session.
-
-    Synchronous (not async) to allow FastAPI calling it on an external thread (from the threadpool).
-    Source: https://fastapi.tiangolo.com/async/#sub-dependencies.
-    """
-    db: Session = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+@contextmanager
+def get_db_session() -> Generator[Session, None, None]:
+  session: Session = SessionLocal()
+  try:
+    yield session
+  finally:
+    session.close()
