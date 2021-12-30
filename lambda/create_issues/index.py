@@ -5,7 +5,7 @@ from datetime import date
 from typing import Any, Dict
 
 from apsi_database.database import get_db_session
-from apsi_database.model import Report
+from apsi_database.models import Report
 
 logging.basicConfig()
 logger = logging.getLogger('get_issues')

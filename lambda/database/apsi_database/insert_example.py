@@ -1,5 +1,15 @@
 from apsi_database.database import get_db_session
-from apsi_database.model import Bug, KeyWord, Module, Report, ReportClass, Status, Urgency, User, Weight
+from apsi_database.models import (
+    Bug,
+    KeyWord,
+    Module,
+    Report,
+    ReportClass,
+    Status,
+    Urgency,
+    User,
+    Weight,
+)
 from datetime import date
 
 kw = KeyWord()
@@ -63,5 +73,5 @@ with get_db_session() as session:
     session.add(rp)
     session.add(report)
     session.commit()
-  except:
+  except Exception:
     print("Can not add.")

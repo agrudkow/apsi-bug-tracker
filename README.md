@@ -96,3 +96,23 @@ Korzystamy to z takiej samej techniki jak w przypadku layer-ów, lecz tym razem 
 
 ### Praca z kodem
 Polecam otwierać każdą lambdę w osobnym edytorze i tworzyć nowe *venv-y* dla każdej z lambd. W ten sposób można korzystać z dobrodziejstwa IDE i uzyskać podpowiedzi do kodu itp.
+
+## Baza danych MySQL
+### Migracje modelu danych
+Do migracji danych wykorzystywany jest Alembic. W celu wygenerowania nowej migracji danych należy wejść do folderu `lambda/database`, uruchomić *venv-a*, zainstalować zależność, a następnie wykonać komendę:
+```
+alembic revision --autogenerate -m "nazwa_migracji"
+```
+Istotne jest aby w folderze znajdował się poprawny plik `.env`, z poprawnymi danymi do uwierzytelnienia.
+
+W celu nałożenia migracji na leży wykonać komendę:
+```
+alembic upgrade head
+```
+
+### Lokalna baza
+Aby uruchomić lokalną bazę danych należy wejść do folderu `containers`, a następnie wykonać komendę 
+```
+docker-compose --env-file .env up
+```
+Istotne jest aby w folderze znajdował się poprawny plik `.env`, z poprawnymi danymi do uwierzytelnienia. Po wykonaniu tej komendy poza bazą danych uruchamia się również GUI pod adresem [localhost:8080](http://localhost:8080).
