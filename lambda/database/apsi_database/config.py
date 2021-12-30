@@ -30,10 +30,11 @@ class Config(BaseSettings):
       raise ValueError('DB_USERNAME, DB_PASSWORD, DB_HOST and DB_NAME can not be None')
 
   class Config:
-    env_file = "credentials.env"
+    env_file = ".env"
     env_file_encoding = 'utf-8'
 
 
 @lru_cache()
 def get_config():
   return Config()
+

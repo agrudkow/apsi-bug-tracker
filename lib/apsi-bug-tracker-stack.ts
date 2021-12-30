@@ -3,7 +3,6 @@ import * as path from 'path';
 import { LambdaIntegration, RestApi } from '@aws-cdk/aws-apigateway';
 import * as cdk from '@aws-cdk/core';
 import * as lambda from '@aws-cdk/aws-lambda';
-import { PythonFunction } from '@aws-cdk/aws-lambda-python';
 import * as ec2 from '@aws-cdk/aws-ec2';
 import * as rds from '@aws-cdk/aws-rds';
 import * as dotenv from 'dotenv';
@@ -63,7 +62,7 @@ export class APSIBugTrackerStack extends cdk.Stack {
             command: [
               'bash',
               '-c',
-              'pip install . -t /asset-output/python',
+              'pip install . -t /asset-output/python && cp -r alembic /asset-output/python/apsi_database && cp alembic.ini /asset-output/python/apsi_database',
             ],
           },
         }

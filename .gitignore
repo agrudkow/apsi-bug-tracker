@@ -17,7 +17,10 @@ cdk.context.json
 venv
 __pycache__
 .mypy_cache
+
+# Envs
 *.env
+!local.env
 
 # AWS Layers
 lambda/layers
