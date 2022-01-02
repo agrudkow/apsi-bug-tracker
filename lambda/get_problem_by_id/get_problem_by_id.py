@@ -27,6 +27,3 @@ def get_problem_by_id(id: str):
         output["Status"] = str(report.status_name)
         output["Responsible person"] = "Donald Tusk"
     return output
-
-if __name__=="__main__":
-    print(get_problem_by_id(1))
