@@ -118,10 +118,35 @@ export class APSIBugTrackerStack extends cdk.Stack {
       layers: [databaseLayer],
     });
 
+    const getProblemByIdLambda = new lambda.Function(this, 'GetProblemById', {
+      code: lambda.Code.fromAsset(path.join('lambda', 'get_problem_by_id'), {
+        bundling: {
+          image: lambda.Runtime.PYTHON_3_9.bundlingImage,
+          command: [
+            'bash',
+            '-c',
+            'pip install -r requirements.txt -t /asset-output &&  rsync -av --progress . /asset-output --exclude-from=.dockerignore',
+          ],
+        },
+      }),
+      handler: 'index.handler', // Optional, defaults to 'handler'
+      runtime: lambda.Runtime.PYTHON_3_9, // Optional, defaults to lambda.Runtime.PYTHON_3_7
+      environment: {
+        LOG_LEVEL: '10', // Debug log level - https://docs.python.org/3/library/logging.html
+        DB_HOST: instance.instanceEndpoint.hostname,
+        DB_USERNAME: DB_USERNAME,
+        DB_PASSWORD: DB_PASSWORD,
+        DB_NAME: DB_NAME,
+        DB_PORT: DB_PORT,
+      },
+      layers: [databaseLayer],
+    });
+
     const getIssuesLambdaIntegration = new LambdaIntegration(getIssuesLambda);
     const createIssuesLambdaIntegration = new LambdaIntegration(
       createIssuesLambda
     );
+    const getProblemByIdLambdaIntegration = new LambdaIntegration(getProblemByIdLambda);
 
     // Create API Gateway resource
     const apiGateway = new RestApi(this, 'APSIBugTrackerAPI', {
@@ -129,8 +154,13 @@ export class APSIBugTrackerStack extends cdk.Stack {
     });
 
     // Attach Lambda integration to API Gateway
+    // path: /issues
     const issuesRoute = apiGateway.root.addResource('issues');
     issuesRoute.addMethod('GET', getIssuesLambdaIntegration);
     issuesRoute.addMethod('PUT', createIssuesLambdaIntegration);
+
+    // path: /issues/{id}
+    const issueRoute = issuesRoute.addResource('{id}');
+    issueRoute.addMethod('GET', getProblemByIdLambdaIntegration);
   }
 }

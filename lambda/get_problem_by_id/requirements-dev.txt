@@ -1,0 +1,9 @@
+# Install prod dependencies
+-r ./requirements.txt
+
+mypy~=0.910
+flake8~=4.0.1
+yapf~=0.31.0
+
+# Absolute path to database (change to path on your machine)
+file:///home/uayoua/Documents/Studies/APSI/apsi-bug-tracker/lambda/database
