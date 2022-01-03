@@ -77,7 +77,7 @@ export class APSIBugTrackerStack extends cdk.Stack {
           command: [
             'bash',
             '-c',
-            'pip install -r requirements.txt -t /asset-output &&  rsync -av --progress . /asset-output --exclude-from=.dockerignore',
+            'pip install -r requirements.txt -t /asset-output &&  rsync -av -O --progress . /asset-output --exclude-from=.dockerignore',
           ],
         },
       }),
@@ -101,7 +101,7 @@ export class APSIBugTrackerStack extends cdk.Stack {
           command: [
             'bash',
             '-c',
-            'pip install -r requirements.txt -t /asset-output &&  rsync -av --progress . /asset-output --exclude-from=.dockerignore',
+            'pip install -r requirements.txt -t /asset-output &&  rsync -av -O --progress . /asset-output --exclude-from=.dockerignore',
           ],
         },
       }),
@@ -125,7 +125,7 @@ export class APSIBugTrackerStack extends cdk.Stack {
           command: [
             'bash',
             '-c',
-            'pip install -r requirements.txt -t /asset-output &&  rsync -av --progress . /asset-output --exclude-from=.dockerignore',
+            'pip install -r requirements.txt -t /asset-output &&  rsync -av -O --progress . /asset-output --exclude-from=.dockerignore',
           ],
         },
       }),

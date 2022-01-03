@@ -1,8 +1,10 @@
 from apsi_database.models.base import Base  # noqa
 from apsi_database.models.bug import Bug  # noqa
+from apsi_database.models.component import Component  # noqa
 from apsi_database.models.key_word import KeyWord  # noqa
 from apsi_database.models.message import Message  # noqa
-from apsi_database.models.module import Module  # noqa
+from apsi_database.models.product import Product  # noqa
+from apsi_database.models.related_user import RelatedUser  # noqa
 from apsi_database.models.report_class import ReportClass  # noqa
 from apsi_database.models.report_keyword import report_keyword_association_table  # noqa
 from apsi_database.models.report import Report  # noqa

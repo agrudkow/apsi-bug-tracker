@@ -5,10 +5,11 @@ from apsi_database.models.base import Base
 
 
 class Urgency(Base):
+  '''Pilność'''
   __tablename__ = "urgency_levels"
 
-  level = Column('level', String(1), primary_key=True, index=True)
-  meaning = Column('meaning', String(50))
+  level = Column(String(1), primary_key=True, index=True)
+  description = Column(String(50))
 
   # Foreign keys
   reports = relationship("Report", back_populates="urgency")

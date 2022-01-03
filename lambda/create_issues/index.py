@@ -31,7 +31,7 @@ def handler(event: Dict[str, Any], _):
     report.urgency_level = '1'
     report.report_class = '1',
     report.bug_id = '1'
-    report.module_id = '1'
+    report.product_id = '1'
 
     session.add(report)
     session.commit()

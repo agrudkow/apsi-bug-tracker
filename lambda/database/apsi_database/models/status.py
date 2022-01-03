@@ -5,10 +5,11 @@ from apsi_database.models.base import Base
 
 
 class Status(Base):
+  '''Status'''
   __tablename__ = "statuses"
 
-  name = Column('name', String(15), primary_key=True, index=True)
-  meaning = Column('meaning', String(50))
+  name = Column(String(15), primary_key=True, index=True)
+  description = Column(String(50))
 
   # Foreign keys
   reports = relationship("Report", back_populates="status")
