@@ -1,10 +1,10 @@
 import os
 import json
-import parser
 import logging
 from typing import Any, Dict
 
 from get_issues import get_issues
+from lambda_parser import date_to_json
 
 logging.basicConfig()
 logger = logging.getLogger('get_issues')
@@ -19,5 +19,5 @@ def handler(event: Dict[str, Any], _):
   """
   return {
       'statusCode': 200,
-      'body': json.dumps(get_issues, default=parser.date_to_json),
+      'body': json.dumps(get_issues(), default=date_to_json),
   }

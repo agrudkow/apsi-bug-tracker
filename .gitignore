@@ -24,3 +24,6 @@ __pycache__
 
 # AWS Layers
 lambda/layers
+
+# AWS
+aws
