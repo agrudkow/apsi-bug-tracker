@@ -23,3 +23,20 @@ export interface ProblemData {
     Status: string,
     Responsible_person: string
   }
+
+  export interface NewProblemData {
+    Username: string,
+    Observers: string,
+    Problem_type: string,
+    Weight: string,
+    Urgency: string,
+    Product: string,
+    Component: string,
+    Version: string,
+    Keywords: string,
+    Description: string,
+    Related_problems: string,
+    Proposed_deadline: Date | null,
+    Status: string,
+    Responsible_person: string
+  }

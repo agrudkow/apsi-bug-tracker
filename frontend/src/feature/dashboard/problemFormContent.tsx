@@ -128,24 +128,6 @@ const statuses = [
   },
 ];
 
-interface Data {
-  Problem_ID: number,
-  Username: string,
-  Observers: string,
-  Problem_type: string,
-  Weight: string,
-  Urgency: string,
-  Product: string,
-  Component: string,
-  Version: string,
-  Keywords: string,
-  Description: string,
-  Related_problems: string,
-  Proposed_deadline: string,
-  Status: string,
-  Responsible_person: string
-}
-
 interface Props{
   role: string;
 }
@@ -168,7 +150,7 @@ const getFieldsData = async ()=> {
     Keywords: "output",
     Description: "I can't get the proper output",
     Related_problems: "23, 241",
-    Proposed_deadline: new Date("2021-12-31"),
+    Proposed_deadline: new Date("2022-03-31"),
     Status: "New",
     Responsible_person: "Andrzej Duda"};
 
