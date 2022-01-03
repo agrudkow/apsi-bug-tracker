@@ -60,6 +60,7 @@ report.urgency_level = '1'
 report.report_class = '1',
 report.bug_id = '1'
 report.module_id = '1'
+report.key_words.append(kw)
 
 with get_db_session() as session:
   try:
