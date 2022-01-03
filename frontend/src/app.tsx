@@ -6,7 +6,9 @@ import { Routes } from './utils';
 
 function App() {
   const [role, setRole]=React.useState<string>("User");
-
+  React.useEffect(() => {
+    localStorage.setItem("username", "Jan");
+  }, []);
   return (
     <RouterRoutes>
       <Route path="/" element={<Navigate to={Routes.Login} />} />

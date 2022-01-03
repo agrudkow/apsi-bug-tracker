@@ -95,7 +95,7 @@ const components = [
 
 
 export default function FormPropsTextFields() {
-  
+
 const [problemData, setProblemData] = React.useState<NewProblemData>({
   Username: "",
   Observers: "",
@@ -109,9 +109,15 @@ const [problemData, setProblemData] = React.useState<NewProblemData>({
   Description: "",
   Related_problems: "",
   Proposed_deadline: null,
-  Status: "",
+  Status: "New",
   Responsible_person: ""
 });
+
+useEffect(() => {
+  const newProblemData: NewProblemData = {...problemData};
+  newProblemData.Username = localStorage.getItem("username");
+  setProblemData(newProblemData);
+}, []);
 
 const sendData = async() => {
   // await axios
@@ -422,7 +428,6 @@ newProblemData.Responsible_person = "Andrzej Duda";
           disabled
           id="status"
           label="Status"
-          defaultValue={"New"}
           value={problemData.Status}
           onChange={handleChangeStatus}
           />

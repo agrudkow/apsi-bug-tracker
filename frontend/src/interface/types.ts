@@ -25,7 +25,7 @@ export interface ProblemData {
   }
 
   export interface NewProblemData {
-    Username: string,
+    Username: string|null,
     Observers: string,
     Problem_type: string,
     Weight: string,

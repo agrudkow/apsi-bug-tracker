@@ -95,13 +95,13 @@ export default function ProblemsTable() {
 const jsonFromDatabase: Data[] = [{
   number: 123,
   date: '20.12.2021',
-  type:'incident',
-  status:'new',
+  type:'Incident',
+  status:'New',
   description:'nooo'},
     {number: 124,
     date: '22.19.2015',
-    type:'bug',
-    status:'resolved',
+    type:'Bug',
+    status:'Resolved',
     description:'yeeessss'
 }]
   

@@ -81,7 +81,7 @@ const jsonFromDatabase = {
   "Description": "I can't get the proper output",
   "Related problems": "23, 241",
   "Proposed deadline": "20.12.2021",
-  "Status": "New",
+  "Status": "Resolved",
   "Responsible person": "Andrzej Duda"
 }
   let dataList: Data[] = [];
