@@ -11,6 +11,8 @@ import { Roles } from '../../interface/enums';
 import { useEffect } from 'react';
 import { ProblemData } from '../../interface';
 import { setDate } from 'date-fns/esm';
+import { Routes } from '../../utils';
+import { useNavigate } from "react-router-dom";
 
 
 const problems = [
@@ -196,8 +198,19 @@ const [problemData, setProblemData] = React.useState<ProblemData>({
   Responsible_person: ""
 });
 
+
+const navigate = useNavigate();
+
+
+const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
+//TODO: sendData();
+console.log("aaaa");
+  navigate(`../${Routes.Dashboard}`, { replace: true });
+};
+
 const sendData = async() => {
-  // await axios
+  // TODO: await axios
   // .post("backend.pl/data", problemData)
   // .then((res) => {
   //   console.log(res);
@@ -329,7 +342,7 @@ newProblemData.Responsible_person = "Andrzej Duda";
     return (
       <Box
         component="form"
-        
+        onSubmit={handleSubmit}
         sx = {{ '& .MuiTextField-root': { m: 1, width: '100%' },
         }}
         noValidate
@@ -540,6 +553,7 @@ newProblemData.Responsible_person = "Andrzej Duda";
       <Button
             variant="contained"
             size="medium"
+            type="submit"
             sx={{fontSize: 20, margin: 0.5, marginTop: 3, padding: 1, width: "20%" }}
           >
             Submit changes

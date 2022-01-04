@@ -21,10 +21,11 @@ export const SignIn: React.FC<Props> = ({setRole}) => {
   const navigate = useNavigate();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    //TODO: send data to backend, get role and username 
     setRole("Admin");
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
+    
     console.log({
       email: data.get('email'),
       password: data.get('password'),

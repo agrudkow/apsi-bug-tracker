@@ -34,10 +34,10 @@ export const FormPropsTextFields: React.FC<Props> = ({role}) => {
   }
   const commentSendingHandler = () =>{
     setShowNewCommentField(false);
-    //send comment to backend + refresh list above + view an information
+    //TODO: send comment to backend + refresh list above + view an information
   }
   const deleteProblemHandler = () =>{
-    //send delete to backend + actualize view + view an information
+    //TODO: send delete to backend + actualize view + view an information
   }
   const editFormHandler = () =>{
       navigate(`../${Routes.ProblemEditForm}`, { replace: true });
