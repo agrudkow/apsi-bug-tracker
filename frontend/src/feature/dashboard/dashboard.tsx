@@ -3,20 +3,45 @@ import { ThemeProvider } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
-import Navigator from './navigator';
-import Content from './content';
-import Header from './header';
-import { theme, Copyright } from '../common';
+import Content from './dashboardContent';
+import { theme, Copyright, Navigator, Header } from '../common';
+import { useParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Routes } from '../../utils';
+import NewFormContent from './newFormContent';
+import ProblemDetailsContent from './problemDetailsContent';
+import ProblemForm from './problemFormContent';
 
 const drawerWidth = 256;
 
-export function Dashboard() {
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const isSmUp = useMediaQuery(theme.breakpoints.up('sm'));
+interface Props{
+  role: string;
+}
 
+export const Dashboard: React.FC<Props> = ({role}) => {
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [headerDescription, setHeaderDescription] = React.useState<string>('');
+  let { id } = useParams();
+  const isSmUp = useMediaQuery(theme.breakpoints.up('sm'));
+  
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+  
+  useEffect(() => {
+    if (id === Routes.Dashboard){
+      setHeaderDescription('Problems Dashboard');
+    }
+    else if (id === Routes.Form){
+      setHeaderDescription('New problem form')
+    }
+    else if (id === Routes.ProblemDetails){
+      setHeaderDescription('Problem details')
+    }
+    else if (id === Routes.ProblemEditForm){
+      setHeaderDescription('Problem form')
+    }
+  }, [id]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -40,12 +65,16 @@ export function Dashboard() {
           />
         </Box>
         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-          <Header onDrawerToggle={handleDrawerToggle} />
+          <Header onDrawerToggle={handleDrawerToggle} headerDescription={headerDescription}/>
           <Box
             component="main"
             sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}
           >
-            <Content />
+         {id===Routes.Dashboard && <Content />}
+         {id===Routes.Form && <NewFormContent />}
+         {id===Routes.ProblemDetails && <ProblemDetailsContent role={role}/>}
+         {id===Routes.ProblemEditForm && <ProblemForm role={role}/>}
+         
           </Box>
           <Box component="footer" sx={{ p: 2, bgcolor: '#eaeff1' }}>
             <Copyright />

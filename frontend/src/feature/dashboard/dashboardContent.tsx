@@ -21,9 +21,12 @@ import TableRow from '@mui/material/TableRow';
 import Collapse from '@mui/material/Collapse';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { Routes } from '../../utils';
+import { useNavigate } from 'react-router';
+import { useEffect, useState } from 'react';
 
 interface Column {
-  id: 'number' | 'date' | 'title' | 'status';
+  id: 'number' | 'date' | 'type' | 'status';
   label: string;
   minWidth?: number;
   align?: 'right';
@@ -42,7 +45,7 @@ const columns: Column[] = [
     label: 'Creation date',
     minWidth: 152.5,
   },
-  { id: 'title', label: 'Title', minWidth: 152.5 },
+  { id: 'type', label: 'Type', minWidth: 152.5 },
   {
     id: 'status',
     label: 'Status',
@@ -53,125 +56,17 @@ const columns: Column[] = [
 interface Data {
   number: number;
   date: string;
-  title: string;
+  type: string;
   status: string;
   description: string;
 }
 
-function createData(
-  number: number,
-  date: string,
-  title: string,
-  status: string,
-  description: string
-): Data {
-  return { number, date, title, status, description };
-}
 
-const rows = [
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-  createData(
-    12345,
-    '20.09.2015',
-    'Serwer is down',
-    'new',
-    'I have a lot of problems, please help me as soon as possible, love xoxo'
-  ),
-];
 
-export default function ColumnGroupingTable() {
+export default function ProblemsTable() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const navigate = useNavigate();
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -184,7 +79,49 @@ export default function ColumnGroupingTable() {
     setPage(0);
   };
 
-  function Row(props: { row: ReturnType<typeof createData> }) {
+  const problemDetailsHandler = () =>{
+    navigate(`../${Routes.ProblemDetails}`, { replace: true });
+  }
+
+  const buttonView = {
+    px: 3,
+  };
+
+  
+  const [dataRows, setDataRows] = useState<Data[]>([]);
+
+  useEffect(() => {
+    //async axios zapytanie  ->  const jsonFromDatabase = axios.get("backend.com/problem/details/1562")
+const jsonFromDatabase: Data[] = [{
+  number: 123,
+  date: '20.12.2021',
+  type:'Incident',
+  status:'New',
+  description:'nooo'},
+    {number: 124,
+    date: '22.19.2015',
+    type:'Bug',
+    status:'Resolved',
+    description:'yeeessss'
+}]
+  
+const newDataRows: Data[] = []
+
+jsonFromDatabase.forEach((singleEntry: Data)=>{
+ const data: Data = {
+   number: singleEntry.number,
+   date: singleEntry.date,
+   type: singleEntry.type,
+   status: singleEntry.status,
+   description: singleEntry.description
+ }
+ newDataRows.push(data);
+}) 
+  setDataRows(newDataRows)
+  
+  },[]);
+
+  function Row(props: { row: Data }) {
     const { row } = props;
     const [open, setOpen] = React.useState(false);
 
@@ -217,7 +154,7 @@ export default function ColumnGroupingTable() {
             {row.date}
           </TableCell>
           <TableCell align="left" sx={{ py: 1 }}>
-            {row.title}
+            {row.type}
           </TableCell>
           <TableCell align="left" sx={{ py: 1 }}>
             {row.status}
@@ -238,7 +175,16 @@ export default function ColumnGroupingTable() {
                 <Typography variant="body2" align="left">
                   {row.description}
                 </Typography>
+                <Button
+                variant="contained"
+                size="large"
+                sx={{ ...buttonView, fontSize: 12, marginY:1, paddingX: 1, paddingY: 0.5 }}
+                onClick={problemDetailsHandler}
+                >
+                  Go to details
+                </Button>
               </Box>
+
             </Collapse>
           </TableCell>
         </TableRow>
@@ -247,7 +193,7 @@ export default function ColumnGroupingTable() {
   }
 
   return (
-    <Paper sx={{ maxWidth: 936, margin: 'auto', overflow: 'hidden' }}>
+    <Paper sx={{ maxWidth: 'lg', margin: 'auto', overflow: 'hidden' }}>
       <AppBar
         position="static"
         color="default"
@@ -284,7 +230,7 @@ export default function ColumnGroupingTable() {
         </Toolbar>
       </AppBar>
       <Paper sx={{ width: '100%' }}>
-        <TableContainer sx={{ maxHeight: 400 }}>
+        <TableContainer sx={{ maxHeight: 600 }}>
           <Table stickyHeader aria-label="collapsible table">
             <TableHead>
               <TableRow>
@@ -301,7 +247,7 @@ export default function ColumnGroupingTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows
+              {dataRows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   return <Row key={`${row.number}-${index}`} row={row} />;
@@ -312,7 +258,7 @@ export default function ColumnGroupingTable() {
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
-          count={rows.length}
+          count={dataRows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

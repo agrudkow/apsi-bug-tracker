@@ -13,10 +13,15 @@ import { Logo } from '../../assets';
 import { Copyright, theme } from '../common';
 import { Routes } from '../../utils';
 
-export const SignIn: React.FC = () => {
+interface Props{
+  setRole: Function;
+}
+
+export const SignIn: React.FC<Props> = ({setRole}) => {
   const navigate = useNavigate();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    setRole("Admin");
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     // eslint-disable-next-line no-console

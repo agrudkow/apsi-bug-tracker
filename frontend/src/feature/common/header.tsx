@@ -6,13 +6,16 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 interface HeaderProps {
   onDrawerToggle: () => void;
+  headerDescription: string;
 }
 
-export default function Header(props: HeaderProps) {
+export function Header(props: HeaderProps) {
   const { onDrawerToggle } = props;
+  const { headerDescription } = props;
 
   return (
     <React.Fragment>
@@ -31,12 +34,10 @@ export default function Header(props: HeaderProps) {
             </Grid>
             <Grid item xs />
             <Grid item>
-              <Typography color="inherit">Hello, Jan</Typography>
+              <Typography color="inherit">Hello, {localStorage.getItem("username")}</Typography>
             </Grid>
             <Grid item>
-              <IconButton color="inherit" sx={{ p: 0.5 }}>
-                <Avatar src="/static/images/avatar/1.jpg" alt="My Avatar" />
-              </IconButton>
+              <AccountCircleIcon color="inherit" fontSize="large"/>
             </Grid>
           </Grid>
         </Toolbar>
@@ -52,7 +53,7 @@ export default function Header(props: HeaderProps) {
           <Grid container alignItems="center" spacing={1}>
             <Grid item xs>
               <Typography color="inherit" variant="h5" component="h1">
-                Problems Dashboard
+                {headerDescription}
               </Typography>
             </Grid>
           </Grid>
