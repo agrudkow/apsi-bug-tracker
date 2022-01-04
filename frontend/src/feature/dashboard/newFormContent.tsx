@@ -9,6 +9,8 @@ import DatePicker from '@mui/lab/DatePicker';
 import plLocale from 'date-fns/locale/pl';
 import { useEffect } from 'react';
 import { NewProblemData } from '../../interface';
+import { useNavigate } from "react-router-dom";
+import { Routes } from '../../utils';
 
 const problems = [
   {
@@ -120,7 +122,7 @@ useEffect(() => {
 }, []);
 
 const sendData = async() => {
-  // await axios
+  // TODO: await axios
   // .post("backend.pl/data", problemData)
   // .then((res) => {
   //   console.log(res);
@@ -129,6 +131,17 @@ const sendData = async() => {
   //   console.log(error);
   // });
 }
+const navigate = useNavigate();
+
+
+const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
+//TODO: sendData();
+console.log("aaaa");
+  navigate(`../${Routes.Dashboard}`, { replace: true });
+};
+
+
 
   const handleChangeUser = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newProblemData: NewProblemData = {...problemData};
@@ -256,7 +269,8 @@ newProblemData.Responsible_person = "Andrzej Duda";
         sx = {{ '& .MuiTextField-root': { m: 1, width: '100%' },
         }}
         noValidate
-        autoComplete="off"
+        onSubmit={handleSubmit}
+        //autoComplete="off"
       >
       <div style={{display: "flex", flexDirection: "row"}}>
         <TextField
@@ -444,6 +458,7 @@ newProblemData.Responsible_person = "Andrzej Duda";
       <div style={{display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
       <Button
             variant="contained"
+            type="submit"
             size="medium"
             sx={{fontSize: 20, margin: 0.5, marginTop: 3, padding: 1, width: "20%" }}
           >

@@ -79,7 +79,7 @@ export default function ProblemsTable() {
     setPage(0);
   };
 
-  const problemDetailsHandler = () =>{
+  const problemDetailsHandler = () => {
     navigate(`../${Routes.ProblemDetails}`, { replace: true });
   }
 
@@ -87,39 +87,41 @@ export default function ProblemsTable() {
     px: 3,
   };
 
-  
+
   const [dataRows, setDataRows] = useState<Data[]>([]);
 
   useEffect(() => {
-    //async axios zapytanie  ->  const jsonFromDatabase = axios.get("backend.com/problem/details/1562")
-const jsonFromDatabase: Data[] = [{
-  number: 123,
-  date: '20.12.2021',
-  type:'Incident',
-  status:'New',
-  description:'nooo'},
-    {number: 124,
-    date: '22.19.2015',
-    type:'Bug',
-    status:'Resolved',
-    description:'yeeessss'
-}]
-  
-const newDataRows: Data[] = []
+    //TODO: async axios zapytanie  ->  const jsonFromDatabase = axios.get("backend.com/problem/details/1562")
+    const jsonFromDatabase: Data[] = [{
+      number: 123,
+      date: '20.12.2021',
+      type: 'Incident',
+      status: 'New',
+      description: 'nooo'
+    },
+    {
+      number: 124,
+      date: '22.19.2015',
+      type: 'Bug',
+      status: 'Resolved',
+      description: 'yeeessss'
+    }]
 
-jsonFromDatabase.forEach((singleEntry: Data)=>{
- const data: Data = {
-   number: singleEntry.number,
-   date: singleEntry.date,
-   type: singleEntry.type,
-   status: singleEntry.status,
-   description: singleEntry.description
- }
- newDataRows.push(data);
-}) 
-  setDataRows(newDataRows)
-  
-  },[]);
+    const newDataRows: Data[] = []
+
+    jsonFromDatabase.forEach((singleEntry: Data) => {
+      const data: Data = {
+        number: singleEntry.number,
+        date: singleEntry.date,
+        type: singleEntry.type,
+        status: singleEntry.status,
+        description: singleEntry.description
+      }
+      newDataRows.push(data);
+    })
+    setDataRows(newDataRows)
+
+  }, []);
 
   function Row(props: { row: Data }) {
     const { row } = props;
@@ -176,10 +178,10 @@ jsonFromDatabase.forEach((singleEntry: Data)=>{
                   {row.description}
                 </Typography>
                 <Button
-                variant="contained"
-                size="large"
-                sx={{ ...buttonView, fontSize: 12, marginY:1, paddingX: 1, paddingY: 0.5 }}
-                onClick={problemDetailsHandler}
+                  variant="contained"
+                  size="large"
+                  sx={{ ...buttonView, fontSize: 12, marginY: 1, paddingX: 1, paddingY: 0.5 }}
+                  onClick={problemDetailsHandler}
                 >
                   Go to details
                 </Button>
