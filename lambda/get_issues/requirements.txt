@@ -1,2 +1,1 @@
 # Currently none
-sqlalchemy~=1.4.27
