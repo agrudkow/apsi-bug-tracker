@@ -5,8 +5,9 @@ from apsi_database.models.base import Base
 
 
 class ReportClass(Base):
+  '''Rodzaj zgłoszenia'''
   __tablename__ = "report_classes"
 
-  id = Column('id', Integer, primary_key=True, index=True)
-  name = Column('name', String(20), unique=True)
-  description = Column('description', String(400))
+  id = Column(Integer, primary_key=True, index=True)
+  name = Column(String(20), unique=True)
+  description = Column(String(400))
