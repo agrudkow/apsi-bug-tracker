@@ -1,3 +1,4 @@
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import Column
 from sqlalchemy.sql.sqltypes import Integer, String
 
@@ -11,3 +12,5 @@ class ReportClass(Base):
   id = Column(Integer, primary_key=True, index=True)
   name = Column(String(20), unique=True)
   description = Column(String(400))
+
+  reports = relationship("Report", back_populates="report_class")

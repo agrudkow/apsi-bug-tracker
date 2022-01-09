@@ -10,10 +10,9 @@ import plLocale from 'date-fns/locale/pl';
 import { Roles } from '../../interface/enums';
 import { useEffect } from 'react';
 import { ProblemData } from '../../interface';
-import { setDate } from 'date-fns/esm';
-import { Routes } from '../../utils';
-import { useNavigate } from "react-router-dom";
-
+import { BackendRoutes, Routes } from '../../utils';
+import { useNavigate, useParams } from 'react-router-dom';
+import { apsi_backend } from '../common';
 
 const problems = [
   {
@@ -33,19 +32,19 @@ const problems = [
 const weights = [
   {
     value: 'Minor',
-    label: 'Minor'
+    label: 'Minor',
   },
   {
     value: 'Normal',
-    label: 'Normal'
+    label: 'Normal',
   },
   {
     value: 'Significant',
-    label: 'Significant'
+    label: 'Significant',
   },
   {
     value: 'Blocking',
-    label: 'Blocking'
+    label: 'Blocking',
   },
   {
     value: 'Critical',
@@ -73,7 +72,7 @@ const urgencies = [
   {
     value: '5',
     label: '5',
-  }
+  },
 ];
 
 const products = [
@@ -84,7 +83,7 @@ const products = [
   {
     value: 'SmartPet',
     label: 'SmartPet',
-  }
+  },
 ];
 
 const components = [
@@ -95,26 +94,25 @@ const components = [
   {
     value: 'Database',
     label: 'Database',
-  }
+  },
 ];
-
 
 const statuses = [
   {
     value: 'New',
-    label: 'New'
+    label: 'New',
   },
   {
     value: 'Assigned',
-    label: 'Assigned'
+    label: 'Assigned',
   },
   {
     value: 'Analyzed',
-    label: 'Analyzed'
+    label: 'Analyzed',
   },
   {
     value: 'Diagnosed',
-    label: 'Diagnosed'
+    label: 'Diagnosed',
   },
   {
     value: 'Undiagnosed',
@@ -122,7 +120,7 @@ const statuses = [
   },
   {
     value: 'Resolved',
-    label: 'Resolved'
+    label: 'Resolved',
   },
   {
     value: 'Unresolved',
@@ -130,247 +128,235 @@ const statuses = [
   },
 ];
 
-interface Props{
+interface Props {
   role: string;
 }
 
-export const FormTextFields: React.FC<Props> = ({role}) => {
+export const ProblemFormContent: React.FC<Props> = ({ role }) => {
+  const [problemData, setProblemData] = React.useState<ProblemData>({
+    Problem_ID: 1,
+    Username: '',
+    Observers: '',
+    Problem_type: '',
+    Weight: '',
+    Urgency: '',
+    Product: '',
+    Component: '',
+    Version: '',
+    Keywords: '',
+    Description: '',
+    Related_problems: '',
+    Proposed_deadline: new Date(),
+    Status: '',
+    Responsible_person: '',
+  });
+  const { id } = useParams();
+  const navigate = useNavigate();
 
+  const fetchProblemData = async () =>
+    setProblemData(
+      (await apsi_backend.get<ProblemData>(`${BackendRoutes.Problems}/${id}`))
+        .data
+    );
 
-    //async axios zapytanie  ->  const jsonFromDatabase = axios.get("backend.com/problem/details/1562")
-const getFieldsData = async ()=> {
-  const jsonFromDatabase: ProblemData = {
-    Problem_ID: 231,
-    Username:"Jan",
-    Observers:"Kasia, Basia",
-    Problem_type: "Bug",
-    Weight: "Minor",
-    Urgency: "1",
-    Product:"PetApp",
-    Component:"Database",
-    Version: "1.2.1",
-    Keywords: "output",
-    Description: "I can't get the proper output",
-    Related_problems: "23, 241",
-    Proposed_deadline: new Date("2022-03-31"),
-    Status: "New",
-    Responsible_person: "Andrzej Duda"};
+  useEffect(() => {
+    fetchProblemData();
+  }, []);
 
-    const problemData: ProblemData = {
-      Problem_ID: jsonFromDatabase.Problem_ID,
-      Username: jsonFromDatabase.Username,
-      Observers: jsonFromDatabase.Observers,
-      Problem_type: jsonFromDatabase.Problem_type,
-      Weight: jsonFromDatabase.Weight,
-      Urgency: jsonFromDatabase.Urgency,
-      Product: jsonFromDatabase.Product,
-      Component: jsonFromDatabase.Component,
-      Version: jsonFromDatabase.Version,
-      Keywords: jsonFromDatabase.Keywords,
-      Description: jsonFromDatabase.Description,
-      Related_problems: jsonFromDatabase.Related_problems,
-      Proposed_deadline: jsonFromDatabase.Proposed_deadline,
-      Status: jsonFromDatabase.Status,
-      Responsible_person: jsonFromDatabase.Responsible_person
-    }
-    setProblemData(problemData)
-}
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    //TODO: sendData();
+    console.log('aaaa');
+    navigate(`../${Routes.Dashboard}`, { replace: true });
+  };
 
-useEffect(()=>{
-  getFieldsData()
-}, [])    
-
-const [problemData, setProblemData] = React.useState<ProblemData>({
-  Problem_ID: 1,
-  Username: "",
-  Observers: "",
-  Problem_type: "",
-  Weight: "",
-  Urgency: "",
-  Product: "",
-  Component: "",
-  Version: "",
-  Keywords: "",
-  Description: "",
-  Related_problems: "",
-  Proposed_deadline: new Date(),
-  Status: "",
-  Responsible_person: ""
-});
-
-
-const navigate = useNavigate();
-
-
-const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  event.preventDefault();
-//TODO: sendData();
-console.log("aaaa");
-  navigate(`../${Routes.Dashboard}`, { replace: true });
-};
-
-const sendData = async() => {
-  // TODO: await axios
-  // .post("backend.pl/data", problemData)
-  // .then((res) => {
-  //   console.log(res);
-  // })
-  // .catch((error) => {
-  //   console.log(error);
-  // });
-}
+  const sendData = async () => {
+    // TODO: await axios
+    // .post("backend.pl/data", problemData)
+    // .then((res) => {
+    //   console.log(res);
+    // })
+    // .catch((error) => {
+    //   console.log(error);
+    // });
+  };
 
   const handleChangeUser = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newProblemData: ProblemData = {...problemData};
+    const newProblemData: ProblemData = { ...problemData };
     newProblemData.Username = event.target.value;
     setProblemData(newProblemData);
   };
 
-  const handleChangeObservers = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newProblemData: ProblemData = {...problemData};
+  const handleChangeObservers = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const newProblemData: ProblemData = { ...problemData };
     newProblemData.Observers = event.target.value;
     setProblemData(newProblemData);
   };
 
   const handleChangeKeywords = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newProblemData: ProblemData = {...problemData};
+    const newProblemData: ProblemData = { ...problemData };
     newProblemData.Keywords = event.target.value;
     setProblemData(newProblemData);
   };
 
   const handleChangeStatus = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newProblemData: ProblemData = {...problemData};
+    const newProblemData: ProblemData = { ...problemData };
     newProblemData.Status = event.target.value;
     setProblemData(newProblemData);
   };
 
-  const handleChangeRelProblems = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newProblemData: ProblemData = {...problemData};
+  const handleChangeRelProblems = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const newProblemData: ProblemData = { ...problemData };
     newProblemData.Related_problems = event.target.value;
     setProblemData(newProblemData);
   };
 
   const handleChangeProduct = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newProblemData: ProblemData = {...problemData};
+    const newProblemData: ProblemData = { ...problemData };
     newProblemData.Product = event.target.value;
 
-    if (event.target.value ==='SmartPet' && problemData.Problem_type === 'Bug'){
-      newProblemData.Responsible_person = "Jeff Bezos";
-   }
-   else if (event.target.value ==='PetApp' && problemData.Problem_type === 'Bug' && problemData.Component === 'Interface'){
-    newProblemData.Responsible_person = "Steve Jobs";
-   }
-   else if (event.target.value ==='PetApp' && problemData.Problem_type === 'Bug' && problemData.Component === 'Database'){
-    newProblemData.Responsible_person = "Andrzej Duda";
-   }
-   else {
-    newProblemData.Responsible_person = "";
- }
+    if (
+      event.target.value === 'SmartPet' &&
+      problemData.Problem_type === 'Bug'
+    ) {
+      newProblemData.Responsible_person = 'Jeff Bezos';
+    } else if (
+      event.target.value === 'PetApp' &&
+      problemData.Problem_type === 'Bug' &&
+      problemData.Component === 'Interface'
+    ) {
+      newProblemData.Responsible_person = 'Steve Jobs';
+    } else if (
+      event.target.value === 'PetApp' &&
+      problemData.Problem_type === 'Bug' &&
+      problemData.Component === 'Database'
+    ) {
+      newProblemData.Responsible_person = 'Andrzej Duda';
+    } else {
+      newProblemData.Responsible_person = '';
+    }
 
- setProblemData(newProblemData);
+    setProblemData(newProblemData);
   };
 
-  const handleChangeComponent = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newProblemData: ProblemData = {...problemData};
+  const handleChangeComponent = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const newProblemData: ProblemData = { ...problemData };
     newProblemData.Component = event.target.value;
-    if (event.target.value ==='Interface' && problemData.Product === 'PetApp'){
-      newProblemData.Responsible_person = "Steve Jobs";
-   }
-   else if (event.target.value ==='Database' && problemData.Product === 'PetApp'){
-    newProblemData.Responsible_person = "Andrzej Duda";
-   }
-   else {
-    newProblemData.Responsible_person = "";
- }
- setProblemData(newProblemData);
+    if (
+      event.target.value === 'Interface' &&
+      problemData.Product === 'PetApp'
+    ) {
+      newProblemData.Responsible_person = 'Steve Jobs';
+    } else if (
+      event.target.value === 'Database' &&
+      problemData.Product === 'PetApp'
+    ) {
+      newProblemData.Responsible_person = 'Andrzej Duda';
+    } else {
+      newProblemData.Responsible_person = '';
+    }
+    setProblemData(newProblemData);
   };
 
   const handleChangeVersion = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newProblemData: ProblemData = {...problemData};
+    const newProblemData: ProblemData = { ...problemData };
     newProblemData.Version = event.target.value;
     setProblemData(newProblemData);
   };
 
-  const handleChangeDescription = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newProblemData: ProblemData = {...problemData};
+  const handleChangeDescription = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const newProblemData: ProblemData = { ...problemData };
     newProblemData.Description = event.target.value;
     setProblemData(newProblemData);
   };
 
   const handleChangeProblem = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newProblemData: ProblemData = {...problemData};
+    const newProblemData: ProblemData = { ...problemData };
     newProblemData.Problem_type = event.target.value;
-    if (event.target.value ==='Service'){
-      newProblemData.Responsible_person = "Bill Gates";
+    if (event.target.value === 'Service') {
+      newProblemData.Responsible_person = 'Bill Gates';
+    } else if (event.target.value === 'Incident') {
+      newProblemData.Responsible_person = 'Elon Musk';
+    } else if (event.target.value === 'Bug') {
+      newProblemData.Responsible_person = '';
     }
-    else if (event.target.value ==='Incident'){
-      newProblemData.Responsible_person = "Elon Musk";
-   }
-   else if (event.target.value ==='Bug'){
-    newProblemData.Responsible_person = "";
- }
- if (problemData.Product ==='SmartPet' && event.target.value === 'Bug'){
-  newProblemData.Responsible_person = "Jeff Bezos";
-}
-else if (problemData.Product ==='PetApp' && event.target.value === 'Bug' && problemData.Component === 'Interface'){
-newProblemData.Responsible_person = "Steve Jobs";
-}
-else if (problemData.Product ==='PetApp' && event.target.value === 'Bug' && problemData.Component === 'Database'){
-newProblemData.Responsible_person = "Andrzej Duda";
-}
- setProblemData(newProblemData);
+    if (problemData.Product === 'SmartPet' && event.target.value === 'Bug') {
+      newProblemData.Responsible_person = 'Jeff Bezos';
+    } else if (
+      problemData.Product === 'PetApp' &&
+      event.target.value === 'Bug' &&
+      problemData.Component === 'Interface'
+    ) {
+      newProblemData.Responsible_person = 'Steve Jobs';
+    } else if (
+      problemData.Product === 'PetApp' &&
+      event.target.value === 'Bug' &&
+      problemData.Component === 'Database'
+    ) {
+      newProblemData.Responsible_person = 'Andrzej Duda';
+    }
+    setProblemData(newProblemData);
   };
 
   const handleChangeWeight = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newProblemData: ProblemData = {...problemData};
+    const newProblemData: ProblemData = { ...problemData };
     newProblemData.Weight = event.target.value;
     setProblemData(newProblemData);
   };
 
   const handleChangeUrgency = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newProblemData: ProblemData = {...problemData};
+    const newProblemData: ProblemData = { ...problemData };
     newProblemData.Urgency = event.target.value;
     setProblemData(newProblemData);
   };
 
-  const handleChangeRespPerson = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newProblemData: ProblemData = {...problemData};
+  const handleChangeRespPerson = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const newProblemData: ProblemData = { ...problemData };
     newProblemData.Responsible_person = event.target.value;
     setProblemData(newProblemData);
   };
 
-    return (
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        sx = {{ '& .MuiTextField-root': { m: 1, width: '100%' },
-        }}
-        noValidate
-        autoComplete="off"
-      >
-      <div style={{display: "flex", flexDirection: "row"}}>
+  return (
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{ '& .MuiTextField-root': { m: 1, width: '100%' } }}
+      noValidate
+      autoComplete="off"
+    >
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
         <TextField
           required
-          disabled 
+          disabled
           id="Username"
           label="Username"
           value={problemData.Username}
           onChange={handleChangeUser}
         />
         <TextField
-        id="Observers"
-        label="Observers"
-        disabled = {role === Roles.Admin}
-        multiline
-        value={problemData.Observers}
-        onChange={handleChangeObservers}
-        helperText="Add problem observers by username"
-      />
+          id="Observers"
+          label="Observers"
+          disabled={role === Roles.Admin}
+          multiline
+          value={problemData.Observers}
+          onChange={handleChangeObservers}
+          helperText="Add problem observers by username"
+        />
       </div>
-      <div style={{display: "flex", flexDirection: "row"}}>
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
         <TextField
           required
-          disabled = {role === Roles.Admin}
+          disabled={role === Roles.Admin}
           id="problem_type"
           select
           label="Problem type"
@@ -386,7 +372,7 @@ newProblemData.Responsible_person = "Andrzej Duda";
 
         <TextField
           required
-          disabled = {role === Roles.Admin}
+          disabled={role === Roles.Admin}
           id="weight"
           select
           label="Weight"
@@ -399,10 +385,10 @@ newProblemData.Responsible_person = "Andrzej Duda";
             </MenuItem>
           ))}
         </TextField>
-        
+
         <TextField
           required
-          disabled = {role === Roles.Admin}
+          disabled={role === Roles.Admin}
           id="urgency"
           select
           label="Urgency"
@@ -416,124 +402,133 @@ newProblemData.Responsible_person = "Andrzej Duda";
             </MenuItem>
           ))}
         </TextField>
+      </div>
+
+      {problemData.Problem_type === 'Bug' && (
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <TextField
+            required
+            disabled={role === Roles.Admin}
+            select
+            id="product"
+            label="Product"
+            value={problemData.Product}
+            onChange={handleChangeProduct}
+          >
+            {products.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          {problemData.Product === 'PetApp' && (
+            <TextField
+              select
+              required
+              disabled={role === Roles.Admin}
+              id="component"
+              label="Component"
+              value={problemData.Component}
+              onChange={handleChangeComponent}
+            >
+              {components.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
+
+          {problemData.Product === 'SmartPet' && (
+            <TextField
+              id="version"
+              required
+              disabled={role === Roles.Admin}
+              label="Version"
+              value={problemData.Version}
+              onChange={handleChangeVersion}
+              placeholder="X.X.X"
+              helperText="Add version of product related to the problem"
+            />
+          )}
+
+          {problemData.Product === 'PetApp' && (
+            <TextField
+              id="version"
+              required
+              disabled={role === Roles.Admin}
+              label="Version"
+              value={problemData.Version}
+              onChange={handleChangeVersion}
+              placeholder="X.X.X"
+              helperText="Add version of product's component related to the problem"
+            />
+          )}
         </div>
-
-        {problemData.Problem_type === "Bug" &&
-        <div style={{display: "flex", flexDirection: "row"}}>
+      )}
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
         <TextField
-        required
-        disabled = {role === Roles.Admin}
-        select
-        id="product" 
-        label="Product"
-        value={problemData.Product}
-        onChange={handleChangeProduct}
-        >
-        {products.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
-          </MenuItem>
-        ))}
-        </TextField>
-
-        {problemData.Product === "PetApp" && <TextField
-        select
-        required
-        disabled = {role === Roles.Admin}
-        id="component"
-        label="Component"
-        value={problemData.Component}
-        onChange={handleChangeComponent}
-        >
-                 {components.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
-          </MenuItem>
-        ))} 
-        </TextField>}
-
-        {problemData.Product === "SmartPet" && <TextField
-        id="version"
-        required
-        disabled = {role === Roles.Admin}
-        label="Version"
-        value={problemData.Version}
-        onChange={handleChangeVersion}
-        placeholder='X.X.X'
-        helperText="Add version of product related to the problem"
-      />}
-
-        {problemData.Product === "PetApp" && <TextField
-        id="version"
-        required
-        disabled = {role === Roles.Admin}
-        label="Version"
-        value={problemData.Version}
-        onChange={handleChangeVersion}
-        placeholder='X.X.X'
-        helperText="Add version of product's component related to the problem"
-      />}
-        </div>}
-        <div style={{display: "flex", flexDirection: "row"}}>
-        <TextField
-        required
-        disabled = {role === Roles.Admin}
-        id="keywords"
-        label="Keywords"
-        value={problemData.Keywords}
-        onChange={handleChangeKeywords}
-        helperText="Name problem keywords using comma"
-      />
-      </div>
-      <div style={{display: "flex", flexDirection: "row"}}>
-      <TextField
-        required
-        disabled = {role === Roles.Admin}
-        id="description"
-        label="Description"
-        multiline
-        rows={6}
-        value={problemData.Description}
-        onChange={handleChangeDescription}
-      />
-      </div>
-      <div style={{display: "flex", flexDirection: "row"}}>
-        <TextField
-        disabled = {role === Roles.Admin}
-        id="related_problems"
-        label="Related problems"
-        value={problemData.Related_problems}
-        onChange={handleChangeRelProblems}
-        helperText="Add related problems by problem ID "
-      />
-      <LocalizationProvider dateAdapter={AdapterDateFns} locale={plLocale}>
-        <DatePicker
-          disablePast
-          disabled = {role === Roles.Admin}
-          label="Proposed deadline"
-          openTo="year"
-          mask='__.__.____'
-          views={['day']}
-          value = {problemData.Proposed_deadline}
-          onChange={(newValue) => {
-            const newProblemData: ProblemData = {...problemData};
-            if (newValue) newProblemData.Proposed_deadline = newValue;
-            setProblemData(newProblemData);
-          }}
-          renderInput={(params) => <TextField  helperText='dd.mm.yyyy' {...params}  />}
+          required
+          disabled={role === Roles.Admin}
+          id="keywords"
+          label="Keywords"
+          value={problemData.Keywords}
+          onChange={handleChangeKeywords}
+          helperText="Name problem keywords using comma"
         />
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <TextField
+          required
+          disabled={role === Roles.Admin}
+          id="description"
+          label="Description"
+          multiline
+          rows={6}
+          value={problemData.Description}
+          onChange={handleChangeDescription}
+        />
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <TextField
+          disabled={role === Roles.Admin}
+          id="related_problems"
+          label="Related problems"
+          value={problemData.Related_problems}
+          onChange={handleChangeRelProblems}
+          helperText="Add related problems by problem ID "
+        />
+        <LocalizationProvider dateAdapter={AdapterDateFns} locale={plLocale}>
+          <DatePicker
+            disablePast
+            disabled={role === Roles.Admin}
+            label="Proposed deadline"
+            openTo="year"
+            mask="__.__.____"
+            views={['day']}
+            value={problemData.Proposed_deadline}
+            onChange={(newValue) => {
+              const newProblemData: ProblemData = { ...problemData };
+              if (newValue) newProblemData.Proposed_deadline = newValue;
+              setProblemData(newProblemData);
+            }}
+            renderInput={(params) => (
+              <TextField helperText="dd.mm.yyyy" {...params} />
+            )}
+          />
         </LocalizationProvider>
       </div>
-      <div style={{display: "flex", flexDirection: "row"}}>
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
         <TextField
           required
           select
-          disabled = {role === Roles.User}
+          disabled={role === Roles.User}
           id="status"
           label="Status"
           value={problemData.Status}
           onChange={handleChangeStatus}
-          >
+        >
           {statuses.map((option) => (
             <MenuItem key={option.value} value={option.value}>
               {option.label}
@@ -541,26 +536,37 @@ newProblemData.Responsible_person = "Andrzej Duda";
           ))}
         </TextField>
         <TextField
-         required
-         disabled = {role === Roles.User}
-         id="responsible_person"
-         label="Responsible person"
-         value={problemData.Responsible_person}
-        onChange={handleChangeRespPerson}
-      />
+          required
+          disabled={role === Roles.User}
+          id="responsible_person"
+          label="Responsible person"
+          value={problemData.Responsible_person}
+          onChange={handleChangeRespPerson}
+        />
       </div>
-      <div style={{display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
-      <Button
-            variant="contained"
-            size="medium"
-            type="submit"
-            sx={{fontSize: 20, margin: 0.5, marginTop: 3, padding: 1, width: "20%" }}
-          >
-            Submit changes
-          </Button>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Button
+          variant="contained"
+          size="medium"
+          type="submit"
+          sx={{
+            fontSize: 20,
+            margin: 0.5,
+            marginTop: 3,
+            padding: 1,
+            width: '20%',
+          }}
+        >
+          Submit changes
+        </Button>
       </div>
-      </Box>
-    );
-  }
-
-  export default FormTextFields;
+    </Box>
+  );
+};

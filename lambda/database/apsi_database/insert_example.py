@@ -75,7 +75,7 @@ with get_db_session() as session:
     report.weight_name = '1'
     report.status_name = '1'
     report.urgency_level = '1'
-    report.report_class = rp.id
+    report.report_class_id = rp.id
     report.bug_id = bug.id
     report.product_id = product.id
     report.component_id = component.id

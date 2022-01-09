@@ -1,8 +1,6 @@
 from apsi_database.database import get_db_session
 from apsi_database.models import Report
-import apsi_database.insert_example
 
-from lambda_parser import object_as_dict
 
 def get_issues():
   """
@@ -10,5 +8,12 @@ def get_issues():
   """
   with get_db_session() as session:
     records = session.query(Report).all()
-  records = [object_as_dict(record) for record in records]
-  return records
+    parsed_records = [{
+        'id': record.id,
+        'date': str(record.creation_date.date()),
+        'type': record.report_class.name,
+        'status': record.status_name,
+        'description': record.bug.description
+    } for record in records]
+
+  return parsed_records
