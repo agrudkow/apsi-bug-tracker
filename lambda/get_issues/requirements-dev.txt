@@ -6,4 +6,4 @@ flake8~=4.0.1
 yapf~=0.31.0
 
 # Absolute path to database (change to path on your machine)
-file:///home/uayoua/Documents/Studies/APSI/apsi-bug-tracker/lambda/database
+file:///home/artur/documents/weiti/apsi/apsi-bug-tracker/lambda/database

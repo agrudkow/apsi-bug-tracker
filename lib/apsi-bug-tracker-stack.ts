@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-import { LambdaIntegration, RestApi } from '@aws-cdk/aws-apigateway';
+import { Cors, LambdaIntegration, RestApi } from '@aws-cdk/aws-apigateway';
 import * as cdk from '@aws-cdk/core';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as ec2 from '@aws-cdk/aws-ec2';
@@ -54,19 +54,16 @@ export class APSIBugTrackerStack extends cdk.Stack {
 
     // Create database lambda layer
     const databaseLayer = new lambda.LayerVersion(this, 'database-layer', {
-      code: lambda.Code.fromAsset(
-        path.join('lambda', 'database'),
-        {
-          bundling: {
-            image: lambda.Runtime.PYTHON_3_9.bundlingImage,
-            command: [
-              'bash',
-              '-c',
-              'pip install . -t /asset-output/python && cp -r alembic /asset-output/python/apsi_database && cp alembic.ini /asset-output/python/apsi_database',
-            ],
-          },
-        }
-      ),
+      code: lambda.Code.fromAsset(path.join('lambda', 'database'), {
+        bundling: {
+          image: lambda.Runtime.PYTHON_3_9.bundlingImage,
+          command: [
+            'bash',
+            '-c',
+            'pip install . -t /asset-output/python && cp -r alembic /asset-output/python/apsi_database && cp alembic.ini /asset-output/python/apsi_database',
+          ],
+        },
+      }),
     });
 
     // Get all issues lambda
@@ -147,11 +144,16 @@ export class APSIBugTrackerStack extends cdk.Stack {
     const createIssuesLambdaIntegration = new LambdaIntegration(
       createIssuesLambda
     );
-    const getProblemByIdLambdaIntegration = new LambdaIntegration(getProblemByIdLambda);
+    const getProblemByIdLambdaIntegration = new LambdaIntegration(
+      getProblemByIdLambda
+    );
 
     // Create API Gateway resource
     const apiGateway = new RestApi(this, 'APSIBugTrackerAPI', {
       restApiName: 'APSI BugTracker',
+      defaultCorsPreflightOptions: {
+        allowOrigins: Cors.ALL_ORIGINS,
+      },
     });
 
     // Attach Lambda integration to API Gateway
