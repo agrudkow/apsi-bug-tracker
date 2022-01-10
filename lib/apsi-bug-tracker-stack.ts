@@ -66,9 +66,9 @@ export class APSIBugTrackerStack extends cdk.Stack {
       }),
     });
 
-    // Get all issues lambda
-    const getIssuesLambda = new lambda.Function(this, 'GetIssues', {
-      code: lambda.Code.fromAsset(path.join('lambda', 'get_issues'), {
+    // Get all problems lambda
+    const getProblemsLambda = new lambda.Function(this, 'GetProblems', {
+      code: lambda.Code.fromAsset(path.join('lambda', 'get_problems'), {
         bundling: {
           image: lambda.Runtime.PYTHON_3_9.bundlingImage,
           command: [
@@ -91,9 +91,9 @@ export class APSIBugTrackerStack extends cdk.Stack {
       layers: [databaseLayer],
     });
 
-    // Create issues lambda
-    const createIssuesLambda = new lambda.Function(this, 'CreateIssues', {
-      code: lambda.Code.fromAsset(path.join('lambda', 'create_issues'), {
+    // Create problem lambda
+    const createProblemLambda = new lambda.Function(this, 'CreateProblem', {
+      code: lambda.Code.fromAsset(path.join('lambda', 'create_problem'), {
         bundling: {
           image: lambda.Runtime.PYTHON_3_9.bundlingImage,
           command: [
@@ -116,6 +116,32 @@ export class APSIBugTrackerStack extends cdk.Stack {
       layers: [databaseLayer],
     });
 
+    // Insert init data lambda
+    const insertInitDataLambda = new lambda.Function(this, 'InsertInitData', {
+      code: lambda.Code.fromAsset(path.join('lambda', 'insert_init_data'), {
+        bundling: {
+          image: lambda.Runtime.PYTHON_3_9.bundlingImage,
+          command: [
+            'bash',
+            '-c',
+            'pip install -r requirements.txt -t /asset-output &&  rsync -av -O --progress . /asset-output --exclude-from=.dockerignore',
+          ],
+        },
+      }),
+      handler: 'index.handler', // Optional, defaults to 'handler'
+      runtime: lambda.Runtime.PYTHON_3_9, // Optional, defaults to lambda.Runtime.PYTHON_3_7
+      environment: {
+        LOG_LEVEL: '10', // Debug log level - https://docs.python.org/3/library/logging.html
+        DB_HOST: instance.instanceEndpoint.hostname,
+        DB_USERNAME: DB_USERNAME,
+        DB_PASSWORD: DB_PASSWORD,
+        DB_NAME: DB_NAME,
+        DB_PORT: DB_PORT,
+      },
+      layers: [databaseLayer],
+    });
+
+    // Get problem by id
     const getProblemByIdLambda = new lambda.Function(this, 'GetProblemById', {
       code: lambda.Code.fromAsset(path.join('lambda', 'get_problem_by_id'), {
         bundling: {
@@ -140,12 +166,15 @@ export class APSIBugTrackerStack extends cdk.Stack {
       layers: [databaseLayer],
     });
 
-    const getIssuesLambdaIntegration = new LambdaIntegration(getIssuesLambda);
-    const createIssuesLambdaIntegration = new LambdaIntegration(
-      createIssuesLambda
+    const getProblemsLambdaIntegration = new LambdaIntegration(getProblemsLambda);
+    const createProblemLambdaIntegration = new LambdaIntegration(
+      createProblemLambda
     );
     const getProblemByIdLambdaIntegration = new LambdaIntegration(
       getProblemByIdLambda
+    );
+    const insertInitDataLambdaIntegration = new LambdaIntegration(
+      insertInitDataLambda
     );
 
     // Create API Gateway resource
@@ -157,13 +186,17 @@ export class APSIBugTrackerStack extends cdk.Stack {
     });
 
     // Attach Lambda integration to API Gateway
-    // path: /issues
-    const issuesRoute = apiGateway.root.addResource('issues');
-    issuesRoute.addMethod('GET', getIssuesLambdaIntegration);
-    issuesRoute.addMethod('PUT', createIssuesLambdaIntegration);
+    // path: /problems
+    const problemsRoute = apiGateway.root.addResource('problems');
+    problemsRoute.addMethod('GET', getProblemsLambdaIntegration);
+    problemsRoute.addMethod('PUT', createProblemLambdaIntegration);
 
-    // path: /issues/{id}
-    const issueRoute = issuesRoute.addResource('{id}');
-    issueRoute.addMethod('GET', getProblemByIdLambdaIntegration);
+    // path: /problems/{id}
+    const problemRoute = problemsRoute.addResource('{id}');
+    problemRoute.addMethod('GET', getProblemByIdLambdaIntegration);
+
+    // path: /init-data
+    const initDataRoute = apiGateway.root.addResource('init-data');
+    initDataRoute.addMethod('PUT', insertInitDataLambdaIntegration);
   }
 }

@@ -97,25 +97,25 @@ const components = [
 
 export function NewFormContent() {
   const [problemData, setProblemData] = React.useState<NewProblemData>({
-    Username: '',
-    Observers: '',
-    Problem_type: '',
-    Weight: '',
-    Urgency: '',
-    Product: '',
-    Component: '',
-    Version: '',
-    Keywords: '',
-    Description: '',
-    Related_problems: '',
-    Proposed_deadline: null,
-    Status: 'New',
-    Responsible_person: '',
+    username: '',
+    observers: '',
+    problemType: '',
+    weight: '',
+    urgency: '',
+    product: '',
+    component: '',
+    version: '',
+    keywords: '',
+    description: '',
+    relatedProblems: '',
+    proposedDeadline: null,
+    status: 'New',
+    responsiblePerson: '',
   });
 
   useEffect(() => {
     const newProblemData: NewProblemData = { ...problemData };
-    newProblemData.Username = localStorage.getItem('username');
+    newProblemData.username = localStorage.getItem('username');
     setProblemData(newProblemData);
   }, []);
 
@@ -140,7 +140,7 @@ export function NewFormContent() {
 
   const handleChangeUser = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newProblemData: NewProblemData = { ...problemData };
-    newProblemData.Username = event.target.value;
+    newProblemData.username = event.target.value;
     setProblemData(newProblemData);
   };
 
@@ -148,19 +148,19 @@ export function NewFormContent() {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const newProblemData: NewProblemData = { ...problemData };
-    newProblemData.Observers = event.target.value;
+    newProblemData.observers = event.target.value;
     setProblemData(newProblemData);
   };
 
   const handleChangeKeywords = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newProblemData: NewProblemData = { ...problemData };
-    newProblemData.Keywords = event.target.value;
+    newProblemData.keywords = event.target.value;
     setProblemData(newProblemData);
   };
 
   const handleChangeStatus = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newProblemData: NewProblemData = { ...problemData };
-    newProblemData.Status = event.target.value;
+    newProblemData.status = event.target.value;
     setProblemData(newProblemData);
   };
 
@@ -168,33 +168,33 @@ export function NewFormContent() {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const newProblemData: NewProblemData = { ...problemData };
-    newProblemData.Related_problems = event.target.value;
+    newProblemData.relatedProblems = event.target.value;
     setProblemData(newProblemData);
   };
 
   const handleChangeProduct = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newProblemData: NewProblemData = { ...problemData };
-    newProblemData.Product = event.target.value;
+    newProblemData.product = event.target.value;
 
     if (
       event.target.value === 'SmartPet' &&
-      problemData.Problem_type === 'Bug'
+      problemData.problemType === 'Bug'
     ) {
-      newProblemData.Responsible_person = 'Jeff Bezos';
+      newProblemData.responsiblePerson = 'Jeff Bezos';
     } else if (
       event.target.value === 'PetApp' &&
-      problemData.Problem_type === 'Bug' &&
-      problemData.Component === 'Interface'
+      problemData.problemType === 'Bug' &&
+      problemData.component === 'Interface'
     ) {
-      newProblemData.Responsible_person = 'Steve Jobs';
+      newProblemData.responsiblePerson = 'Steve Jobs';
     } else if (
       event.target.value === 'PetApp' &&
-      problemData.Problem_type === 'Bug' &&
-      problemData.Component === 'Database'
+      problemData.problemType === 'Bug' &&
+      problemData.component === 'Database'
     ) {
-      newProblemData.Responsible_person = 'Andrzej Duda';
+      newProblemData.responsiblePerson = 'Andrzej Duda';
     } else {
-      newProblemData.Responsible_person = '';
+      newProblemData.responsiblePerson = '';
     }
 
     setProblemData(newProblemData);
@@ -204,26 +204,26 @@ export function NewFormContent() {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const newProblemData: NewProblemData = { ...problemData };
-    newProblemData.Component = event.target.value;
+    newProblemData.component = event.target.value;
     if (
       event.target.value === 'Interface' &&
-      problemData.Product === 'PetApp'
+      problemData.product === 'PetApp'
     ) {
-      newProblemData.Responsible_person = 'Steve Jobs';
+      newProblemData.responsiblePerson = 'Steve Jobs';
     } else if (
       event.target.value === 'Database' &&
-      problemData.Product === 'PetApp'
+      problemData.product === 'PetApp'
     ) {
-      newProblemData.Responsible_person = 'Andrzej Duda';
+      newProblemData.responsiblePerson = 'Andrzej Duda';
     } else {
-      newProblemData.Responsible_person = '';
+      newProblemData.responsiblePerson = '';
     }
     setProblemData(newProblemData);
   };
 
   const handleChangeVersion = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newProblemData: NewProblemData = { ...problemData };
-    newProblemData.Version = event.target.value;
+    newProblemData.version = event.target.value;
     setProblemData(newProblemData);
   };
 
@@ -231,47 +231,47 @@ export function NewFormContent() {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const newProblemData: NewProblemData = { ...problemData };
-    newProblemData.Description = event.target.value;
+    newProblemData.description = event.target.value;
     setProblemData(newProblemData);
   };
 
   const handleChangeProblem = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newProblemData: NewProblemData = { ...problemData };
-    newProblemData.Problem_type = event.target.value;
+    newProblemData.problemType = event.target.value;
     if (event.target.value === 'Service') {
-      newProblemData.Responsible_person = 'Bill Gates';
+      newProblemData.responsiblePerson = 'Bill Gates';
     } else if (event.target.value === 'Incident') {
-      newProblemData.Responsible_person = 'Elon Musk';
+      newProblemData.responsiblePerson = 'Elon Musk';
     } else if (event.target.value === 'Bug') {
-      newProblemData.Responsible_person = '';
+      newProblemData.responsiblePerson = '';
     }
-    if (problemData.Product === 'SmartPet' && event.target.value === 'Bug') {
-      newProblemData.Responsible_person = 'Jeff Bezos';
+    if (problemData.product === 'SmartPet' && event.target.value === 'Bug') {
+      newProblemData.responsiblePerson = 'Jeff Bezos';
     } else if (
-      problemData.Product === 'PetApp' &&
+      problemData.product === 'PetApp' &&
       event.target.value === 'Bug' &&
-      problemData.Component === 'Interface'
+      problemData.component === 'Interface'
     ) {
-      newProblemData.Responsible_person = 'Steve Jobs';
+      newProblemData.responsiblePerson = 'Steve Jobs';
     } else if (
-      problemData.Product === 'PetApp' &&
+      problemData.product === 'PetApp' &&
       event.target.value === 'Bug' &&
-      problemData.Component === 'Database'
+      problemData.component === 'Database'
     ) {
-      newProblemData.Responsible_person = 'Andrzej Duda';
+      newProblemData.responsiblePerson = 'Andrzej Duda';
     }
     setProblemData(newProblemData);
   };
 
   const handleChangeWeight = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newProblemData: NewProblemData = { ...problemData };
-    newProblemData.Weight = event.target.value;
+    newProblemData.weight = event.target.value;
     setProblemData(newProblemData);
   };
 
   const handleChangeUrgency = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newProblemData: NewProblemData = { ...problemData };
-    newProblemData.Urgency = event.target.value;
+    newProblemData.urgency = event.target.value;
     setProblemData(newProblemData);
   };
 
@@ -279,7 +279,7 @@ export function NewFormContent() {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const newProblemData: NewProblemData = { ...problemData };
-    newProblemData.Responsible_person = event.target.value;
+    newProblemData.responsiblePerson = event.target.value;
     setProblemData(newProblemData);
   };
 
@@ -297,14 +297,14 @@ export function NewFormContent() {
           disabled
           id="Username"
           label="Username"
-          value={problemData.Username}
+          value={problemData.username}
           onChange={handleChangeUser}
         />
         <TextField
           id="Observers"
           label="Observers"
           multiline
-          value={problemData.Observers}
+          value={problemData.observers}
           onChange={handleChangeObservers}
           helperText="Add problem observers by username"
         />
@@ -315,7 +315,7 @@ export function NewFormContent() {
           id="problem_type"
           select
           label="Problem type"
-          value={problemData.Problem_type}
+          value={problemData.problemType}
           onChange={handleChangeProblem}
         >
           {problems.map((option) => (
@@ -330,7 +330,7 @@ export function NewFormContent() {
           id="weight"
           select
           label="Weight"
-          value={problemData.Weight}
+          value={problemData.weight}
           onChange={handleChangeWeight}
         >
           {weights.map((option) => (
@@ -346,7 +346,7 @@ export function NewFormContent() {
           select
           label="Urgency"
           helperText="Select 1 if not urgent or 5 if highly urgent"
-          value={problemData.Urgency}
+          value={problemData.urgency}
           onChange={handleChangeUrgency}
         >
           {urgencies.map((option) => (
@@ -357,14 +357,14 @@ export function NewFormContent() {
         </TextField>
       </div>
 
-      {problemData.Problem_type === 'Bug' && (
+      {problemData.problemType === 'Bug' && (
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <TextField
             required
             select
             id="product"
             label="Product"
-            value={problemData.Product}
+            value={problemData.product}
             onChange={handleChangeProduct}
           >
             {products.map((option) => (
@@ -374,13 +374,13 @@ export function NewFormContent() {
             ))}
           </TextField>
 
-          {problemData.Product === 'PetApp' && (
+          {problemData.product === 'PetApp' && (
             <TextField
               select
               required
               id="component"
               label="Component"
-              value={problemData.Component}
+              value={problemData.component}
               onChange={handleChangeComponent}
             >
               {components.map((option) => (
@@ -391,24 +391,24 @@ export function NewFormContent() {
             </TextField>
           )}
 
-          {problemData.Product === 'SmartPet' && (
+          {problemData.product === 'SmartPet' && (
             <TextField
               id="version"
               required
               label="Version"
-              value={problemData.Version}
+              value={problemData.version}
               onChange={handleChangeVersion}
               placeholder="X.X.X"
               helperText="Add version of product related to the problem"
             />
           )}
 
-          {problemData.Product === 'PetApp' && (
+          {problemData.product === 'PetApp' && (
             <TextField
               id="version"
               required
               label="Version"
-              value={problemData.Version}
+              value={problemData.version}
               onChange={handleChangeVersion}
               placeholder="X.X.X"
               helperText="Add version of product's component related to the problem"
@@ -421,7 +421,7 @@ export function NewFormContent() {
           required
           id="keywords"
           label="Keywords"
-          value={problemData.Keywords}
+          value={problemData.keywords}
           onChange={handleChangeKeywords}
           helperText="Name problem keywords using comma"
         />
@@ -433,7 +433,7 @@ export function NewFormContent() {
           label="Description"
           multiline
           rows={6}
-          value={problemData.Description}
+          value={problemData.description}
           onChange={handleChangeDescription}
         />
       </div>
@@ -441,7 +441,7 @@ export function NewFormContent() {
         <TextField
           id="related_problems"
           label="Related problems"
-          value={problemData.Related_problems}
+          value={problemData.relatedProblems}
           onChange={handleChangeRelProblems}
           helperText="Add related problems by problem ID "
         />
@@ -452,10 +452,10 @@ export function NewFormContent() {
             openTo="year"
             mask="__.__.____"
             views={['day']}
-            value={problemData.Proposed_deadline}
+            value={problemData.proposedDeadline}
             onChange={(newValue) => {
               const newProblemData: NewProblemData = { ...problemData };
-              if (newValue) newProblemData.Proposed_deadline = newValue;
+              if (newValue) newProblemData.proposedDeadline = newValue;
               setProblemData(newProblemData);
             }}
             renderInput={(params) => (
@@ -470,7 +470,7 @@ export function NewFormContent() {
           disabled
           id="status"
           label="Status"
-          value={problemData.Status}
+          value={problemData.status}
           onChange={handleChangeStatus}
         />
 
@@ -479,7 +479,7 @@ export function NewFormContent() {
           disabled
           id="responsible_person"
           label="Responsible person"
-          value={problemData.Responsible_person}
+          value={problemData.responsiblePerson}
           onChange={handleChangeRespPerson}
         />
       </div>

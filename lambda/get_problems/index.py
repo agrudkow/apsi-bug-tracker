@@ -20,8 +20,8 @@ def handler(event: Dict[str, Any], _):
   return {
       'statusCode': 200,
       'headers': {
-          'Access-Control-Allow-Origin': '*',  # Required for CORS support to work
-          'Access-Control-Allow-Credentials': True  # Required for cookies, authorization headers with HTTPS 
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Credentials': True,
       },
       'body': json.dumps(get_issues()),
   }
