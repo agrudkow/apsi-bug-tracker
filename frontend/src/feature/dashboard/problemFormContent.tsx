@@ -134,21 +134,21 @@ interface Props {
 
 export const ProblemFormContent: React.FC<Props> = ({ role }) => {
   const [problemData, setProblemData] = React.useState<ProblemData>({
-    Problem_ID: 1,
-    Username: '',
-    Observers: '',
-    Problem_type: '',
-    Weight: '',
-    Urgency: '',
-    Product: '',
-    Component: '',
-    Version: '',
-    Keywords: '',
-    Description: '',
-    Related_problems: '',
-    Proposed_deadline: new Date(),
-    Status: '',
-    Responsible_person: '',
+    problemID: 1,
+    username: '',
+    observers: '',
+    problemType: '',
+    weight: '',
+    urgency: '',
+    product: '',
+    component: '',
+    version: '',
+    keywords: '',
+    description: '',
+    relatedProblems: '',
+    proposedDeadline: new Date(),
+    status: '',
+    responsiblePerson: '',
   });
   const { id } = useParams();
   const navigate = useNavigate();
@@ -183,7 +183,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
 
   const handleChangeUser = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newProblemData: ProblemData = { ...problemData };
-    newProblemData.Username = event.target.value;
+    newProblemData.username = event.target.value;
     setProblemData(newProblemData);
   };
 
@@ -191,19 +191,19 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const newProblemData: ProblemData = { ...problemData };
-    newProblemData.Observers = event.target.value;
+    newProblemData.observers = event.target.value;
     setProblemData(newProblemData);
   };
 
   const handleChangeKeywords = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newProblemData: ProblemData = { ...problemData };
-    newProblemData.Keywords = event.target.value;
+    newProblemData.keywords = event.target.value;
     setProblemData(newProblemData);
   };
 
   const handleChangeStatus = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newProblemData: ProblemData = { ...problemData };
-    newProblemData.Status = event.target.value;
+    newProblemData.status = event.target.value;
     setProblemData(newProblemData);
   };
 
@@ -211,33 +211,33 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const newProblemData: ProblemData = { ...problemData };
-    newProblemData.Related_problems = event.target.value;
+    newProblemData.relatedProblems = event.target.value;
     setProblemData(newProblemData);
   };
 
   const handleChangeProduct = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newProblemData: ProblemData = { ...problemData };
-    newProblemData.Product = event.target.value;
+    newProblemData.product = event.target.value;
 
     if (
       event.target.value === 'SmartPet' &&
-      problemData.Problem_type === 'Bug'
+      problemData.problemType === 'Bug'
     ) {
-      newProblemData.Responsible_person = 'Jeff Bezos';
+      newProblemData.responsiblePerson = 'Jeff Bezos';
     } else if (
       event.target.value === 'PetApp' &&
-      problemData.Problem_type === 'Bug' &&
-      problemData.Component === 'Interface'
+      problemData.problemType === 'Bug' &&
+      problemData.component === 'Interface'
     ) {
-      newProblemData.Responsible_person = 'Steve Jobs';
+      newProblemData.responsiblePerson = 'Steve Jobs';
     } else if (
       event.target.value === 'PetApp' &&
-      problemData.Problem_type === 'Bug' &&
-      problemData.Component === 'Database'
+      problemData.problemType === 'Bug' &&
+      problemData.component === 'Database'
     ) {
-      newProblemData.Responsible_person = 'Andrzej Duda';
+      newProblemData.responsiblePerson = 'Andrzej Duda';
     } else {
-      newProblemData.Responsible_person = '';
+      newProblemData.responsiblePerson = '';
     }
 
     setProblemData(newProblemData);
@@ -247,26 +247,26 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const newProblemData: ProblemData = { ...problemData };
-    newProblemData.Component = event.target.value;
+    newProblemData.component = event.target.value;
     if (
       event.target.value === 'Interface' &&
-      problemData.Product === 'PetApp'
+      problemData.product === 'PetApp'
     ) {
-      newProblemData.Responsible_person = 'Steve Jobs';
+      newProblemData.responsiblePerson = 'Steve Jobs';
     } else if (
       event.target.value === 'Database' &&
-      problemData.Product === 'PetApp'
+      problemData.product === 'PetApp'
     ) {
-      newProblemData.Responsible_person = 'Andrzej Duda';
+      newProblemData.responsiblePerson = 'Andrzej Duda';
     } else {
-      newProblemData.Responsible_person = '';
+      newProblemData.responsiblePerson = '';
     }
     setProblemData(newProblemData);
   };
 
   const handleChangeVersion = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newProblemData: ProblemData = { ...problemData };
-    newProblemData.Version = event.target.value;
+    newProblemData.version = event.target.value;
     setProblemData(newProblemData);
   };
 
@@ -274,47 +274,47 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const newProblemData: ProblemData = { ...problemData };
-    newProblemData.Description = event.target.value;
+    newProblemData.description = event.target.value;
     setProblemData(newProblemData);
   };
 
   const handleChangeProblem = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newProblemData: ProblemData = { ...problemData };
-    newProblemData.Problem_type = event.target.value;
+    newProblemData.problemType = event.target.value;
     if (event.target.value === 'Service') {
-      newProblemData.Responsible_person = 'Bill Gates';
+      newProblemData.responsiblePerson = 'Bill Gates';
     } else if (event.target.value === 'Incident') {
-      newProblemData.Responsible_person = 'Elon Musk';
+      newProblemData.responsiblePerson = 'Elon Musk';
     } else if (event.target.value === 'Bug') {
-      newProblemData.Responsible_person = '';
+      newProblemData.responsiblePerson = '';
     }
-    if (problemData.Product === 'SmartPet' && event.target.value === 'Bug') {
-      newProblemData.Responsible_person = 'Jeff Bezos';
+    if (problemData.product === 'SmartPet' && event.target.value === 'Bug') {
+      newProblemData.responsiblePerson = 'Jeff Bezos';
     } else if (
-      problemData.Product === 'PetApp' &&
+      problemData.product === 'PetApp' &&
       event.target.value === 'Bug' &&
-      problemData.Component === 'Interface'
+      problemData.component === 'Interface'
     ) {
-      newProblemData.Responsible_person = 'Steve Jobs';
+      newProblemData.responsiblePerson = 'Steve Jobs';
     } else if (
-      problemData.Product === 'PetApp' &&
+      problemData.product === 'PetApp' &&
       event.target.value === 'Bug' &&
-      problemData.Component === 'Database'
+      problemData.component === 'Database'
     ) {
-      newProblemData.Responsible_person = 'Andrzej Duda';
+      newProblemData.responsiblePerson = 'Andrzej Duda';
     }
     setProblemData(newProblemData);
   };
 
   const handleChangeWeight = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newProblemData: ProblemData = { ...problemData };
-    newProblemData.Weight = event.target.value;
+    newProblemData.weight = event.target.value;
     setProblemData(newProblemData);
   };
 
   const handleChangeUrgency = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newProblemData: ProblemData = { ...problemData };
-    newProblemData.Urgency = event.target.value;
+    newProblemData.urgency = event.target.value;
     setProblemData(newProblemData);
   };
 
@@ -322,7 +322,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const newProblemData: ProblemData = { ...problemData };
-    newProblemData.Responsible_person = event.target.value;
+    newProblemData.responsiblePerson = event.target.value;
     setProblemData(newProblemData);
   };
 
@@ -340,7 +340,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
           disabled
           id="Username"
           label="Username"
-          value={problemData.Username}
+          value={problemData.username}
           onChange={handleChangeUser}
         />
         <TextField
@@ -348,7 +348,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
           label="Observers"
           disabled={role === Roles.Admin}
           multiline
-          value={problemData.Observers}
+          value={problemData.observers}
           onChange={handleChangeObservers}
           helperText="Add problem observers by username"
         />
@@ -360,7 +360,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
           id="problem_type"
           select
           label="Problem type"
-          value={problemData.Problem_type}
+          value={problemData.problemType}
           onChange={handleChangeProblem}
         >
           {problems.map((option) => (
@@ -376,7 +376,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
           id="weight"
           select
           label="Weight"
-          value={problemData.Weight}
+          value={problemData.weight}
           onChange={handleChangeWeight}
         >
           {weights.map((option) => (
@@ -393,7 +393,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
           select
           label="Urgency"
           helperText="Select 1 if not urgent or 5 if highly urgent"
-          value={problemData.Urgency}
+          value={problemData.urgency}
           onChange={handleChangeUrgency}
         >
           {urgencies.map((option) => (
@@ -404,7 +404,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
         </TextField>
       </div>
 
-      {problemData.Problem_type === 'Bug' && (
+      {problemData.problemType === 'Bug' && (
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <TextField
             required
@@ -412,7 +412,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
             select
             id="product"
             label="Product"
-            value={problemData.Product}
+            value={problemData.product}
             onChange={handleChangeProduct}
           >
             {products.map((option) => (
@@ -422,14 +422,14 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
             ))}
           </TextField>
 
-          {problemData.Product === 'PetApp' && (
+          {problemData.product === 'PetApp' && (
             <TextField
               select
               required
               disabled={role === Roles.Admin}
               id="component"
               label="Component"
-              value={problemData.Component}
+              value={problemData.component}
               onChange={handleChangeComponent}
             >
               {components.map((option) => (
@@ -440,26 +440,26 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
             </TextField>
           )}
 
-          {problemData.Product === 'SmartPet' && (
+          {problemData.product === 'SmartPet' && (
             <TextField
               id="version"
               required
               disabled={role === Roles.Admin}
               label="Version"
-              value={problemData.Version}
+              value={problemData.version}
               onChange={handleChangeVersion}
               placeholder="X.X.X"
               helperText="Add version of product related to the problem"
             />
           )}
 
-          {problemData.Product === 'PetApp' && (
+          {problemData.product === 'PetApp' && (
             <TextField
               id="version"
               required
               disabled={role === Roles.Admin}
               label="Version"
-              value={problemData.Version}
+              value={problemData.version}
               onChange={handleChangeVersion}
               placeholder="X.X.X"
               helperText="Add version of product's component related to the problem"
@@ -473,7 +473,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
           disabled={role === Roles.Admin}
           id="keywords"
           label="Keywords"
-          value={problemData.Keywords}
+          value={problemData.keywords}
           onChange={handleChangeKeywords}
           helperText="Name problem keywords using comma"
         />
@@ -486,7 +486,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
           label="Description"
           multiline
           rows={6}
-          value={problemData.Description}
+          value={problemData.description}
           onChange={handleChangeDescription}
         />
       </div>
@@ -495,7 +495,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
           disabled={role === Roles.Admin}
           id="related_problems"
           label="Related problems"
-          value={problemData.Related_problems}
+          value={problemData.relatedProblems}
           onChange={handleChangeRelProblems}
           helperText="Add related problems by problem ID "
         />
@@ -507,10 +507,10 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
             openTo="year"
             mask="__.__.____"
             views={['day']}
-            value={problemData.Proposed_deadline}
+            value={problemData.proposedDeadline}
             onChange={(newValue) => {
               const newProblemData: ProblemData = { ...problemData };
-              if (newValue) newProblemData.Proposed_deadline = newValue;
+              if (newValue) newProblemData.proposedDeadline = newValue;
               setProblemData(newProblemData);
             }}
             renderInput={(params) => (
@@ -526,7 +526,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
           disabled={role === Roles.User}
           id="status"
           label="Status"
-          value={problemData.Status}
+          value={problemData.status}
           onChange={handleChangeStatus}
         >
           {statuses.map((option) => (
@@ -540,7 +540,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
           disabled={role === Roles.User}
           id="responsible_person"
           label="Responsible person"
-          value={problemData.Responsible_person}
+          value={problemData.responsiblePerson}
           onChange={handleChangeRespPerson}
         />
       </div>

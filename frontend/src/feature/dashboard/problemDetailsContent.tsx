@@ -34,7 +34,7 @@ export const ProblemDetailsContent: React.FC<Props> = ({ role }) => {
     ).data;
     const parsedProblemDetails: Data[] = Object.entries(response_data).map(
       ([key, value]) => {
-        if (role === Roles.User && key === 'Status' && value !== 'New') {
+        if (role === Roles.User && key === 'status' && value !== 'New') {
           setActiveFormButton(false);
         }
         return {

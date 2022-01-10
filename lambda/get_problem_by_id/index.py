@@ -11,6 +11,7 @@ logger.setLevel(int(os.environ['LOG_LEVEL']))
 
 logger.info('APSI get_problems lambda initialized.')
 
+
 def handler(event: Dict[str, Any], _):
     """
     Handler for get_problem_by_id lambda.
@@ -19,8 +20,8 @@ def handler(event: Dict[str, Any], _):
     return {
         'statusCode': 200,
         'headers': {
-          'Access-Control-Allow-Origin': '*',  # Required for CORS support to work
-          'Access-Control-Allow-Credentials': True  # Required for cookies, authorization headers with HTTPS 
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Credentials': True,
         },
         'body': json.dumps(get_problem_by_id(event['pathParameters']['id'])),
     }
