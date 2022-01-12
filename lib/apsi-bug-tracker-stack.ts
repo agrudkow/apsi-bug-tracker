@@ -6,6 +6,7 @@ import * as lambda from '@aws-cdk/aws-lambda';
 import * as ec2 from '@aws-cdk/aws-ec2';
 import * as rds from '@aws-cdk/aws-rds';
 import * as dotenv from 'dotenv';
+import * as iam from '@aws-cdk/aws-iam';
 
 dotenv.config();
 
@@ -198,5 +199,43 @@ export class APSIBugTrackerStack extends cdk.Stack {
     // path: /init-data
     const initDataRoute = apiGateway.root.addResource('init-data');
     initDataRoute.addMethod('PUT', insertInitDataLambdaIntegration);
+
+    // Create lambda to send email notifications
+    const mailerLambda = new lambda.Function(this, 'MailerLambda', {
+      code: lambda.Code.fromAsset(path.join('lambda', 'mail_notifications'), {
+        bundling: {
+          image: lambda.Runtime.PYTHON_3_9.bundlingImage,
+          command: [
+            'bash',
+            '-c',
+            'pip install -r requirements.txt -t /asset-output &&  rsync -av -O --progress . /asset-output --exclude-from=.dockerignore',
+          ],
+        },
+      }),
+      handler: 'index.handler',
+      runtime: lambda.Runtime.PYTHON_3_9,
+    });
+    const mailerLambdaIntegration = new LambdaIntegration(mailerLambda);
+    
+    // Create API Gateway resource
+    const mailerGateway = new RestApi(this, 'MailerGateway', {
+      restApiName: 'MailerGateway'});
+    //curl -d '{"recipients":["apsibugtracker@gmail.com"], "issue":"6785169E"}' -X POST https://dnkophrgv9.execute-api.eu-central-1.amazonaws.com/prod/
+    mailerGateway.root.addMethod('POST', mailerLambdaIntegration);
+
+    mailerLambda.addToRolePolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: [
+          'ses:SendEmail',
+          'ses:SendRawEmail',
+          'ses:SendTemplatedEmail',
+        ],
+        resources: ["*"],
+      }),
+    );
+
+
+
   }
 }
