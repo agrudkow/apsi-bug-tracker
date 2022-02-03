@@ -133,6 +133,8 @@ interface Props {
 }
 
 export const ProblemFormContent: React.FC<Props> = ({ role }) => {
+  const [comment, setComment] = React.useState<string>('');
+  const [disabledFieldsForUserIfNotNewStatuses, setDisabledFieldsForUserIfNotNewStatuses] = React.useState<boolean>(true);
   const [problemData, setProblemData] = React.useState<ProblemData>({
     problemID: 1,
     username: '',
@@ -146,7 +148,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
     keywords: '',
     description: '',
     relatedProblems: '',
-    proposedDeadline: new Date(),
+    proposedDeadline: null,
     status: '',
     responsiblePerson: '',
   });
@@ -158,10 +160,20 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
       (await apsi_backend.get<ProblemData>(`${BackendRoutes.Problems}/${id}`))
         .data
     );
-
+    if (role === Roles.User && problemData.status === 'new'){
+      setDisabledFieldsForUserIfNotNewStatuses(false);
+    }
   useEffect(() => {
     fetchProblemData();
   }, []);
+
+  const handleComment = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setComment(event.target.value);
+  };
+  const deleteProblemHandler = () => {
+    //TODO: send delete to backend + actualize view + view an information
+  };
+
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -327,6 +339,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
   };
 
   return (
+    <>
     <Box
       component="form"
       onSubmit={handleSubmit}
@@ -346,7 +359,6 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
         <TextField
           id="Observers"
           label="Observers"
-          disabled={role === Roles.Admin}
           multiline
           value={problemData.observers}
           onChange={handleChangeObservers}
@@ -356,7 +368,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <TextField
           required
-          disabled={role === Roles.Admin}
+          disabled={role === Roles.Admin || disabledFieldsForUserIfNotNewStatuses === true}
           id="problem_type"
           select
           label="Problem type"
@@ -372,7 +384,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
 
         <TextField
           required
-          disabled={role === Roles.Admin}
+          disabled={role === Roles.Admin || disabledFieldsForUserIfNotNewStatuses === true}
           id="weight"
           select
           label="Weight"
@@ -388,7 +400,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
 
         <TextField
           required
-          disabled={role === Roles.Admin}
+          disabled={role === Roles.Admin || disabledFieldsForUserIfNotNewStatuses === true}
           id="urgency"
           select
           label="Urgency"
@@ -408,7 +420,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <TextField
             required
-            disabled={role === Roles.Admin}
+            disabled={role === Roles.Admin || disabledFieldsForUserIfNotNewStatuses === true}
             select
             id="product"
             label="Product"
@@ -426,7 +438,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
             <TextField
               select
               required
-              disabled={role === Roles.Admin}
+              disabled={role === Roles.Admin || disabledFieldsForUserIfNotNewStatuses === true}
               id="component"
               label="Component"
               value={problemData.component}
@@ -444,7 +456,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
             <TextField
               id="version"
               required
-              disabled={role === Roles.Admin}
+              disabled={role === Roles.Admin || disabledFieldsForUserIfNotNewStatuses === true}
               label="Version"
               value={problemData.version}
               onChange={handleChangeVersion}
@@ -457,7 +469,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
             <TextField
               id="version"
               required
-              disabled={role === Roles.Admin}
+              disabled={role === Roles.Admin || disabledFieldsForUserIfNotNewStatuses === true}
               label="Version"
               value={problemData.version}
               onChange={handleChangeVersion}
@@ -470,7 +482,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <TextField
           required
-          disabled={role === Roles.Admin}
+          disabled={role === Roles.Admin || disabledFieldsForUserIfNotNewStatuses === true}
           id="keywords"
           label="Keywords"
           value={problemData.keywords}
@@ -481,7 +493,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <TextField
           required
-          disabled={role === Roles.Admin}
+          disabled={role === Roles.Admin || disabledFieldsForUserIfNotNewStatuses === true}
           id="description"
           label="Description"
           multiline
@@ -492,7 +504,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
       </div>
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <TextField
-          disabled={role === Roles.Admin}
+          disabled={role === Roles.Admin || disabledFieldsForUserIfNotNewStatuses === true}
           id="related_problems"
           label="Related problems"
           value={problemData.relatedProblems}
@@ -502,7 +514,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
         <LocalizationProvider dateAdapter={AdapterDateFns} locale={plLocale}>
           <DatePicker
             disablePast
-            disabled={role === Roles.Admin}
+            disabled={role === Roles.Admin || disabledFieldsForUserIfNotNewStatuses === true}
             label="Proposed deadline"
             openTo="year"
             mask="__.__.____"
@@ -544,6 +556,17 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
           onChange={handleChangeRespPerson}
         />
       </div>
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
+      <TextField
+        sx={{ mt: 3, width: '100%' }}
+        id="comment"
+        label="Comment"
+        multiline
+        rows={4}
+        value={comment}
+        onChange={handleComment}
+      />
+    </div>
       <div
         style={{
           display: 'flex',
@@ -566,7 +589,22 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
         >
           Submit changes
         </Button>
+        <Button
+        variant="contained"
+        size="medium"
+        sx={{
+          fontSize: 20,
+          margin: 0.5,
+          marginTop: 3,
+          padding: 1,
+          width: '20%',
+        }}
+        onClick={deleteProblemHandler}
+      >
+        Delete issue
+      </Button>
       </div>
     </Box>
+</>
   );
 };

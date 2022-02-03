@@ -18,16 +18,13 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import Collapse from '@mui/material/Collapse';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { BackendRoutes, Routes } from '../../utils';
 import { useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import { apsi_backend } from '../common';
 
 interface Column {
-  id: 'number' | 'date' | 'type' | 'status';
+  id: 'number' | 'date' | 'type' | 'status' | 'description' | 'a';
   label: string;
   minWidth?: number;
   align?: 'right';
@@ -38,19 +35,29 @@ const columns: Column[] = [
   {
     id: 'number',
     label: 'Problem ID',
-    minWidth: 152.5,
+    minWidth: 20,
     format: (value: number) => value.toLocaleString('en-US'),
   },
   {
     id: 'date',
     label: 'Creation date',
-    minWidth: 152.5,
+    minWidth: 40,
   },
   { id: 'type', label: 'Type', minWidth: 152.5 },
   {
     id: 'status',
     label: 'Status',
-    minWidth: 152.5,
+    minWidth: 20,
+  },
+  {
+    id: 'description',
+    label: 'Description',
+    minWidth: 80,
+  },
+  {
+    id: 'a',
+    label: ' ',
+    minWidth: 80,
   },
 ];
 
@@ -79,7 +86,7 @@ export default function ProblemsTable() {
   };
 
   const problemDetailsHandlerFactory = (problem_id: number) => () => {
-    navigate(`../${Routes.ProblemDetails}/${problem_id}`, { replace: true });
+    navigate(`../${Routes.ProblemEditForm}/${problem_id}`, { replace: true });
   };
 
   const buttonView = {
@@ -99,7 +106,6 @@ export default function ProblemsTable() {
 
   function Row(props: { row: Data }) {
     const { row } = props;
-    const [open, setOpen] = React.useState(false);
 
     return (
       <React.Fragment>
@@ -108,15 +114,7 @@ export default function ProblemsTable() {
           role="checkbox"
           sx={{ '& > *': { borderBottom: 'unset' } }}
         >
-          <TableCell sx={{ py: 1 }}>
-            <IconButton
-              aria-label="expand row"
-              size="small"
-              onClick={() => setOpen(!open)}
-            >
-              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-            </IconButton>
-          </TableCell>
+        
           <TableCell
             align="left"
             size="small"
@@ -135,23 +133,11 @@ export default function ProblemsTable() {
           <TableCell align="left" sx={{ py: 1 }}>
             {row.status}
           </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-            <Collapse in={open} timeout="auto" unmountOnExit>
-              <Box sx={{ margin: 1 }}>
-                <Typography
-                  variant="subtitle2"
-                  gutterBottom
-                  component="div"
-                  sx={{ mt: 2 }}
-                >
-                  Description
-                </Typography>
-                <Typography variant="body2" align="left">
-                  {row.description}
-                </Typography>
-                <Button
+          <TableCell align="left" sx={{ py: 1 }}>
+            {row.description}
+          </TableCell>
+          <TableCell align="left" sx={{ py: 1 }}>
+          <Button
                   variant="contained"
                   size="large"
                   sx={{
@@ -165,10 +151,9 @@ export default function ProblemsTable() {
                 >
                   Go to details
                 </Button>
-              </Box>
-            </Collapse>
-          </TableCell>
+                </TableCell>
         </TableRow>
+        
       </React.Fragment>
     );
   }
@@ -212,10 +197,9 @@ export default function ProblemsTable() {
       </AppBar>
       <Paper sx={{ width: '100%' }}>
         <TableContainer sx={{ maxHeight: 600 }}>
-          <Table stickyHeader aria-label="collapsible table">
+          <Table stickyHeader>
             <TableHead>
               <TableRow>
-                <TableCell />
                 {columns.map((column) => (
                   <TableCell
                     key={column.id}
