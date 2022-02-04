@@ -17,6 +17,8 @@ interface HeaderProps {
   headerDescription: string;
 }
 
+
+
 export function Header(props: HeaderProps) {
   const { onDrawerToggle } = props;
   const { headerDescription } = props;
@@ -32,8 +34,10 @@ export function Header(props: HeaderProps) {
     setAnchorEl(null);
   };
 
+
   const handleLogout = () => {
-    navigate(`/${Routes.Login}`, { replace: true });
+    localStorage.setItem('isLoggedOut', 'true')
+    navigate(`/${Routes.Login}`, { replace: true });  
   };
 
   return (
@@ -111,6 +115,7 @@ export function Header(props: HeaderProps) {
                   </ListItemIcon>
                   Logout
                 </MenuItem>
+                
               </Menu>
             </div>
             </Grid>

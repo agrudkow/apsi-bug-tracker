@@ -11,6 +11,10 @@ function App() {
   const [role, setRole] = React.useState<string>('User');
   React.useEffect(() => {
     localStorage.setItem('username', 'Jan');
+    localStorage.setItem('isLoggedOut', 'false')
+    localStorage.setItem('isProblemDeleted', 'false')
+    localStorage.setItem('isProblemSubmitted', 'false')
+    localStorage.setItem('isProblemUpdated', 'false')
   }, []);
   return (
     <RouterRoutes>
@@ -29,14 +33,6 @@ function App() {
         element={
           <Layout>
             <NewFormContent />
-          </Layout>
-        }
-      />
-      <Route
-        path={`${Routes.ProblemDetails}/:id`}
-        element={
-          <Layout>
-            <ProblemDetailsContent role={role} />
           </Layout>
         }
       />

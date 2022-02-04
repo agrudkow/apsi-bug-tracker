@@ -13,6 +13,15 @@ import { ProblemData } from '../../interface';
 import { BackendRoutes, Routes } from '../../utils';
 import { useNavigate, useParams } from 'react-router-dom';
 import { apsi_backend } from '../common';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+  ref,
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const problems = [
   {
@@ -154,7 +163,19 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
   });
   const { id } = useParams();
   const navigate = useNavigate();
+  const [openPopUp, setOpenPopUp] = React.useState(false);
 
+  const handleClick = () => {
+    setOpenPopUp(true);
+  };
+
+  const handleClosePopUp = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenPopUp(false);
+  };
   const fetchProblemData = async () =>
     setProblemData(
       (await apsi_backend.get<ProblemData>(`${BackendRoutes.Problems}/${id}`))
@@ -171,14 +192,16 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
     setComment(event.target.value);
   };
   const deleteProblemHandler = () => {
-    //TODO: send delete to backend + actualize view + view an information
+    //TODO: send delete to backend 
+    localStorage.setItem('isProblemDeleted', 'true');
+    navigate(`../${Routes.Dashboard}`, { replace: true });
   };
 
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     //TODO: sendData();
-    console.log('aaaa');
+    localStorage.setItem('isProblemUpdated', 'true');
     navigate(`../${Routes.Dashboard}`, { replace: true });
   };
 
@@ -579,6 +602,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
           variant="contained"
           size="medium"
           type="submit"
+          onClick={handleClick}
           sx={{
             fontSize: 20,
             margin: 0.5,
@@ -589,6 +613,11 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
         >
           Submit changes
         </Button>
+        <Snackbar open={openPopUp} anchorOrigin={{vertical: 'bottom', horizontal: 'center' }} autoHideDuration={3000} onClose={handleClosePopUp}>
+        <Alert onClose={handleClosePopUp} severity="success" sx={{ width: '100%' }}>
+          You have been logged out
+        </Alert>
+      </Snackbar>
         <Button
         variant="contained"
         size="medium"

@@ -22,6 +22,10 @@ import { BackendRoutes, Routes } from '../../utils';
 import { useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import { apsi_backend } from '../common';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+
+import MUIDataTable from "mui-datatables";
 
 interface Column {
   id: 'number' | 'date' | 'type' | 'status' | 'description' | 'a';
@@ -60,6 +64,48 @@ const columns: Column[] = [
     minWidth: 80,
   },
 ];
+// const columns = [
+//   {
+//    name: "number",
+//    label: "Number",
+//    options: {
+//     filter: true,
+//     sort: true,
+//    }
+//   },
+//   {
+//    name: "date",
+//    label: "Creation date",
+//    options: {
+//     filter: true,
+//     sort: true,
+//    }
+//   },
+//   {
+//    name: "type",
+//    label: "Problem type",
+//    options: {
+//     filter: true,
+//     sort: true,
+//    }
+//   },
+//   {
+//    name: "status",
+//    label: "Status",
+//    options: {
+//     filter: true,
+//     sort: true,
+//    }
+//   },
+//   {
+//     name: "description",
+//     label: "Description",
+//     options: {
+//      filter: true,
+//      sort: true,
+//     }
+//    },
+//  ];
 
 interface Data {
   id: number;
@@ -69,10 +115,21 @@ interface Data {
   description: string;
 }
 
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+  ref,
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 export default function ProblemsTable() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const navigate = useNavigate();
+  const [searched, setSearched] = useState<string>("");
+  const [openPopUpSubmit, setOpenPopUpSubmit] = React.useState(false);
+  const [openPopUpUpdate, setOpenPopUpUpdate] = React.useState(false);
+  const [openPopUpDelete, setOpenPopUpDelete] = React.useState(false);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -100,9 +157,43 @@ export default function ProblemsTable() {
 
   useEffect(() => {
     fetchProblemsData();
+    if (localStorage.getItem('isProblemSubmitted')==='true')
+    {
+      setOpenPopUpSubmit(true);
+      localStorage.setItem('isProblemSubmitted', 'false');
+    }
+    if (localStorage.getItem('isProblemUpdated')==='true')
+    {
+      setOpenPopUpUpdate(true);
+      localStorage.setItem('isProblemUpdated', 'false');
+    }
+    if (localStorage.getItem('isProblemDeleted')==='true')
+    {
+      setOpenPopUpDelete(true);
+      localStorage.setItem('isProblemDeleted', 'false');
+    }
   }, []);
 
-  console.log(`dataRows`, dataRows);
+  const handleClosePopUpSubmit = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenPopUpSubmit(false);
+  };
+
+  const handleClosePopUpUpdate = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenPopUpUpdate(false);
+  };
+
+  const handleClosePopUpDelete = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenPopUpDelete(false);
+  };
 
   function Row(props: { row: Data }) {
     const { row } = props;
@@ -159,6 +250,7 @@ export default function ProblemsTable() {
   }
 
   return (
+    
     <Paper sx={{ maxWidth: 'lg', margin: 'auto', overflow: 'hidden' }}>
       <AppBar
         position="static"
@@ -230,6 +322,27 @@ export default function ProblemsTable() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
+      <Snackbar open={openPopUpSubmit} anchorOrigin={{vertical: 'bottom', horizontal: 'center' }} autoHideDuration={3000} onClose={handleClosePopUpSubmit}>
+        <Alert onClose={handleClosePopUpSubmit} severity="success" sx={{ width: '100%' }}>
+          Problem has been submitted!
+        </Alert>
+      </Snackbar>
+      <Snackbar open={openPopUpUpdate} anchorOrigin={{vertical: 'bottom', horizontal: 'center' }} autoHideDuration={3000} onClose={handleClosePopUpUpdate}>
+        <Alert onClose={handleClosePopUpUpdate} severity="success" sx={{ width: '100%' }}>
+          Problem has been updated!
+        </Alert>
+      </Snackbar>
+      <Snackbar open={openPopUpDelete} anchorOrigin={{vertical: 'bottom', horizontal: 'center' }} autoHideDuration={3000} onClose={handleClosePopUpDelete}>
+        <Alert onClose={handleClosePopUpDelete} severity="success" sx={{ width: '100%' }}>
+          Problem has been deleted!
+        </Alert>
+      </Snackbar>
     </Paper>
+//   <MUIDataTable
+//   title={"Problems"}
+//   data={dataRows}
+//   columns={columns}
+// />
   );
+
 }

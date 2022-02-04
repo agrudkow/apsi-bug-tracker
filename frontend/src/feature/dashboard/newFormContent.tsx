@@ -135,7 +135,7 @@ export function NewFormContent() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     //TODO: sendData();
-    console.log('aaaa');
+    localStorage.setItem('isProblemSubmitted', 'true');
     navigate(`../${Routes.Dashboard}`, { replace: true });
   };
 
