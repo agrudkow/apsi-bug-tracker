@@ -25,8 +25,6 @@ import { apsi_backend } from '../common';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
-import MUIDataTable from "mui-datatables";
-
 interface Column {
   id: 'number' | 'date' | 'type' | 'status' | 'description' | 'a';
   label: string;
@@ -64,48 +62,7 @@ const columns: Column[] = [
     minWidth: 80,
   },
 ];
-// const columns = [
-//   {
-//    name: "number",
-//    label: "Number",
-//    options: {
-//     filter: true,
-//     sort: true,
-//    }
-//   },
-//   {
-//    name: "date",
-//    label: "Creation date",
-//    options: {
-//     filter: true,
-//     sort: true,
-//    }
-//   },
-//   {
-//    name: "type",
-//    label: "Problem type",
-//    options: {
-//     filter: true,
-//     sort: true,
-//    }
-//   },
-//   {
-//    name: "status",
-//    label: "Status",
-//    options: {
-//     filter: true,
-//     sort: true,
-//    }
-//   },
-//   {
-//     name: "description",
-//     label: "Description",
-//     options: {
-//      filter: true,
-//      sort: true,
-//     }
-//    },
-//  ];
+
 
 interface Data {
   id: number;
@@ -122,14 +79,30 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
+
 export default function ProblemsTable() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [dataRows, setDataRows] = useState<Data[]>([]);
   const navigate = useNavigate();
   const [searched, setSearched] = useState<string>("");
   const [openPopUpSubmit, setOpenPopUpSubmit] = React.useState(false);
   const [openPopUpUpdate, setOpenPopUpUpdate] = React.useState(false);
   const [openPopUpDelete, setOpenPopUpDelete] = React.useState(false);
+  const [searchedRows, setSearchedRows] = useState<Data[]>(dataRows);
+
+  const requestSearch = (searchedVal: string) => {
+    setSearched(searchedVal);
+    const newSearchedRows = dataRows.filter((row) => {
+      return row.id.toString().includes(searchedVal.toString());
+    });
+    setSearchedRows(newSearchedRows);
+};
+
+const cancelSearch = () => {
+  setSearched("");
+  setSearchedRows(dataRows);
+};
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -150,13 +123,19 @@ export default function ProblemsTable() {
     px: 3,
   };
 
-  const [dataRows, setDataRows] = useState<Data[]>([]);
 
-  const fetchProblemsData = async () =>
-    setDataRows((await apsi_backend.get<Data[]>(BackendRoutes.Problems)).data);
+  const fetchProblemsData = async () => {
+    
+    let xd = (await apsi_backend.get<Data[]>(BackendRoutes.Problems)).data;
+    setDataRows(xd);
+    setSearchedRows(xd);
+  }
+    
 
   useEffect(() => {
+    
     fetchProblemsData();
+    
     if (localStorage.getItem('isProblemSubmitted')==='true')
     {
       setOpenPopUpSubmit(true);
@@ -172,6 +151,7 @@ export default function ProblemsTable() {
       setOpenPopUpDelete(true);
       localStorage.setItem('isProblemDeleted', 'false');
     }
+
   }, []);
 
   const handleClosePopUpSubmit = (event?: React.SyntheticEvent | Event, reason?: string) => {
@@ -266,7 +246,9 @@ export default function ProblemsTable() {
             <Grid item xs>
               <TextField
                 fullWidth
-                placeholder="Search by problem ID, keywords"
+                value={searched}
+                placeholder="Search by problem ID"
+                onChange={(event) =>  requestSearch(event.target.value)}
                 InputProps={{
                   disableUnderline: true,
                   sx: { fontSize: 'default' },
@@ -275,11 +257,8 @@ export default function ProblemsTable() {
               />
             </Grid>
             <Grid item>
-              <Button variant="contained" sx={{ mr: 1 }}>
-                Search
-              </Button>
               <Tooltip title="Reload">
-                <IconButton>
+                <IconButton onClick={cancelSearch}>
                   <RefreshIcon color="inherit" sx={{ display: 'block' }} />
                 </IconButton>
               </Tooltip>
@@ -304,7 +283,7 @@ export default function ProblemsTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {dataRows
+              {searchedRows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   return <Row key={`${row.id}-${index}`} row={row} />;
@@ -315,7 +294,7 @@ export default function ProblemsTable() {
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
-          count={dataRows.length}
+          count={searchedRows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -338,11 +317,7 @@ export default function ProblemsTable() {
         </Alert>
       </Snackbar>
     </Paper>
-//   <MUIDataTable
-//   title={"Problems"}
-//   data={dataRows}
-//   columns={columns}
-// />
+
   );
 
 }
