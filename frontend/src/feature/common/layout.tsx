@@ -30,8 +30,6 @@ export const Layout: React.FC = ({ children }) => {
       setHeaderDescription('Problems Dashboard');
     } else if (pathname === `/${Routes.Form}`) {
       setHeaderDescription('New problem form');
-    } else if (pathname === `/${Routes.ProblemDetails}`) {
-      setHeaderDescription('Problem details');
     } else if (pathname === `/${Routes.ProblemEditForm}`) {
       setHeaderDescription('Problem form');
     }

@@ -19,7 +19,7 @@ export interface ProblemData {
     keywords: string,
     description: string,
     relatedProblems: string,
-    proposedDeadline: Date,
+    proposedDeadline: Date | null,
     status: string,
     responsiblePerson: string
   }

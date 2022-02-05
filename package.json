@@ -13,6 +13,7 @@
   "devDependencies": {
     "@aws-cdk/assert": "1.130.0",
     "@types/jest": "^26.0.10",
+    "@types/mui-datatables": "^3.7.7",
     "@types/node": "10.17.27",
     "@types/source-map-support": "^0.5.4",
     "aws-cdk": "1.130.0",
@@ -25,12 +26,13 @@
   "dependencies": {
     "@aws-cdk/aws-apigateway": "^1.132.0",
     "@aws-cdk/aws-ec2": "^1.132.0",
+    "@aws-cdk/aws-iam": "^1.132.0",
     "@aws-cdk/aws-lambda-python": "^1.132.0",
     "@aws-cdk/aws-rds": "^1.132.0",
     "@aws-cdk/core": "^1.132.0",
-    "@aws-cdk/aws-iam": "^1.132.0",
     "dotenv": "^10.0.0",
-    "source-map-support": "^0.5.16"
+    "source-map-support": "^0.5.16",
+    "use-state-with-callback": "^2.0.3"
   },
   "config": {
     "commitizen": {

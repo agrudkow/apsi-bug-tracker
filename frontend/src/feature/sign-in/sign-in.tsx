@@ -12,13 +12,42 @@ import { ThemeProvider } from '@mui/material/styles';
 import { Logo } from '../../assets';
 import { Copyright, theme } from '../common';
 import { Routes } from '../../utils';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+
 
 interface Props{
   setRole: Function;
 }
 
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+  ref,
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 export const SignIn: React.FC<Props> = ({setRole}) => {
   const navigate = useNavigate();
+  
+  const [openPopUp, setOpenPopUp] = React.useState(false);
+
+  React.useEffect(() => {
+    if (localStorage.getItem('isLoggedOut')==='true')
+    {
+      setOpenPopUp(true);
+      localStorage.setItem('isLoggedOut', 'false');
+    }
+  }, []);
+
+  const handleClosePopUp = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenPopUp(false);
+  };
+
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     //TODO: send data to backend, get role and username 
@@ -98,6 +127,12 @@ export const SignIn: React.FC<Props> = ({setRole}) => {
           </Box>
         </Container>
       </Box>
+      <Snackbar open={openPopUp} anchorOrigin={{vertical: 'bottom', horizontal: 'center' }} autoHideDuration={3000} onClose={handleClosePopUp}>
+        <Alert onClose={handleClosePopUp} severity="success" sx={{ width: '100%' }}>
+          You have been logged out
+        </Alert>
+      </Snackbar>
+
     </ThemeProvider>
   );
 };

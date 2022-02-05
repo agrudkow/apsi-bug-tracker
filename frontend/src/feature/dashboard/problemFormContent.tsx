@@ -13,6 +13,15 @@ import { ProblemData } from '../../interface';
 import { BackendRoutes, Routes } from '../../utils';
 import { useNavigate, useParams } from 'react-router-dom';
 import { apsi_backend } from '../common';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+  ref,
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const problems = [
   {
@@ -133,6 +142,8 @@ interface Props {
 }
 
 export const ProblemFormContent: React.FC<Props> = ({ role }) => {
+  const [comment, setComment] = React.useState<string>('');
+  const [disabledFieldsForUserIfNotNewStatuses, setDisabledFieldsForUserIfNotNewStatuses] = React.useState<boolean>(true);
   const [problemData, setProblemData] = React.useState<ProblemData>({
     problemID: 1,
     username: '',
@@ -146,27 +157,51 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
     keywords: '',
     description: '',
     relatedProblems: '',
-    proposedDeadline: new Date(),
+    proposedDeadline: null,
     status: '',
     responsiblePerson: '',
   });
   const { id } = useParams();
   const navigate = useNavigate();
+  const [openPopUp, setOpenPopUp] = React.useState(false);
 
+  const handleClick = () => {
+    setOpenPopUp(true);
+  };
+
+  const handleClosePopUp = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenPopUp(false);
+  };
   const fetchProblemData = async () =>
     setProblemData(
       (await apsi_backend.get<ProblemData>(`${BackendRoutes.Problems}/${id}`))
         .data
     );
-
+    if (role === Roles.User && problemData.status === 'new'){
+      setDisabledFieldsForUserIfNotNewStatuses(false);
+    }
   useEffect(() => {
     fetchProblemData();
   }, []);
 
+  const handleComment = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setComment(event.target.value);
+  };
+  const deleteProblemHandler = () => {
+    //TODO: send delete to backend 
+    localStorage.setItem('isProblemDeleted', 'true');
+    navigate(`../${Routes.Dashboard}`, { replace: true });
+  };
+
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     //TODO: sendData();
-    console.log('aaaa');
+    localStorage.setItem('isProblemUpdated', 'true');
     navigate(`../${Routes.Dashboard}`, { replace: true });
   };
 
@@ -327,6 +362,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
   };
 
   return (
+    <>
     <Box
       component="form"
       onSubmit={handleSubmit}
@@ -346,7 +382,6 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
         <TextField
           id="Observers"
           label="Observers"
-          disabled={role === Roles.Admin}
           multiline
           value={problemData.observers}
           onChange={handleChangeObservers}
@@ -356,7 +391,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <TextField
           required
-          disabled={role === Roles.Admin}
+          disabled={role === Roles.Admin || disabledFieldsForUserIfNotNewStatuses === true}
           id="problem_type"
           select
           label="Problem type"
@@ -372,7 +407,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
 
         <TextField
           required
-          disabled={role === Roles.Admin}
+          disabled={role === Roles.Admin || disabledFieldsForUserIfNotNewStatuses === true}
           id="weight"
           select
           label="Weight"
@@ -388,7 +423,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
 
         <TextField
           required
-          disabled={role === Roles.Admin}
+          disabled={role === Roles.Admin || disabledFieldsForUserIfNotNewStatuses === true}
           id="urgency"
           select
           label="Urgency"
@@ -408,7 +443,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <TextField
             required
-            disabled={role === Roles.Admin}
+            disabled={role === Roles.Admin || disabledFieldsForUserIfNotNewStatuses === true}
             select
             id="product"
             label="Product"
@@ -426,7 +461,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
             <TextField
               select
               required
-              disabled={role === Roles.Admin}
+              disabled={role === Roles.Admin || disabledFieldsForUserIfNotNewStatuses === true}
               id="component"
               label="Component"
               value={problemData.component}
@@ -444,7 +479,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
             <TextField
               id="version"
               required
-              disabled={role === Roles.Admin}
+              disabled={role === Roles.Admin || disabledFieldsForUserIfNotNewStatuses === true}
               label="Version"
               value={problemData.version}
               onChange={handleChangeVersion}
@@ -457,7 +492,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
             <TextField
               id="version"
               required
-              disabled={role === Roles.Admin}
+              disabled={role === Roles.Admin || disabledFieldsForUserIfNotNewStatuses === true}
               label="Version"
               value={problemData.version}
               onChange={handleChangeVersion}
@@ -470,7 +505,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <TextField
           required
-          disabled={role === Roles.Admin}
+          disabled={role === Roles.Admin || disabledFieldsForUserIfNotNewStatuses === true}
           id="keywords"
           label="Keywords"
           value={problemData.keywords}
@@ -481,7 +516,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <TextField
           required
-          disabled={role === Roles.Admin}
+          disabled={role === Roles.Admin || disabledFieldsForUserIfNotNewStatuses === true}
           id="description"
           label="Description"
           multiline
@@ -492,7 +527,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
       </div>
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <TextField
-          disabled={role === Roles.Admin}
+          disabled={role === Roles.Admin || disabledFieldsForUserIfNotNewStatuses === true}
           id="related_problems"
           label="Related problems"
           value={problemData.relatedProblems}
@@ -502,7 +537,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
         <LocalizationProvider dateAdapter={AdapterDateFns} locale={plLocale}>
           <DatePicker
             disablePast
-            disabled={role === Roles.Admin}
+            disabled={role === Roles.Admin || disabledFieldsForUserIfNotNewStatuses === true}
             label="Proposed deadline"
             openTo="year"
             mask="__.__.____"
@@ -544,6 +579,17 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
           onChange={handleChangeRespPerson}
         />
       </div>
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
+      <TextField
+        sx={{ mt: 3, width: '100%' }}
+        id="comment"
+        label="Comment"
+        multiline
+        rows={4}
+        value={comment}
+        onChange={handleComment}
+      />
+    </div>
       <div
         style={{
           display: 'flex',
@@ -556,6 +602,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
           variant="contained"
           size="medium"
           type="submit"
+          onClick={handleClick}
           sx={{
             fontSize: 20,
             margin: 0.5,
@@ -566,7 +613,27 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
         >
           Submit changes
         </Button>
+        <Snackbar open={openPopUp} anchorOrigin={{vertical: 'bottom', horizontal: 'center' }} autoHideDuration={3000} onClose={handleClosePopUp}>
+        <Alert onClose={handleClosePopUp} severity="success" sx={{ width: '100%' }}>
+          You have been logged out
+        </Alert>
+      </Snackbar>
+        <Button
+        variant="contained"
+        size="medium"
+        sx={{
+          fontSize: 20,
+          margin: 0.5,
+          marginTop: 3,
+          padding: 1,
+          width: '20%',
+        }}
+        onClick={deleteProblemHandler}
+      >
+        Delete issue
+      </Button>
       </div>
     </Box>
+</>
   );
 };
