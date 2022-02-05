@@ -79,8 +79,8 @@ def insert_data() -> int:
             statuses.append(status_2)
 
             status_3 = Status()
-            status_3.name = 'In progress'
-            status_3.description = 'The problem is in progress.'
+            status_3.name = 'Analyzed'
+            status_3.description = 'The problem is analyzed.'
             session.add(status_3)
             session.flush()
             statuses.append(status_3)
@@ -100,15 +100,15 @@ def insert_data() -> int:
             statuses.append(status_5)
 
             status_6 = Status()
-            status_6.name = 'Fixed'
-            status_6.description = 'The problem is fixed.'
+            status_6.name = 'Resolved'
+            status_6.description = 'The problem is resolved.'
             session.add(status_6)
             session.flush()
             statuses.append(status_6)
 
             status_7 = Status()
-            status_7.name = 'Abandoned'
-            status_7.description = 'The problem is abandoned.'
+            status_7.name = 'Unresolved'
+            status_7.description = 'The problem is unresolved.'
             session.add(status_7)
             session.flush()
             statuses.append(status_7)
