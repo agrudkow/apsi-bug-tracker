@@ -3,7 +3,6 @@ import { Routes as RouterRoutes, Route, Navigate } from 'react-router-dom';
 import { Dashboard, SignIn } from './feature';
 import { Layout } from './feature/common';
 import { NewFormContent } from './feature/dashboard/newFormContent';
-import { ProblemDetailsContent } from './feature/dashboard/problemDetailsContent';
 import { ProblemFormContent } from './feature/dashboard/problemFormContent';
 import { Routes } from './utils';
 
