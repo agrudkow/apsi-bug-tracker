@@ -12,6 +12,7 @@ class Report(Base):
 
   id = Column(Integer, primary_key=True, index=True)
   creation_date = Column(DateTime)
+  updated_date = Column(DateTime)
   end_date = Column(DateTime)
   deadline = Column(DateTime)
   version = Column(Integer)
