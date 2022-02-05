@@ -53,7 +53,7 @@ export class APSIBugTrackerStack extends cdk.Stack {
       backupRetention: cdk.Duration.days(0),
     });
 
-    // ------------------------------------------------------------ Lambda Layers ---------------------------------------------------
+    // ------------------------------------------------------------ Lambda Layers ----------------------------------------------------
 
     // Create database lambda layer
     const databaseLayer = new lambda.LayerVersion(this, 'database-layer', {
@@ -70,6 +70,22 @@ export class APSIBugTrackerStack extends cdk.Stack {
     });
 
     // ------------------------------------------------------------ Lambdas ----------------------------------------------------------
+
+    // Create lambda to send email notifications
+    const mailerLambda = new lambda.Function(this, 'MailerLambda', {
+      code: lambda.Code.fromAsset(path.join('lambda', 'mail_notifications'), {
+        bundling: {
+          image: lambda.Runtime.PYTHON_3_9.bundlingImage,
+          command: [
+            'bash',
+            '-c',
+            'pip install -r requirements.txt -t /asset-output &&  rsync -av -O --progress . /asset-output --exclude-from=.dockerignore',
+          ],
+        },
+      }),
+      handler: 'index.handler',
+      runtime: lambda.Runtime.PYTHON_3_9,
+    });
 
     // Get all problems lambda
     const getProblemsLambda = new lambda.Function(this, 'GetProblems', {
@@ -117,6 +133,32 @@ export class APSIBugTrackerStack extends cdk.Stack {
         DB_PASSWORD: DB_PASSWORD,
         DB_NAME: DB_NAME,
         DB_PORT: DB_PORT,
+      },
+      layers: [databaseLayer],
+    });
+
+    // Update problem lambda
+    const updateProblemLambda = new lambda.Function(this, 'UpdateProblem', {
+      code: lambda.Code.fromAsset(path.join('lambda', 'update_problem'), {
+        bundling: {
+          image: lambda.Runtime.PYTHON_3_9.bundlingImage,
+          command: [
+            'bash',
+            '-c',
+            'pip install -r requirements.txt -t /asset-output &&  rsync -av -O --progress . /asset-output --exclude-from=.dockerignore',
+          ],
+        },
+      }),
+      handler: 'index.handler', // Optional, defaults to 'handler'
+      runtime: lambda.Runtime.PYTHON_3_9, // Optional, defaults to lambda.Runtime.PYTHON_3_7
+      environment: {
+        LOG_LEVEL: '10', // Debug log level - https://docs.python.org/3/library/logging.html
+        DB_HOST: instance.instanceEndpoint.hostname,
+        DB_USERNAME: DB_USERNAME,
+        DB_PASSWORD: DB_PASSWORD,
+        DB_NAME: DB_NAME,
+        DB_PORT: DB_PORT,
+        SEND_EMAIL_LAMBDA: mailerLambda.functionName,
       },
       layers: [databaseLayer],
     });
@@ -171,21 +213,7 @@ export class APSIBugTrackerStack extends cdk.Stack {
       layers: [databaseLayer],
     });
 
-    // Create lambda to send email notifications
-    const mailerLambda = new lambda.Function(this, 'MailerLambda', {
-      code: lambda.Code.fromAsset(path.join('lambda', 'mail_notifications'), {
-        bundling: {
-          image: lambda.Runtime.PYTHON_3_9.bundlingImage,
-          command: [
-            'bash',
-            '-c',
-            'pip install -r requirements.txt -t /asset-output &&  rsync -av -O --progress . /asset-output --exclude-from=.dockerignore',
-          ],
-        },
-      }),
-      handler: 'index.handler',
-      runtime: lambda.Runtime.PYTHON_3_9,
-    });
+    // ------------------------------------------------------------ IAM Policies -----------------------------------------------------------------
 
     mailerLambda.addToRolePolicy(
       new iam.PolicyStatement({
@@ -199,6 +227,14 @@ export class APSIBugTrackerStack extends cdk.Stack {
       })
     );
 
+    updateProblemLambda.addToRolePolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: ['lambda:InvokeFunction'],
+        resources: [mailerLambda.functionArn],
+      })
+    );
+
     // ------------------------------------------------------------ Lambda Integrations ----------------------------------------------------------
 
     const getProblemsLambdaIntegration = new LambdaIntegration(
@@ -207,6 +243,9 @@ export class APSIBugTrackerStack extends cdk.Stack {
     const createProblemLambdaIntegration = new LambdaIntegration(
       createProblemLambda
     );
+    const updateProblemLambdaIntegration = new LambdaIntegration(
+      updateProblemLambda
+    );
     const getProblemByIdLambdaIntegration = new LambdaIntegration(
       getProblemByIdLambda
     );
@@ -214,8 +253,8 @@ export class APSIBugTrackerStack extends cdk.Stack {
       insertInitDataLambda
     );
 
-    // ------------------------------------------------------------ API Gateway ----------------------------------------------------------
-    
+    // ------------------------------------------------------------ API Gateway -----------------------------------------------------------------
+
     // Create API Gateway resource
     const apiGateway = new RestApi(this, 'APSIBugTrackerAPI', {
       restApiName: 'APSI BugTracker',
@@ -233,6 +272,7 @@ export class APSIBugTrackerStack extends cdk.Stack {
     // path: /problems/{id}
     const problemRoute = problemsRoute.addResource('{id}');
     problemRoute.addMethod('GET', getProblemByIdLambdaIntegration);
+    problemRoute.addMethod('POST', updateProblemLambdaIntegration);
 
     // path: /init-data
     const initDataRoute = apiGateway.root.addResource('init-data');

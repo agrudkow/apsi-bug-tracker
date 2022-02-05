@@ -43,6 +43,7 @@ def create_problem(data: CreateProblemData, logger: Logger) -> int:
 
             report = Report()
             report.creation_date = datetime.now()
+            report.updated_date = datetime.now()
             report.end_date = datetime.strptime(data.proposedDeadline, '%Y-%m-%d')
             report.deadline = datetime.strptime(data.proposedDeadline, '%Y-%m-%d')
             report.weight_name = data.weight

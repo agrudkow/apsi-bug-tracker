@@ -96,6 +96,7 @@ def insert_data() -> int:
 
             report = Report()
             report.creation_date = date(2022, 1, 10)
+            report.updated_date = date(2022, 1, 10)
             report.end_date = date(2022, 3, 19)
             report.deadline = date(2022, 3, 19)
             report.weight_name = weight.name

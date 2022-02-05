@@ -17,26 +17,26 @@ def handler(event, _):
     try:
         client = boto3.client('ses')
 
-        client.send_email(
-            Source='apsibugtracker@gmail.com',
-            Destination={
-                'ToAddresses': values["recipients"],
-                'CcAddresses': [],
-                'BccAddresses': []
-            },
-            Message={
-                'Subject': {
-                    'Data': f'Zgłoszenie {values["issue"]}',
-                    'Charset': 'UTF-8'
-                },
-                'Body': {
-                    'Text': {
-                        'Data':
-                        f'Zgłoszenie {values["issue"]} zostało zmodyfikowane.\nZespół BugTracker',
-                        'Charset': 'UTF-8',
-                    }
-                }
-            })
+        # client.send_email(
+        #     Source='apsibugtracker@gmail.com',
+        #     Destination={
+        #         'ToAddresses': values["recipients"],
+        #         'CcAddresses': [],
+        #         'BccAddresses': []
+        #     },
+        #     Message={
+        #         'Subject': {
+        #             'Data': f'Zgłoszenie {values["issue"]}',
+        #             'Charset': 'UTF-8'
+        #         },
+        #         'Body': {
+        #             'Text': {
+        #                 'Data':
+        #                 f'Zgłoszenie {values["issue"]} zostało zmodyfikowane.\nZespół BugTracker',
+        #                 'Charset': 'UTF-8',
+        #             }
+        #         }
+        #     })
     except KeyError as ex:
         logger.error(str(ex))
         return {
