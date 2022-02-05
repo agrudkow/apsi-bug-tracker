@@ -399,7 +399,7 @@ export function NewFormContent() {
               label="Version"
               value={problemData.version}
               onChange={handleChangeVersion}
-              placeholder="X.X.X"
+              placeholder="X"
               helperText="Add version of product related to the problem"
             />
           )}

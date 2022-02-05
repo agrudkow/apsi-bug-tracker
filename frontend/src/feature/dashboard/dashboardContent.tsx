@@ -24,6 +24,15 @@ import { useEffect, useState } from 'react';
 import { apsi_backend } from '../common';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import { Popover } from '@mui/material';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import { Theme, useTheme } from '@mui/material/styles';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Chip from '@mui/material/Chip';
 
 interface Column {
   id: 'number' | 'date' | 'type' | 'status' | 'description' | 'a';
@@ -37,19 +46,19 @@ const columns: Column[] = [
   {
     id: 'number',
     label: 'Problem ID',
-    minWidth: 20,
+    minWidth: 120,
     format: (value: number) => value.toLocaleString('en-US'),
   },
   {
     id: 'date',
     label: 'Creation date',
-    minWidth: 40,
+    minWidth: 120,
   },
-  { id: 'type', label: 'Type', minWidth: 152.5 },
+  { id: 'type', label: 'Type', minWidth: 120 },
   {
     id: 'status',
     label: 'Status',
-    minWidth: 20,
+    minWidth: 120,
   },
   {
     id: 'description',
@@ -59,7 +68,7 @@ const columns: Column[] = [
   {
     id: 'a',
     label: ' ',
-    minWidth: 80,
+    minWidth: 140,
   },
 ];
 
@@ -80,6 +89,42 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 });
 
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: '250'
+    },
+  },
+};
+
+const statuses = [
+  'New',
+  'Assigned',
+  'Analyzed',
+  'Diagnosed',
+  'Undiagnosed',
+  'Resolved',
+  'Unresolved',
+];
+
+const problems = [
+    'Service',
+    'Bug',
+    'Incident',
+];
+
+function getStyles(name: string, statusName: string[], theme: Theme) {
+  return {
+    fontWeight:
+      statusName.indexOf(name) === -1
+        ? theme.typography.fontWeightRegular
+        : theme.typography.fontWeightMedium,
+  };
+}
+
 export default function ProblemsTable() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -90,13 +135,81 @@ export default function ProblemsTable() {
   const [openPopUpUpdate, setOpenPopUpUpdate] = React.useState(false);
   const [openPopUpDelete, setOpenPopUpDelete] = React.useState(false);
   const [searchedRows, setSearchedRows] = useState<Data[]>(dataRows);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+  const theme = useTheme();
+  const [statusName, setStatusName] = React.useState<string[]>([]);
+  const [problemTypeName, setProblemTypeName] = React.useState<string[]>([]);
+
+  const handleChangeSelectStatus = (event: SelectChangeEvent<typeof statusName>) => {
+    const {
+      target: { value },
+    } = event;
+    setStatusName(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value,
+    );
+  };
+
+  const handleChangeSelectType = (event: SelectChangeEvent<typeof problemTypeName>) => {
+    const {
+      target: { value },
+    } = event;
+    setProblemTypeName(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value,
+    );
+  };
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const ident = open ? 'simple-popover' : undefined;
 
   const requestSearch = (searchedVal: string) => {
     setSearched(searchedVal);
     const newSearchedRows = dataRows.filter((row) => {
-      return row.id.toString().includes(searchedVal.toString());
+      return row.id.toString().includes(searchedVal.toString()) || row.description.toString().includes(searchedVal.toString());
     });
     setSearchedRows(newSearchedRows);
+};
+
+const requestFilter = () => {
+  var newRows: Array<boolean> = [];
+  
+  const newSearchedRows = dataRows.filter((row) => {  
+    let isGoodRowProblemTypeName: boolean = false;
+    let isGoodRowStatusName: boolean = false;
+    console.log("Statusname: " + statusName)
+    if (statusName.length === 0){
+      isGoodRowStatusName = true;
+      console.log("in status name empty")
+      
+    }
+    console.log("Problem name: " + problemTypeName)
+    if (problemTypeName.length === 0 ){
+      isGoodRowProblemTypeName = true;
+      console.log("problemnName empty")
+    }
+    for (var val of statusName){
+      if(row.status.toString().includes(val.toString())){
+        isGoodRowStatusName = true;
+      }
+    }
+    for (var val of problemTypeName){
+      if(row.type.toString().includes(val.toString())){
+        isGoodRowProblemTypeName = true;
+      }
+    }
+    return isGoodRowProblemTypeName && isGoodRowStatusName;
+  });
+  
+  setSearchedRows(newSearchedRows);
 };
 
 const cancelSearch = () => {
@@ -247,7 +360,7 @@ const cancelSearch = () => {
               <TextField
                 fullWidth
                 value={searched}
-                placeholder="Search by problem ID"
+                placeholder="Search by problem ID or keywords"
                 onChange={(event) =>  requestSearch(event.target.value)}
                 InputProps={{
                   disableUnderline: true,
@@ -263,6 +376,105 @@ const cancelSearch = () => {
                 </IconButton>
               </Tooltip>
             </Grid>
+            <Grid item>
+            <Button aria-describedby={ident} variant="contained" onClick={handleClick}>
+            <FilterListIcon/>
+      </Button>
+      <Popover
+        id={ident}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+      >
+            <div>
+            <Typography sx={{ m: 1, pt: 1, pl: 0.5}} variant="subtitle1" component="div">
+        Filter
+      </Typography>
+      <FormControl sx={{ m: 1, minWidth: 300 }}>
+        
+        <InputLabel id="statuses">Status</InputLabel>
+        <Select
+          labelId="statuses"
+          id="statuses"
+          multiple
+          value={statusName}
+          onChange={handleChangeSelectStatus}
+          input={<OutlinedInput id="select-statuses" label="Statuses" />}
+          renderValue={(selected) => (
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+              {selected.map((value) => (
+                <Chip key={value} label={value} />
+              ))}
+            </Box>
+          )}
+          MenuProps={MenuProps}
+        >
+          {statuses.map((name) => (
+            <MenuItem
+              key={name}
+              value={name}
+              style={getStyles(name, statusName, theme)}
+            >
+              {name}
+            </MenuItem>
+          ))}
+        </Select>
+        </FormControl>
+        </div>
+        <div>
+        <FormControl sx={{ m: 1, minWidth: 300 }}>
+        <InputLabel id="Problem_type">Problem type</InputLabel>
+        <Select
+          labelId="Problem_type"
+          id="Problem_type"
+          multiple
+          value={problemTypeName}
+          onChange={handleChangeSelectType}
+          input={<OutlinedInput id="select-types" label="Problem types" />}
+          renderValue={(selected) => (
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+              {selected.map((value) => (
+                <Chip key={value} label={value} />
+              ))}
+            </Box>
+          )}
+          MenuProps={MenuProps}
+        >
+          {problems.map((name) => (
+            <MenuItem
+              key={name}
+              value={name}
+              style={getStyles(name, statusName, theme)}
+            >
+              {name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </div>
+    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+
+    <Button
+                  variant="contained"
+                  size="large"
+                  sx={{
+                    ...buttonView,
+                    fontSize: 12,
+                    margin: 1,
+                    paddingX: 1,
+                    paddingY: 0.5,
+                  }}
+                  onClick={requestFilter}
+                >
+                  Apply
+                </Button>
+                </div>
+      </Popover>
+      </Grid>
           </Grid>
         </Toolbar>
       </AppBar>
