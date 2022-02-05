@@ -213,6 +213,31 @@ export class APSIBugTrackerStack extends cdk.Stack {
       layers: [databaseLayer],
     });
 
+    // Delete problem
+    const deleteProblemLambda = new lambda.Function(this, 'DeleteProblem', {
+      code: lambda.Code.fromAsset(path.join('lambda', 'delete_problem'), {
+        bundling: {
+          image: lambda.Runtime.PYTHON_3_9.bundlingImage,
+          command: [
+            'bash',
+            '-c',
+            'pip install -r requirements.txt -t /asset-output &&  rsync -av -O --progress . /asset-output --exclude-from=.dockerignore',
+          ],
+        },
+      }),
+      handler: 'index.handler', // Optional, defaults to 'handler'
+      runtime: lambda.Runtime.PYTHON_3_9, // Optional, defaults to lambda.Runtime.PYTHON_3_7
+      environment: {
+        LOG_LEVEL: '10', // Debug log level - https://docs.python.org/3/library/logging.html
+        DB_HOST: instance.instanceEndpoint.hostname,
+        DB_USERNAME: DB_USERNAME,
+        DB_PASSWORD: DB_PASSWORD,
+        DB_NAME: DB_NAME,
+        DB_PORT: DB_PORT,
+      },
+      layers: [databaseLayer],
+    });
+
     // ------------------------------------------------------------ IAM Policies -----------------------------------------------------------------
 
     mailerLambda.addToRolePolicy(
@@ -252,6 +277,9 @@ export class APSIBugTrackerStack extends cdk.Stack {
     const insertInitDataLambdaIntegration = new LambdaIntegration(
       insertInitDataLambda
     );
+    const deleteProblemLambdaIntegration = new LambdaIntegration(
+      deleteProblemLambda
+    );
 
     // ------------------------------------------------------------ API Gateway -----------------------------------------------------------------
 
@@ -273,6 +301,7 @@ export class APSIBugTrackerStack extends cdk.Stack {
     const problemRoute = problemsRoute.addResource('{id}');
     problemRoute.addMethod('GET', getProblemByIdLambdaIntegration);
     problemRoute.addMethod('POST', updateProblemLambdaIntegration);
+    problemRoute.addMethod('DELETE', deleteProblemLambdaIntegration);
 
     // path: /init-data
     const initDataRoute = apiGateway.root.addResource('init-data');
