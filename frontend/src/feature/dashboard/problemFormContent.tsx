@@ -176,14 +176,14 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
 
     setOpenPopUp(false);
   };
-  const fetchProblemData = async () =>
-    setProblemData(
-      (await apsi_backend.get<ProblemData>(`${BackendRoutes.Problems}/${id}`))
-        .data
-    );
-    if (role === Roles.User && problemData.status === 'new'){
+  const fetchProblemData = async () =>{
+    const newData = (await apsi_backend.get<ProblemData>(`${BackendRoutes.Problems}/${id}`)).data
+    setProblemData(newData);
+    if (role === Roles.User && newData.status === 'New'){
       setDisabledFieldsForUserIfNotNewStatuses(false);
     }
+  }
+
   useEffect(() => {
     fetchProblemData();
   }, []);

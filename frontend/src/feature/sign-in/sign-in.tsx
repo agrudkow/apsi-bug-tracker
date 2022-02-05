@@ -51,7 +51,7 @@ export const SignIn: React.FC<Props> = ({setRole}) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     //TODO: send data to backend, get role and username 
-    setRole("Admin");
+    setRole("User");
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     
