@@ -15,7 +15,6 @@ logger.info('APSI get_issues lambda initialized.')
 def handler(event: Dict[str, Any], _):
   """
   Handler for get_issues lambda.
-  
   """
   return {
       'statusCode': 200,

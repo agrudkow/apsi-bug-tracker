@@ -25,11 +25,11 @@ def get_problem_by_id(id: int):
         output["weight"] = str(report.weight_name)
         output["urgency"] = str(report.urgency_level)
         output["product"] = str(report.product_id)
-        output["component"] = str(report.component.name)
+        output["component"] = str(report.component.name if report.component else None)
         output["version"] = str(report.version)
         output["keywords"] = ', '.join([key_word.text for key_word in report.key_words])
         output["description"] = str(report.bug.description)
-        output["relatedProblems"] = ', '.join([bug.report.id for bug in related_bugs])
+        output["relatedProblems"] = ', '.join([str(bug.report.id) for bug in related_bugs])
         output["proposedDeadline"] = str(report.deadline)
         output["status"] = str(report.status_name)
         output["responsiblePerson"] = str(responsible_person[0].username) if len(responsible_person) == 1 else ''

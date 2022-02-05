@@ -1,3 +1,3 @@
 export enum BackendRoutes {
-  Problems = 'issues'
+  Problems = 'problems'
 }
