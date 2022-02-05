@@ -23,5 +23,5 @@ def handler(event: Dict[str, Any], _):
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Credentials': True,
         },
-        'body': json.dumps(get_problem_by_id(event['pathParameters']['id'])),
+        'body': json.dumps(get_problem_by_id(int(event['pathParameters']['id']))),
     }

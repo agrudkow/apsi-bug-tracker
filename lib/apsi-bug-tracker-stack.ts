@@ -53,6 +53,8 @@ export class APSIBugTrackerStack extends cdk.Stack {
       backupRetention: cdk.Duration.days(0),
     });
 
+    // ------------------------------------------------------------ Lambda Layers ---------------------------------------------------
+
     // Create database lambda layer
     const databaseLayer = new lambda.LayerVersion(this, 'database-layer', {
       code: lambda.Code.fromAsset(path.join('lambda', 'database'), {
@@ -66,6 +68,8 @@ export class APSIBugTrackerStack extends cdk.Stack {
         },
       }),
     });
+
+    // ------------------------------------------------------------ Lambdas ----------------------------------------------------------
 
     // Get all problems lambda
     const getProblemsLambda = new lambda.Function(this, 'GetProblems', {
@@ -167,7 +171,39 @@ export class APSIBugTrackerStack extends cdk.Stack {
       layers: [databaseLayer],
     });
 
-    const getProblemsLambdaIntegration = new LambdaIntegration(getProblemsLambda);
+    // Create lambda to send email notifications
+    const mailerLambda = new lambda.Function(this, 'MailerLambda', {
+      code: lambda.Code.fromAsset(path.join('lambda', 'mail_notifications'), {
+        bundling: {
+          image: lambda.Runtime.PYTHON_3_9.bundlingImage,
+          command: [
+            'bash',
+            '-c',
+            'pip install -r requirements.txt -t /asset-output &&  rsync -av -O --progress . /asset-output --exclude-from=.dockerignore',
+          ],
+        },
+      }),
+      handler: 'index.handler',
+      runtime: lambda.Runtime.PYTHON_3_9,
+    });
+
+    mailerLambda.addToRolePolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: [
+          'ses:SendEmail',
+          'ses:SendRawEmail',
+          'ses:SendTemplatedEmail',
+        ],
+        resources: ['*'],
+      })
+    );
+
+    // ------------------------------------------------------------ Lambda Integrations ----------------------------------------------------------
+
+    const getProblemsLambdaIntegration = new LambdaIntegration(
+      getProblemsLambda
+    );
     const createProblemLambdaIntegration = new LambdaIntegration(
       createProblemLambda
     );
@@ -178,6 +214,8 @@ export class APSIBugTrackerStack extends cdk.Stack {
       insertInitDataLambda
     );
 
+    // ------------------------------------------------------------ API Gateway ----------------------------------------------------------
+    
     // Create API Gateway resource
     const apiGateway = new RestApi(this, 'APSIBugTrackerAPI', {
       restApiName: 'APSI BugTracker',
@@ -199,43 +237,5 @@ export class APSIBugTrackerStack extends cdk.Stack {
     // path: /init-data
     const initDataRoute = apiGateway.root.addResource('init-data');
     initDataRoute.addMethod('PUT', insertInitDataLambdaIntegration);
-
-    // Create lambda to send email notifications
-    const mailerLambda = new lambda.Function(this, 'MailerLambda', {
-      code: lambda.Code.fromAsset(path.join('lambda', 'mail_notifications'), {
-        bundling: {
-          image: lambda.Runtime.PYTHON_3_9.bundlingImage,
-          command: [
-            'bash',
-            '-c',
-            'pip install -r requirements.txt -t /asset-output &&  rsync -av -O --progress . /asset-output --exclude-from=.dockerignore',
-          ],
-        },
-      }),
-      handler: 'index.handler',
-      runtime: lambda.Runtime.PYTHON_3_9,
-    });
-    const mailerLambdaIntegration = new LambdaIntegration(mailerLambda);
-    
-    // Create API Gateway resource
-    const mailerGateway = new RestApi(this, 'MailerGateway', {
-      restApiName: 'MailerGateway'});
-    //curl -d '{"recipients":["apsibugtracker@gmail.com"], "issue":"6785169E"}' -X POST https://dnkophrgv9.execute-api.eu-central-1.amazonaws.com/prod/
-    mailerGateway.root.addMethod('POST', mailerLambdaIntegration);
-
-    mailerLambda.addToRolePolicy(
-      new iam.PolicyStatement({
-        effect: iam.Effect.ALLOW,
-        actions: [
-          'ses:SendEmail',
-          'ses:SendRawEmail',
-          'ses:SendTemplatedEmail',
-        ],
-        resources: ["*"],
-      }),
-    );
-
-
-
   }
 }
