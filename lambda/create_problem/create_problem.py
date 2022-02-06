@@ -50,7 +50,7 @@ def create_problem(data: CreateProblemData, logger: Logger) -> int:
             report.status_name = data.status
             report.urgency_level = data.urgency
             report.bug_id = bug.id
-            report.product_id = int(data.product)
+            report.product_id = int(data.product) if data.product else None
             report.component_id = int(data.component) if data.component else None
             report.version = 1
 
