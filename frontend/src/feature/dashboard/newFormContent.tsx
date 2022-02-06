@@ -10,7 +10,8 @@ import plLocale from 'date-fns/locale/pl';
 import { useEffect } from 'react';
 import { NewProblemData } from '../../interface';
 import { useNavigate } from 'react-router-dom';
-import { Routes } from '../../utils';
+import { BackendRoutes, Routes } from '../../utils';
+import { apsi_backend } from '../common';
 
 
 const problems = [
@@ -38,8 +39,8 @@ const weights = [
     label: 'Normal',
   },
   {
-    value: 'Significant',
-    label: 'Significant',
+    value: 'High',
+    label: 'High',
   },
   {
     value: 'Blocking',
@@ -121,20 +122,83 @@ export function NewFormContent() {
   }, []);
 
   const sendData = async () => {
-    // TODO: await axios
-    // .post("backend.pl/data", problemData)
-    // .then((res) => {
-    //   console.log(res);
-    // })
-    // .catch((error) => {
-    //   console.log(error);
-    // });
+    // PRZEKOPIOWAC DO UPDATE oraz odpowiednio:
+    // ->Zmienic import { Routes } from '../../utils' na import { BackendRoutes, Routes } from '../../utils'.
+    // ->Zmienic put(BackendRoutes.Problems, bodyContent, config) na post(BackendRoutes.Problems, bodyContent, config).
+    // ->Dodac wiadomosc do bodyContent
+    // ->Zmienic wage significant na high
+    var date = "";
+    if (problemData.proposedDeadline) {
+      var year = problemData.proposedDeadline?.getFullYear();
+      var month = problemData.proposedDeadline?.getMonth() + 1;
+      var day = problemData.proposedDeadline?.getDate();
+      date = year + '-' + month?.toString().padStart(2, '0') + '-' + day?.toString().padStart(2, '0')
+    }
+
+    if (problemData.problemType == 'Bug') {
+      if (problemData.product == 'PetApp') {
+        problemData.product = '1';
+        if (problemData.component == 'Interface') {
+          problemData.component = '1';
+        }
+        else {
+          problemData.component = '2';
+        }
+      }
+      else if (problemData.product == 'SmartPet') {
+        problemData.product = '2';
+      }
+    }
+
+    var splitted = problemData.responsiblePerson.split(" ", 10);
+    problemData.responsiblePerson = splitted[0];
+
+    let bodyContent = JSON.stringify({
+      "description": problemData.description,
+      "username": problemData.username,
+      "responsiblePerson": problemData.responsiblePerson,
+      "observers": problemData.observers,
+      "proposedDeadline": date,
+      "weight": problemData.weight,
+      "status": problemData.status,
+      "urgency": problemData.urgency,
+      "version": problemData.version,
+      "problemType": problemData.problemType,
+      "product": problemData.product,
+      "component": problemData.component,
+      "keywords": problemData.keywords,
+      "relatedProblems": problemData.relatedProblems
+    });
+
+    let config = {
+      headers: {
+        "Accept": "*/*",
+        "Content-Type": "application/json",
+      }
+    }
+
+    apsi_backend
+      .put(BackendRoutes.Problems, bodyContent, config)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.log(error.response);
+          console.log("server responded");
+        } else if (error.request) {
+          console.log("network error");
+        } else {
+          console.log(error);
+        }
+      });
+    // KONIEC
   };
   const navigate = useNavigate();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    //TODO: sendData();
+    sendData();
     localStorage.setItem('isProblemSubmitted', 'true');
     navigate(`../${Routes.Dashboard}`, { replace: true });
   };
@@ -290,7 +354,7 @@ export function NewFormContent() {
       sx={{ '& .MuiTextField-root': { m: 1, width: '100%' } }}
       noValidate
       onSubmit={handleSubmit}
-      //autoComplete="off"
+    //autoComplete="off"
     >
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <TextField
