@@ -32,8 +32,8 @@ class UpdateProblemData:
     component: Optional[str]
     keywords: str
     relatedProblems: Optional[str]
-    comment_message: str # New comment
-    comment_message_username: str # Username of user who's added a new comment
+    commentMessage: str # New comment
+    commentMessageUsername: str # Username of user who's added a new comment
 
 
 def update_problem(problem_id: int, data: UpdateProblemData, logger: Logger) -> Tuple[int, List[str]]:
@@ -128,8 +128,8 @@ def update_problem(problem_id: int, data: UpdateProblemData, logger: Logger) -> 
             # Create new comment record in DB
             message_item = Message()
             message_item.report_id = report.id
-            message_item.username = data.comment_message_username
-            message_item.text = data.comment_message
+            message_item.username = data.commentMessageUsername
+            message_item.text = data.commentMessage
             message_item.send_date = report.updated_date
             session.add(message_item)
             
