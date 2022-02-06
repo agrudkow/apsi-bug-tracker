@@ -6,13 +6,14 @@ from index import handler
 
 logging.basicConfig()
 logger = logging.getLogger('test_create_issue')
-logger.setLevel(int(os.environ['LOG_LEVEL']))
-
+# logger.setLevel(int(os.environ['LOG_LEVEL']))
+logger.setLevel(10)
+null=None
 if __name__ == '__main__':
     result = handler(
         {
             'pathParameters': {
-                'id': 3
+                'id': 1
             },
             'body':
                 json.dumps({
@@ -32,7 +33,9 @@ if __name__ == '__main__':
                         'runtime',
                         'xdddd'
                     ]),
-                    'relatedProblems': '1',
+                    # 'relatedProblems': '1',
+                    'comment_message': 'Jakies bzdury, byle dużo i żeby przypominały komentarz.',
+                    'comment_message_username': 'Jan'
                 })
         }, 1)
 
