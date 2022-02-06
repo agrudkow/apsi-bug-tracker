@@ -10,7 +10,8 @@ logger.setLevel(int(os.environ['LOG_LEVEL']))
 if __name__ == '__main__':
     result = handler({
         'pathParameters': {
-            'id': 4
+            'user': 'Jan',
+            'id': 1,
         },
     }, None)
 
