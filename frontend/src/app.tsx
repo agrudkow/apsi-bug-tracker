@@ -20,7 +20,7 @@ function App() {
       <Route path="/" element={<Navigate to={Routes.Login} />} />
       <Route path={Routes.Login} element={<SignIn setRole={setRole} />} />
       <Route
-        path={Routes.Dashboard}
+        path={`${Routes.Dashboard}/:username`}
         element={
           <Layout>
             <Dashboard />
@@ -36,7 +36,7 @@ function App() {
         }
       />
       <Route
-        path={`${Routes.ProblemEditForm}/:id`}
+        path={`${Routes.ProblemEditForm}/:username/:id`}
         element={
           <Layout>
             <ProblemFormContent role={role} />

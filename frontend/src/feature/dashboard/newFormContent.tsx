@@ -178,7 +178,7 @@ export function NewFormContent() {
     }
 
     apsi_backend
-      .put(BackendRoutes.Problems, bodyContent, config)
+      .put(BackendRoutes.Problems + localStorage.getItem('username'), bodyContent, config)
       .then((response) => {
         console.log(response);
       })
@@ -200,7 +200,7 @@ export function NewFormContent() {
     event.preventDefault();
     sendData();
     localStorage.setItem('isProblemSubmitted', 'true');
-    navigate(`../${Routes.Dashboard}`, { replace: true });
+    navigate(`../${Routes.Dashboard}/${localStorage.getItem('username')}`, { replace: true });
   };
 
   const handleChangeUser = (event: React.ChangeEvent<HTMLInputElement>) => {

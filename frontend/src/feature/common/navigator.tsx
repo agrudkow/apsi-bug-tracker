@@ -38,7 +38,7 @@ export function Navigator(props: DrawerProps) {
     navigate(`../${Routes.Form}`, { replace: true });
   }
   const dashboardHandler = () =>{
-    navigate(`../${Routes.Dashboard}`, { replace: true });
+    navigate(`../${Routes.Dashboard}/${localStorage.getItem('username')}`, { replace: true });
   }
 
   return (

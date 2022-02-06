@@ -177,7 +177,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
     setOpenPopUp(false);
   };
   const fetchProblemData = async () =>{
-    const newData = (await apsi_backend.get<ProblemData>(`${BackendRoutes.Problems}/${id}`)).data
+    const newData = (await apsi_backend.get<ProblemData>(`${BackendRoutes.Problems}/${localStorage.getItem('username')}/${id}`)).data
     setProblemData(newData);
     if (role === Roles.User && newData.status === 'New'){
       setDisabledFieldsForUserIfNotNewStatuses(false);
@@ -194,7 +194,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
   const deleteProblemHandler = () => {
     //TODO: send delete to backend 
     localStorage.setItem('isProblemDeleted', 'true');
-    navigate(`../${Routes.Dashboard}`, { replace: true });
+    navigate(`../${Routes.Dashboard}/${localStorage.getItem('username')}`, { replace: true });
   };
 
 
@@ -202,7 +202,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
     event.preventDefault();
     //TODO: sendData();
     localStorage.setItem('isProblemUpdated', 'true');
-    navigate(`../${Routes.Dashboard}`, { replace: true });
+    navigate(`../${Routes.Dashboard}/${localStorage.getItem('username')}`, { replace: true });
   };
 
   const sendData = async () => {

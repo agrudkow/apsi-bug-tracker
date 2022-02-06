@@ -26,7 +26,7 @@ export const Layout: React.FC = ({ children }) => {
   };
 
   useEffect(() => {
-    if (pathname === `/${Routes.Dashboard}`) {
+    if (pathname.includes(`${Routes.Dashboard}`)) {
       setHeaderDescription('Problems Dashboard');
     } else if (pathname === `/${Routes.Form}`) {
       setHeaderDescription('New problem form');

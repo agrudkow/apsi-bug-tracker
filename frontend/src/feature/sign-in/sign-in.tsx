@@ -50,7 +50,6 @@ export const SignIn: React.FC<Props> = ({setRole}) => {
 
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    //TODO: send data to backend, get role and username 
     setRole("User");
     event.preventDefault();
     
@@ -60,7 +59,7 @@ export const SignIn: React.FC<Props> = ({setRole}) => {
       localStorage.setItem('username', email.toString().split("@")[0]);
     }
 
-    navigate(`../${Routes.Dashboard}`, { replace: true });
+    navigate(`../${Routes.Dashboard}/${localStorage.getItem('username')}`, { replace: true });
   };
 
   return (
