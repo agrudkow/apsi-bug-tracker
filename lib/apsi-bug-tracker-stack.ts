@@ -292,13 +292,14 @@ export class APSIBugTrackerStack extends cdk.Stack {
     });
 
     // Attach Lambda integration to API Gateway
-    // path: /problems
+    // path: /problems/{user}
     const problemsRoute = apiGateway.root.addResource('problems');
+    const userRoute = problemsRoute.addResource('{user}')
     problemsRoute.addMethod('GET', getProblemsLambdaIntegration);
     problemsRoute.addMethod('PUT', createProblemLambdaIntegration);
 
-    // path: /problems/{id}
-    const problemRoute = problemsRoute.addResource('{id}');
+    // path: /problems/{user}/{id}
+    const problemRoute = userRoute.addResource('{id}');
     problemRoute.addMethod('GET', getProblemByIdLambdaIntegration);
     problemRoute.addMethod('POST', updateProblemLambdaIntegration);
     problemRoute.addMethod('DELETE', deleteProblemLambdaIntegration);
@@ -308,3 +309,4 @@ export class APSIBugTrackerStack extends cdk.Stack {
     initDataRoute.addMethod('PUT', insertInitDataLambdaIntegration);
   }
 }
+
