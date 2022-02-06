@@ -32,8 +32,8 @@ class UpdateProblemData:
     component: Optional[str]
     keywords: str
     relatedProblems: Optional[str]
-    commentMessage: str # New comment
-    commentMessageUsername: str # Username of user who's added a new comment
+    commentMessage: Optional[str] # New comment
+    commentMessageUsername: Optional[str] # Username of user who's added a new comment
 
 
 def update_problem(problem_id: int, data: UpdateProblemData, logger: Logger) -> Tuple[int, List[str]]:
