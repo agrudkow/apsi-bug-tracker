@@ -239,7 +239,7 @@ const cancelSearch = () => {
 
   const fetchProblemsData = async () => {
     
-    let xd = (await apsi_backend.get<Data[]>(BackendRoutes.Problems+localStorage.getItem('username'))).data;
+    let xd = (await apsi_backend.get<Data[]>(BackendRoutes.Problems+'/'+localStorage.getItem('username'))).data;
     setDataRows(xd);
     setSearchedRows(xd);
   }

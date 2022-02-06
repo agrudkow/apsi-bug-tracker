@@ -178,7 +178,7 @@ export function NewFormContent() {
     }
 
     apsi_backend
-      .put(BackendRoutes.Problems + localStorage.getItem('username'), bodyContent, config)
+      .put(BackendRoutes.Problems+ '/' + localStorage.getItem('username'), bodyContent, config)
       .then((response) => {
         console.log(response);
       })
