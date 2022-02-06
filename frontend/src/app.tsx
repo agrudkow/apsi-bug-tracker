@@ -9,7 +9,7 @@ import { Routes } from './utils';
 function App() {
   const [role, setRole] = React.useState<string>('User');
   React.useEffect(() => {
-    localStorage.setItem('username', 'Jan');
+    localStorage.setItem('username', '');
     localStorage.setItem('isLoggedOut', 'false')
     localStorage.setItem('isProblemDeleted', 'false')
     localStorage.setItem('isProblemSubmitted', 'false')

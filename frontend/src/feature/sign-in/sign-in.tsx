@@ -53,12 +53,13 @@ export const SignIn: React.FC<Props> = ({setRole}) => {
     //TODO: send data to backend, get role and username 
     setRole("User");
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
     
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const data = new FormData(event.currentTarget);
+    const email = data.get('email');
+    if (email !== null){
+      localStorage.setItem('username', email.toString().split("@")[0]);
+    }
+
     navigate(`../${Routes.Dashboard}`, { replace: true });
   };
 
