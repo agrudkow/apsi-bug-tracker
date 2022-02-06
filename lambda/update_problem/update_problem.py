@@ -1,6 +1,9 @@
+from email import message
 from logging import Logger
 from dataclasses import dataclass
 from datetime import datetime
+from pyexpat.errors import messages
+import re
 from typing import Dict, List, Optional, Tuple
 
 from apsi_database.database import get_db_session
@@ -30,7 +33,7 @@ class UpdateProblemData:
     keywords: str
     relatedProblems: Optional[str]
     comment_message: str # New comment
-    comment_message_username: str # Username of user who's added new a comment
+    comment_message_username: str # Username of user who's added a new comment
 
 
 def update_problem(problem_id: int, data: UpdateProblemData, logger: Logger) -> Tuple[int, List[str]]:
@@ -117,40 +120,26 @@ def update_problem(problem_id: int, data: UpdateProblemData, logger: Logger) -> 
                 all()
             email_recipients = [observer.user.email for observer in observers]
 
-
-            # Update comments
-            # Get 'old' messages
+            # Add new comment
+            # Get 'old' messages (comments)
             old_messages = session.query(Message).\
                 filter(Message.report_id == report.id).all()
-            old_messages_dict: Dict[str, Message] = {message: message for message in old_messages}
-            # Get data of 'new' messages
-            # messages_update_data = {message: message for message in data.messages.split(sep=', ')}
-            messages_update_data = data.comment_message
 
-            # Delete comments
-            for message, message_value in old_messages_dict.items():
-                if message not in messages_update_data:
-                    logger.debug(f'Deleted message: {message}')
-                    session.delete(message_value)
-                    session.flush()
-                else:
-                    # del messages_update_data[message]
-                    del messages_update_data
-
-            # Add new comments
-            message_item = session.query(Message).\
-                filter(Message.report_id == report.id).\
-                    one_or_none()
-            message_item = message_item if message_item else Message()
+            # Create new comment record in DB
+            message_item = Message()
             message_item.report_id = report.id
             message_item.username = data.comment_message_username
             message_item.text = data.comment_message
             message_item.send_date = report.updated_date
             session.add(message_item)
             
+            # Update comment list associated with a specific report
+            report.messages.append(message_item)
+            session.add(report)
             session.commit()
-
+            
             return report.id, email_recipients
+
         except Exception as ex:
             logger.error(str(ex), stack_info=True)
             raise ex
