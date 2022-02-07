@@ -22,6 +22,7 @@ export interface ProblemData {
     proposedDeadline: Date | null,
     status: string,
     responsiblePerson: string
+    comments: string
   }
 
   export interface NewProblemData {
