@@ -295,8 +295,8 @@ export class APSIBugTrackerStack extends cdk.Stack {
     // path: /problems/{user}
     const problemsRoute = apiGateway.root.addResource('problems');
     const userRoute = problemsRoute.addResource('{user}')
-    problemsRoute.addMethod('GET', getProblemsLambdaIntegration);
-    problemsRoute.addMethod('PUT', createProblemLambdaIntegration);
+    userRoute.addMethod('GET', getProblemsLambdaIntegration);
+    userRoute.addMethod('PUT', createProblemLambdaIntegration);
 
     // path: /problems/{user}/{id}
     const problemRoute = userRoute.addResource('{id}');
