@@ -211,10 +211,10 @@ def insert_data() -> int:
       session.flush()
 
       user = User()
-      user.username = 'Jan'
+      user.username = 'jan.bugtracker'
       user.name = 'Jan'
       user.surname = 'Kowalski'
-      user.email = 'kowalski@please.dont.mail.me'
+      user.email = 'jankowalski.bugtracker@gmail.com'
       user.phone = '123456789'
       user.worker = True
       session.add(user)
