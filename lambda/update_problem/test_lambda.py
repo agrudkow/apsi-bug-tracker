@@ -33,8 +33,8 @@ if __name__ == '__main__':
                         'xdddd'
                     ]),
                     # 'relatedProblems': '1',
-                    'comment_message': 'Komentarz testowy.',
-                    'comment_message_username': 'Jeff'
+                    'commentMessage': 'Komentarz testowy.',
+                    'commentMessageUsername': 'Jeff'
                 })
         }, 1)
 
