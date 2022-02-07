@@ -35,7 +35,9 @@ if __name__ == '__main__':
                         'runtime',
                         'xdddd'
                     ]),
-                    'relatedProblems': '1',
+                    # 'relatedProblems': '1',
+                    'commentMessage': 'Komentarz testowy.',
+                    'commentMessageUsername': 'Jeff'
                 })
         }, 1)
 

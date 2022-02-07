@@ -1,6 +1,9 @@
+from email import message
 from logging import Logger
 from dataclasses import dataclass
 from datetime import datetime
+from pyexpat.errors import messages
+import re
 from typing import Dict, List, Optional, Tuple
 
 from apsi_database.database import get_db_session
@@ -10,6 +13,7 @@ from apsi_database.models import (
     KeyWord,
     Role,
     ReportClass,
+    Message,
 )
 
 
@@ -28,6 +32,8 @@ class UpdateProblemData:
     component: Optional[str]
     keywords: str
     relatedProblems: Optional[str]
+    commentMessage: Optional[str] # New comment
+    commentMessageUsername: Optional[str] # Username of user who's added a new comment
 
 
 def update_problem(problem_id: int, data: UpdateProblemData, logger: Logger) -> Tuple[int, List[str]]:
@@ -109,14 +115,31 @@ def update_problem(problem_id: int, data: UpdateProblemData, logger: Logger) -> 
                 session.add(observer_person)
                 session.flush()
 
-            session.commit()
-
             observers = session.query(RelatedUser).\
                 filter(RelatedUser.report_id == report.id, RelatedUser.role_id == observer_role.id).\
                 all()
             email_recipients = [observer.user.email for observer in observers]
 
+            # Add new comment
+            # Get 'old' messages (comments)
+            old_messages = session.query(Message).\
+                filter(Message.report_id == report.id).all()
+
+            # Create new comment record in DB
+            message_item = Message()
+            message_item.report_id = report.id
+            message_item.username = data.commentMessageUsername
+            message_item.text = data.commentMessage
+            message_item.send_date = report.updated_date
+            session.add(message_item)
+            
+            # Update comment list associated with a specific report
+            report.messages.append(message_item)
+            session.add(report)
+            session.commit()
+            
             return report.id, email_recipients
+
         except Exception as ex:
             logger.error(str(ex), stack_info=True)
             raise ex
