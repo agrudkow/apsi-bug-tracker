@@ -179,7 +179,24 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
   };
   const fetchProblemData = async () =>{
     const newData = (await apsi_backend.get<ProblemData>(`${BackendRoutes.Problems}/${localStorage.getItem('username')}/${id}`)).data
+    if (newData.problemType == 'Bug') {
+      if (newData.product == '1') {
+        newData.product = 'PetApp';
+        if (newData.component == '1') {
+          newData.component = 'Database';
+        }
+        else {
+          newData.component = 'Interface';
+        }
+      }
+      else if (newData.product == '2') {
+        newData.product = 'SmartPet';
+      }
+    }
+    
     setProblemData(newData);
+
+    console.log(newData.comments)
     if (role === Roles.User && newData.status === 'New'){
       setDisabledFieldsForUserIfNotNewStatuses(false);
     }
@@ -187,6 +204,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
 
   useEffect(() => {
     fetchProblemData();
+
   }, []);
 
 
@@ -200,7 +218,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    //TODO: sendData();
+    //TODO: sendData() remember to send new comment ;
     localStorage.setItem('isProblemUpdated', 'true');
     navigate(`../${Routes.Dashboard}/${localStorage.getItem('username')}`, { replace: true });
   };
