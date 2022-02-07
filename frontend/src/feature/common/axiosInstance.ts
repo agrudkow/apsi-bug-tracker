@@ -3,5 +3,5 @@ import axios from 'axios'
 export const apsi_backend = axios.create({
   // TODO: add url to env variables
   // Add url to your api gateway
-  baseURL: 'https://44mzz95cy3.execute-api.eu-central-1.amazonaws.com/prod/',
+  baseURL: 'https://ufileaq6oa.execute-api.eu-central-1.amazonaws.com/prod/',
 });

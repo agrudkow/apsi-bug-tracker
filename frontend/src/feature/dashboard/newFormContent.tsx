@@ -12,6 +12,7 @@ import { NewProblemData } from '../../interface';
 import { useNavigate } from 'react-router-dom';
 import { BackendRoutes, Routes } from '../../utils';
 import { apsi_backend } from '../common';
+import { CircularProgress } from '@mui/material';
 
 
 const problems = [
@@ -98,6 +99,7 @@ const components = [
 ];
 
 export function NewFormContent() {
+  const [loading, setLoading] = React.useState(false);
   const [problemData, setProblemData] = React.useState<NewProblemData>({
     username: '',
     observers: '',
@@ -197,10 +199,11 @@ export function NewFormContent() {
   const navigate = useNavigate();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    setLoading(true);
     event.preventDefault();
     sendData();
     localStorage.setItem('isProblemSubmitted', 'true');
-    navigate(`../${Routes.Dashboard}/${localStorage.getItem('username')}`, { replace: true });
+    setTimeout(function() { navigate(`../${Routes.Dashboard}/${localStorage.getItem('username')}`, { replace: true }); }, 1000);
   };
 
   const handleChangeUser = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -349,13 +352,20 @@ export function NewFormContent() {
   };
 
   return (
-    <Box
+    <Box>
+    {(loading===true) && (<div style={{display: 'flex', justifyContent: 'center'}}>
+      <CircularProgress />
+      </div>
+      )}
+    {loading===false &&(<Box
       component="form"
       sx={{ '& .MuiTextField-root': { m: 1, width: '100%' } }}
       noValidate
       onSubmit={handleSubmit}
     //autoComplete="off"
     >
+
+    
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <TextField
           required
@@ -571,6 +581,8 @@ export function NewFormContent() {
           Submit
         </Button>
       </div>
+    </Box>
+    )}
     </Box>
   );
 }
