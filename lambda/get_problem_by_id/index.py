@@ -6,10 +6,9 @@ from typing import Any, Dict
 from get_problem_by_id import get_problem_by_id
 
 logging.basicConfig()
-logger = logging.getLogger('get_problems')
+logger = logging.getLogger('get_problem_by_id')
 logger.setLevel(int(os.environ['LOG_LEVEL']))
-
-logger.info('APSI get_problems lambda initialized.')
+logger.info('APSI get_problem_by_id lambda initialized.')
 
 
 def handler(event: Dict[str, Any], _):

@@ -142,7 +142,7 @@ interface Props {
 }
 
 export const ProblemFormContent: React.FC<Props> = ({ role }) => {
-  const [comment, setComment] = React.useState<string>('');
+  const [newComment, setNewComment] = React.useState<string>('');
   const [disabledFieldsForUserIfNotNewStatuses, setDisabledFieldsForUserIfNotNewStatuses] = React.useState<boolean>(true);
   const [problemData, setProblemData] = React.useState<ProblemData>({
     problemID: 1,
@@ -160,6 +160,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
     proposedDeadline: null,
     status: '',
     responsiblePerson: '',
+    comments: ''
   });
   const { id } = useParams();
   const navigate = useNavigate();
@@ -177,7 +178,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
     setOpenPopUp(false);
   };
   const fetchProblemData = async () =>{
-    const newData = (await apsi_backend.get<ProblemData>(`${BackendRoutes.Problems}/${id}`)).data
+    const newData = (await apsi_backend.get<ProblemData>(`${BackendRoutes.Problems}/${localStorage.getItem('username')}/${id}`)).data
     setProblemData(newData);
     if (role === Roles.User && newData.status === 'New'){
       setDisabledFieldsForUserIfNotNewStatuses(false);
@@ -188,13 +189,12 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
     fetchProblemData();
   }, []);
 
-  const handleComment = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setComment(event.target.value);
-  };
+
+
   const deleteProblemHandler = () => {
     //TODO: send delete to backend 
     localStorage.setItem('isProblemDeleted', 'true');
-    navigate(`../${Routes.Dashboard}`, { replace: true });
+    navigate(`../${Routes.Dashboard}/${localStorage.getItem('username')}`, { replace: true });
   };
 
 
@@ -202,7 +202,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
     event.preventDefault();
     //TODO: sendData();
     localStorage.setItem('isProblemUpdated', 'true');
-    navigate(`../${Routes.Dashboard}`, { replace: true });
+    navigate(`../${Routes.Dashboard}/${localStorage.getItem('username')}`, { replace: true });
   };
 
   const sendData = async () => {
@@ -359,6 +359,16 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
     const newProblemData: ProblemData = { ...problemData };
     newProblemData.responsiblePerson = event.target.value;
     setProblemData(newProblemData);
+  };
+
+  const handleChangeComments = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newProblemData: ProblemData = { ...problemData };
+    newProblemData.comments = event.target.value;
+    setProblemData(newProblemData);
+  };
+
+  const handleChangeNewComment = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNewComment(event.target.value);
   };
 
   return (
@@ -582,12 +592,24 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
       <div style={{ display: 'flex', flexDirection: 'row' }}>
       <TextField
         sx={{ mt: 3, width: '100%' }}
-        id="comment"
-        label="Comment"
+        id="comments"
+        label="Comments"
+        disabled
         multiline
         rows={4}
-        value={comment}
-        onChange={handleComment}
+        value={problemData.comments}
+        onChange={handleChangeComments}
+      />
+    </div>
+    <div style={{ display: 'flex', flexDirection: 'row' }}>
+      <TextField
+        sx={{ mt: 3, width: '100%' }}
+        id="newComment"
+        label="New comment"
+        multiline
+        rows={3}
+        value={newComment}
+        onChange={handleChangeNewComment}
       />
     </div>
       <div

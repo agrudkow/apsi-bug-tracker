@@ -30,7 +30,7 @@ export const ProblemDetailsContent: React.FC<Props> = ({ role }) => {
 
   const fetchProblemData = async () => {
     const response_data = (
-      await apsi_backend.get<ProblemData>(`${BackendRoutes.Problems}/${id}`)
+      await apsi_backend.get<ProblemData>(`${BackendRoutes.Problems}/${localStorage.getItem('username')}/${id}`)
     ).data;
     const parsedProblemDetails: Data[] = Object.entries(response_data).map(
       ([key, value]) => {
@@ -64,7 +64,7 @@ export const ProblemDetailsContent: React.FC<Props> = ({ role }) => {
     //TODO: send delete to backend + actualize view + view an information
   };
   const editFormHandler = () => {
-    navigate(`/${Routes.ProblemEditForm}/${id}`, { replace: true });
+    navigate(`/${Routes.ProblemEditForm}/${localStorage.getItem('username')}/${id}`, { replace: true });
   };
 
   function Row(props: { row: Data }) {

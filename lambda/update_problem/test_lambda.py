@@ -7,12 +7,15 @@ from index import handler
 logging.basicConfig()
 logger = logging.getLogger('test_create_issue')
 logger.setLevel(int(os.environ['LOG_LEVEL']))
+# logger.setLevel(10)
+
 
 if __name__ == '__main__':
     result = handler(
         {
             'pathParameters': {
-                'id': 1
+                'user': 'Jan',
+                'id': 1,
             },
             'body':
                 json.dumps({

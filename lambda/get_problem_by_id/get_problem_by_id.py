@@ -1,5 +1,6 @@
+import re
 from apsi_database.database import get_db_session
-from apsi_database.models import Report, Bug
+from apsi_database.models import Report, Bug, Message
 
 
 def get_problem_by_id(id: int):
@@ -18,6 +19,25 @@ def get_problem_by_id(id: int):
         observers = [
             related_user.username for related_user in related_users if related_user.role.description == 'OBSERVER'
         ]
+        related_messages = session.query(Message).filter(Message.report_id == report.id)
+        gathered_messages = []
+        # one_message = []
+        # for message in related_messages:
+        #     message_dict = {
+        #         "send_date": str(message.send_date),
+        #         "username": message.username,
+        #         "text": message.text
+        #     }
+        #     gathered_messages.append(message_dict)
+
+        for message in related_messages:
+            one_message = []
+            one_message.append(str(message.send_date))
+            one_message.append(message.username)
+            one_message.append(message.text)
+            one_message = ', '.join(element for element in one_message)
+            gathered_messages.append(one_message)
+
         output["problemID"] = str(report.id)
         output["username"] = str(creator.username)
         output["observers"] = ', '.join(observers)
@@ -33,4 +53,5 @@ def get_problem_by_id(id: int):
         output["proposedDeadline"] = str(report.deadline)
         output["status"] = str(report.status_name)
         output["responsiblePerson"] = str(responsible_person[0].username) if len(responsible_person) == 1 else ''
+        output["comments"] = gathered_messages
     return output
