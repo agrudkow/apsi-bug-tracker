@@ -33,6 +33,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
+import { CircularProgress } from '@mui/material';
+
 
 interface Column {
   id: 'number' | 'date' | 'type' | 'status' | 'description' | 'a';
@@ -126,6 +128,7 @@ function getStyles(name: string, statusName: string[], theme: Theme) {
 }
 
 export default function ProblemsTable() {
+  const [loading, setLoading] = React.useState(true);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [dataRows, setDataRows] = useState<Data[]>([]);
@@ -242,6 +245,7 @@ const cancelSearch = () => {
     let xd = (await apsi_backend.get<Data[]>(BackendRoutes.Problems+'/'+localStorage.getItem('username'))).data;
     setDataRows(xd);
     setSearchedRows(xd);
+    setLoading(false);
   }
     
 
@@ -478,6 +482,11 @@ const cancelSearch = () => {
           </Grid>
         </Toolbar>
       </AppBar>
+      {(loading===true) && (<div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+      <CircularProgress />
+      </div>
+      )}
+    {loading===false &&(
       <Paper sx={{ width: '100%' }}>
         <TableContainer sx={{ maxHeight: 600 }}>
           <Table stickyHeader>
@@ -494,6 +503,7 @@ const cancelSearch = () => {
                 ))}
               </TableRow>
             </TableHead>
+            
             <TableBody>
               {searchedRows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -512,7 +522,7 @@ const cancelSearch = () => {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      </Paper>
+      </Paper>)}
       <Snackbar open={openPopUpSubmit} anchorOrigin={{vertical: 'bottom', horizontal: 'center' }} autoHideDuration={3000} onClose={handleClosePopUpSubmit}>
         <Alert onClose={handleClosePopUpSubmit} severity="success" sx={{ width: '100%' }}>
           Problem has been submitted!
