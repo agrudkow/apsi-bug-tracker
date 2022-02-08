@@ -144,7 +144,7 @@ interface Props {
 
 export const ProblemFormContent: React.FC<Props> = ({ role }) => {
   const [loading, setLoading] = React.useState(true);
-  const [date, setDate] = React.useState<any[]>([])
+  const [openPopUpUpdate, setOpenPopUpUpdate] = React.useState(false);
   const [newComment, setNewComment] = React.useState<string>('');
   const [disabledFieldsForUserIfNotNewStatuses, setDisabledFieldsForUserIfNotNewStatuses] = React.useState<boolean>(true);
   const [problemData, setProblemData] = React.useState<ProblemData>({
@@ -167,7 +167,6 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
   });
   const { id } = useParams();
   const navigate = useNavigate();
-  const [openPopUp, setOpenPopUp] = React.useState(false);
 
   const prepareCommentToView = () => {
     let s = '';
@@ -177,19 +176,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
     return s;
   }
 
-  const handleClick = () => {
-    setOpenPopUp(true);
-  };
-
-  const handleClosePopUp = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setOpenPopUp(false);
-  };
   const fetchProblemData = async () =>{
-    console.log('fetch')
     const newData = (await apsi_backend.get<ProblemData>(`${BackendRoutes.Problems}/${localStorage.getItem('username')}/${id}`)).data
     if (newData.problemType == 'Bug') {
       if (newData.product == '1') {
@@ -229,7 +216,11 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
     event.preventDefault();
     sendData();
     localStorage.setItem('isProblemUpdated', 'true');
-    setTimeout(function() { navigate(`../${Routes.Dashboard}/${localStorage.getItem('username')}`, { replace: true }); }, 2000);
+    setTimeout(function() { fetchProblemData()}, 3000);
+    
+    setOpenPopUpUpdate(true);
+    setNewComment('');
+    localStorage.setItem('isProblemUpdated', 'false');
   };
 
   const deleteProblem = async () => {
@@ -327,9 +318,9 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
         'urgency': problemData.urgency,
         'problemType': problemData.problemType,
         'keywords': problemData.keywords,
-        //'relatedProblems': problemData.relatedProblems,
+        'relatedProblems': problemData.relatedProblems,
         'commentMessage': newComment,
-        'commentMessageUsername': problemData.username
+        'commentMessageUsername': localStorage.getItem('username')
       });
     }
     else {
@@ -346,9 +337,9 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
       'product': problemData.product,
       'component': problemData.component,
       'keywords': problemData.keywords,
-      //'relatedProblems': problemData.relatedProblems,
+      'relatedProblems': problemData.relatedProblems,
       'commentMessage': newComment,
-      'commentMessageUsername': problemData.username
+      'commentMessageUsername': localStorage.getItem('username')
     });
 
   }
@@ -375,6 +366,13 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
         }
       });
     // KONIEC
+  };
+
+  const handleClosePopUpUpdate = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenPopUpUpdate(false);
   };
 
   const handleChangeUser = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -659,7 +657,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
               label="Version"
               value={problemData.version}
               onChange={handleChangeVersion}
-              placeholder="X.X.X"
+              placeholder="X"
               helperText="Add version of product related to the problem"
             />
           )}
@@ -672,7 +670,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
               label="Version"
               value={problemData.version}
               onChange={handleChangeVersion}
-              placeholder="X.X.X"
+              placeholder="X"
               helperText="Add version of product's component related to the problem"
             />
           )}
@@ -789,7 +787,6 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
           variant="contained"
           size="medium"
           type="submit"
-          onClick={handleClick}
           sx={{
             fontSize: 20,
             margin: 0.5,
@@ -800,11 +797,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
         >
           Submit changes
         </Button>
-        <Snackbar open={openPopUp} anchorOrigin={{vertical: 'bottom', horizontal: 'center' }} autoHideDuration={3000} onClose={handleClosePopUp}>
-        <Alert onClose={handleClosePopUp} severity="success" sx={{ width: '100%' }}>
-          You have been logged out
-        </Alert>
-      </Snackbar>
+
         <Button
         variant="contained"
         size="medium"
@@ -823,6 +816,11 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
     </Box>
         )}
         </Box>
+        <Snackbar open={openPopUpUpdate} anchorOrigin={{vertical: 'bottom', horizontal: 'center' }} autoHideDuration={3000} onClose={handleClosePopUpUpdate}>
+        <Alert onClose={handleClosePopUpUpdate} severity="success" sx={{ width: '100%' }}>
+          Problem has been updated!
+        </Alert>
+      </Snackbar>
 </>
   );
 };

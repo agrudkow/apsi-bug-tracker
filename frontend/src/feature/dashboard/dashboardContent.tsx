@@ -135,7 +135,7 @@ export default function ProblemsTable() {
   const navigate = useNavigate();
   const [searched, setSearched] = useState<string>("");
   const [openPopUpSubmit, setOpenPopUpSubmit] = React.useState(false);
-  const [openPopUpUpdate, setOpenPopUpUpdate] = React.useState(false);
+
   const [openPopUpDelete, setOpenPopUpDelete] = React.useState(false);
   const [searchedRows, setSearchedRows] = useState<Data[]>(dataRows);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
@@ -258,11 +258,6 @@ const cancelSearch = () => {
       setOpenPopUpSubmit(true);
       localStorage.setItem('isProblemSubmitted', 'false');
     }
-    if (localStorage.getItem('isProblemUpdated')==='true')
-    {
-      setOpenPopUpUpdate(true);
-      localStorage.setItem('isProblemUpdated', 'false');
-    }
     if (localStorage.getItem('isProblemDeleted')==='true')
     {
       setOpenPopUpDelete(true);
@@ -278,12 +273,7 @@ const cancelSearch = () => {
     setOpenPopUpSubmit(false);
   };
 
-  const handleClosePopUpUpdate = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenPopUpUpdate(false);
-  };
+
 
   const handleClosePopUpDelete = (event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
@@ -528,11 +518,7 @@ const cancelSearch = () => {
           Problem has been submitted!
         </Alert>
       </Snackbar>
-      <Snackbar open={openPopUpUpdate} anchorOrigin={{vertical: 'bottom', horizontal: 'center' }} autoHideDuration={3000} onClose={handleClosePopUpUpdate}>
-        <Alert onClose={handleClosePopUpUpdate} severity="success" sx={{ width: '100%' }}>
-          Problem has been updated!
-        </Alert>
-      </Snackbar>
+
       <Snackbar open={openPopUpDelete} anchorOrigin={{vertical: 'bottom', horizontal: 'center' }} autoHideDuration={3000} onClose={handleClosePopUpDelete}>
         <Alert onClose={handleClosePopUpDelete} severity="success" sx={{ width: '100%' }}>
           Problem has been deleted!

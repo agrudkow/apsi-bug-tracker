@@ -306,6 +306,8 @@ export function NewFormContent() {
   const handleChangeProblem = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newProblemData: NewProblemData = { ...problemData };
     newProblemData.problemType = event.target.value;
+    newProblemData.product = '';
+    newProblemData.component = '';
     if (event.target.value === 'Service') {
       newProblemData.responsiblePerson = 'Bill Gates';
     } else if (event.target.value === 'Incident') {
