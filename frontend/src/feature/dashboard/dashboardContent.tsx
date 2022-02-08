@@ -188,16 +188,12 @@ const requestFilter = () => {
   const newSearchedRows = dataRows.filter((row) => {  
     let isGoodRowProblemTypeName: boolean = false;
     let isGoodRowStatusName: boolean = false;
-    console.log("Statusname: " + statusName)
     if (statusName.length === 0){
       isGoodRowStatusName = true;
-      console.log("in status name empty")
       
     }
-    console.log("Problem name: " + problemTypeName)
     if (problemTypeName.length === 0 ){
       isGoodRowProblemTypeName = true;
-      console.log("problemnName empty")
     }
     for (var val of statusName){
       if(row.status.toString().includes(val.toString())){

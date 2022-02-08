@@ -188,7 +188,6 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
     }
     
     setProblemData(newData);
-    console.log(newData);
 
     if (role === Roles.User && newData.status === 'New'){
       setDisabledFieldsForUserIfNotNewStatuses(false);
@@ -216,7 +215,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
     event.preventDefault();
     sendData();
     localStorage.setItem('isProblemUpdated', 'true');
-    setTimeout(function() { fetchProblemData()}, 3000);
+    setTimeout(function() { fetchProblemData()}, 4000);
     
     setOpenPopUpUpdate(true);
     setNewComment('');
@@ -305,8 +304,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
 
     let bodyContent: any;
 
-    if (problemData.product === 'None'){
-      console.log('product none')
+    if (problemData.product === 'None' && problemData.component === 'None'){
       bodyContent = JSON.stringify({
         'description': problemData.description,
         'username': problemData.username,
@@ -322,6 +320,25 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
         'commentMessage': newComment,
         'commentMessageUsername': localStorage.getItem('username')
       });
+    }
+    else if (problemData.product !== 'None' && problemData.component === 'None'){
+      bodyContent = JSON.stringify({
+        'description': problemData.description,
+        'username': problemData.username,
+        'responsiblePerson': problemData.responsiblePerson,
+        'observers': problemData.observers,
+        'proposedDeadline': date,
+        'weight': problemData.weight,
+        'status': problemData.status,
+        'urgency': problemData.urgency,
+        'problemType': problemData.problemType,
+        'product': problemData.product,
+        'keywords': problemData.keywords,
+        'relatedProblems': problemData.relatedProblems,
+        'commentMessage': newComment,
+        'commentMessageUsername': localStorage.getItem('username')
+      });
+  
     }
     else {
     bodyContent = JSON.stringify({
