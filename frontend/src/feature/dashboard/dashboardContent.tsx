@@ -135,8 +135,8 @@ export default function ProblemsTable() {
   const navigate = useNavigate();
   const [searched, setSearched] = useState<string>("");
   const [openPopUpSubmit, setOpenPopUpSubmit] = React.useState(false);
-
-  const [openPopUpDelete, setOpenPopUpDelete] = React.useState(false);
+  const [openPopUpUnsuccessDelete, setOpenPopUpUnsuccessDelete] = React.useState(false);
+  const [openPopUpSuccessDelete, setOpenPopUpSuccessDelete] = React.useState(false);
   const [searchedRows, setSearchedRows] = useState<Data[]>(dataRows);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const theme = useTheme();
@@ -254,10 +254,15 @@ const cancelSearch = () => {
       setOpenPopUpSubmit(true);
       localStorage.setItem('isProblemSubmitted', 'false');
     }
-    if (localStorage.getItem('isProblemDeleted')==='true')
+    if (localStorage.getItem('isProblemSuccessDeleted')==='true')
     {
-      setOpenPopUpDelete(true);
-      localStorage.setItem('isProblemDeleted', 'false');
+      setOpenPopUpSuccessDelete(true);
+      localStorage.setItem('isProblemSuccessDeleted', 'false');
+    }
+    if (localStorage.getItem('isProblemUnsuccessDeleted')==='true')
+    {
+      setOpenPopUpUnsuccessDelete(true);
+      localStorage.setItem('isProblemUnsuccessDeleted', 'false');
     }
 
   }, []);
@@ -271,11 +276,18 @@ const cancelSearch = () => {
 
 
 
-  const handleClosePopUpDelete = (event?: React.SyntheticEvent | Event, reason?: string) => {
+  const handleClosePopUpSuccessDelete = (event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
     }
-    setOpenPopUpDelete(false);
+    setOpenPopUpSuccessDelete(false);
+  };
+
+  const handleClosePopUpUnsuccessDelete = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenPopUpUnsuccessDelete(false);
   };
 
   function Row(props: { row: Data }) {
@@ -515,9 +527,14 @@ const cancelSearch = () => {
         </Alert>
       </Snackbar>
 
-      <Snackbar open={openPopUpDelete} anchorOrigin={{vertical: 'bottom', horizontal: 'center' }} autoHideDuration={3000} onClose={handleClosePopUpDelete}>
-        <Alert onClose={handleClosePopUpDelete} severity="success" sx={{ width: '100%' }}>
+      <Snackbar open={openPopUpSuccessDelete} anchorOrigin={{vertical: 'bottom', horizontal: 'center' }} autoHideDuration={3000} onClose={handleClosePopUpSuccessDelete}>
+        <Alert onClose={handleClosePopUpSuccessDelete} severity="success" sx={{ width: '100%' }}>
           Problem has been deleted!
+        </Alert>
+      </Snackbar>
+      <Snackbar open={openPopUpUnsuccessDelete} anchorOrigin={{vertical: 'bottom', horizontal: 'center' }} autoHideDuration={5000} onClose={handleClosePopUpUnsuccessDelete}>
+        <Alert onClose={handleClosePopUpUnsuccessDelete} severity="error" sx={{ width: '100%' }}>
+          Problem cannot be deleted, some problems depend on it!
         </Alert>
       </Snackbar>
     </Paper>

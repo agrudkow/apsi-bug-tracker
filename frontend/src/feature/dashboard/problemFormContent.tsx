@@ -205,7 +205,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
   const deleteProblemHandler = () => {
     setLoading(true);
     deleteProblem();
-    localStorage.setItem('isProblemDeleted', 'true');
+    localStorage.setItem('isProblemSuccessDeleted', 'true');
     setTimeout(function() { navigate(`../${Routes.Dashboard}/${localStorage.getItem('username')}`, { replace: true }); }, 1000);
   };
 
@@ -239,6 +239,8 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
       if (error.response) {
         console.log(error.response);
         console.log("server responded");
+        localStorage.setItem('isProblemUnsuccessDeleted', 'true');
+        navigate(`../${Routes.Dashboard}/${localStorage.getItem('username')}`, { replace: true });
       } else if (error.request) {
         console.log("network error");
       } else {
@@ -376,6 +378,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
         if (error.response) {
           console.log(error.response);
           console.log("server responded");
+  
         } else if (error.request) {
           console.log("network error");
         } else {
