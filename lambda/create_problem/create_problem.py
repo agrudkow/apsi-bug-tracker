@@ -26,7 +26,7 @@ class CreateProblemData:
     status: str
     urgency: str
     problemType: str
-    product: str
+    product: Optional[str]
     component: Optional[str]
     keywords: str
     relatedProblems: Optional[str]
