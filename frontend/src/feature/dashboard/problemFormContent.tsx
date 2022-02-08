@@ -15,6 +15,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { apsi_backend } from '../common';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import { CircularProgress } from '@mui/material';
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -48,8 +49,8 @@ const weights = [
     label: 'Normal',
   },
   {
-    value: 'Significant',
-    label: 'Significant',
+    value: 'High',
+    label: 'High',
   },
   {
     value: 'Blocking',
@@ -142,6 +143,8 @@ interface Props {
 }
 
 export const ProblemFormContent: React.FC<Props> = ({ role }) => {
+  const [loading, setLoading] = React.useState(true);
+  const [openPopUpUpdate, setOpenPopUpUpdate] = React.useState(false);
   const [newComment, setNewComment] = React.useState<string>('');
   const [disabledFieldsForUserIfNotNewStatuses, setDisabledFieldsForUserIfNotNewStatuses] = React.useState<boolean>(true);
   const [problemData, setProblemData] = React.useState<ProblemData>({
@@ -160,60 +163,233 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
     proposedDeadline: null,
     status: '',
     responsiblePerson: '',
-    comments: ''
+    comments: []
   });
   const { id } = useParams();
   const navigate = useNavigate();
-  const [openPopUp, setOpenPopUp] = React.useState(false);
 
-  const handleClick = () => {
-    setOpenPopUp(true);
-  };
-
-  const handleClosePopUp = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-      return;
+  const prepareCommentToView = () => {
+    let s = '';
+    for (let comment of problemData.comments){
+    s  = s + comment + '\n' +'____________________________________________________________________________________________' + '\n';
     }
+    return s;
+  }
 
-    setOpenPopUp(false);
-  };
   const fetchProblemData = async () =>{
     const newData = (await apsi_backend.get<ProblemData>(`${BackendRoutes.Problems}/${localStorage.getItem('username')}/${id}`)).data
+    if (newData.problemType == 'Bug') {
+      if (newData.product == '1') {
+        newData.product = 'PetApp';
+      }
+      else if (newData.product == '2') {
+        newData.product = 'SmartPet';
+      }
+    }
+    
     setProblemData(newData);
+
     if (role === Roles.User && newData.status === 'New'){
       setDisabledFieldsForUserIfNotNewStatuses(false);
     }
+    setLoading(false);
   }
 
   useEffect(() => {
     fetchProblemData();
+
   }, []);
 
 
 
   const deleteProblemHandler = () => {
-    //TODO: send delete to backend 
+    setLoading(true);
+    deleteProblem();
     localStorage.setItem('isProblemDeleted', 'true');
-    navigate(`../${Routes.Dashboard}/${localStorage.getItem('username')}`, { replace: true });
+    setTimeout(function() { navigate(`../${Routes.Dashboard}/${localStorage.getItem('username')}`, { replace: true }); }, 1000);
   };
 
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    setLoading(true);
     event.preventDefault();
-    //TODO: sendData();
+    sendData();
     localStorage.setItem('isProblemUpdated', 'true');
-    navigate(`../${Routes.Dashboard}/${localStorage.getItem('username')}`, { replace: true });
+    setTimeout(function() { fetchProblemData()}, 4000);
+    
+    setOpenPopUpUpdate(true);
+    setNewComment('');
+    localStorage.setItem('isProblemUpdated', 'false');
+  };
+
+  const deleteProblem = async () => {
+
+    let config = {
+      headers: {
+        "Accept": "*/*",
+      }
+    }
+
+    apsi_backend
+    .delete(BackendRoutes.Problems+ '/' + localStorage.getItem('username')+'/'+id, config)
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      if (error.response) {
+        console.log(error.response);
+        console.log("server responded");
+      } else if (error.request) {
+        console.log("network error");
+      } else {
+        console.log(error);
+      }
+    });
   };
 
   const sendData = async () => {
-    // TODO: await axios
-    // .post("backend.pl/data", problemData)
-    // .then((res) => {
-    //   console.log(res);
-    // })
-    // .catch((error) => {
-    //   console.log(error);
-    // });
+    // PRZEKOPIOWAC DO UPDATE oraz odpowiednio:
+    // ->Zmienic import { Routes } from '../../utils' na import { BackendRoutes, Routes } from '../../utils'.
+    // ->Zmienic put(BackendRoutes.Problems, bodyContent, config) na post(BackendRoutes.Problems, bodyContent, config).
+    // ->Dodac wiadomosc do bodyContent
+    // ->Zmienic wage significant na high
+    var date = "";
+    if (problemData.proposedDeadline && problemData.proposedDeadline instanceof Date) {
+      var year = problemData.proposedDeadline?.getFullYear();
+      var month = problemData.proposedDeadline?.getMonth() + 1;
+      var day = problemData.proposedDeadline?.getDate();
+      date = year + '-' + month?.toString().padStart(2, '0') + '-' + day?.toString().padStart(2, '0')
+    }
+    else if (problemData.proposedDeadline !== null){
+      var only_date = problemData.proposedDeadline.toString().split(' ', 2)[0];
+      date = only_date;
+    }
+
+    if (problemData.problemType == 'Bug') {
+      if (problemData.product == 'PetApp') {
+        problemData.product = '1';
+        if (problemData.component == 'Database') {
+          problemData.component = '1';
+        }
+        else {
+          problemData.component = '2';
+        }
+      }
+      else if (problemData.product == 'SmartPet') {
+        problemData.product = '2';
+      }
+    }
+
+    var splitted = problemData.responsiblePerson.split(" ", 10);
+    problemData.responsiblePerson = splitted[0];
+
+    console.log(problemData.description);
+    console.log(problemData.username);
+    console.log(problemData.responsiblePerson);
+    console.log(problemData.observers);
+    console.log(date);
+    console.log(problemData.weight);
+    
+    console.log(problemData.status);
+    console.log(problemData.urgency);
+    console.log(problemData.problemType);
+    console.log(problemData.product);
+    console.log(problemData.component);
+    console.log(problemData.keywords);
+    console.log(problemData.relatedProblems);
+    
+    
+    console.log(newComment);
+    console.log(problemData.username);
+
+    let bodyContent: any;
+
+    if (problemData.product === 'None' && problemData.component === 'None'){
+      bodyContent = JSON.stringify({
+        'description': problemData.description,
+        'username': problemData.username,
+        'responsiblePerson': problemData.responsiblePerson,
+        'observers': problemData.observers,
+        'proposedDeadline': date,
+        'weight': problemData.weight,
+        'status': problemData.status,
+        'urgency': problemData.urgency,
+        'problemType': problemData.problemType,
+        'keywords': problemData.keywords,
+        'relatedProblems': problemData.relatedProblems,
+        'commentMessage': newComment,
+        'commentMessageUsername': localStorage.getItem('username')
+      });
+    }
+    else if (problemData.product !== 'None' && problemData.component === 'None'){
+      bodyContent = JSON.stringify({
+        'description': problemData.description,
+        'username': problemData.username,
+        'responsiblePerson': problemData.responsiblePerson,
+        'observers': problemData.observers,
+        'proposedDeadline': date,
+        'weight': problemData.weight,
+        'status': problemData.status,
+        'urgency': problemData.urgency,
+        'problemType': problemData.problemType,
+        'product': problemData.product,
+        'keywords': problemData.keywords,
+        'relatedProblems': problemData.relatedProblems,
+        'commentMessage': newComment,
+        'commentMessageUsername': localStorage.getItem('username')
+      });
+  
+    }
+    else {
+    bodyContent = JSON.stringify({
+      'description': problemData.description,
+      'username': problemData.username,
+      'responsiblePerson': problemData.responsiblePerson,
+      'observers': problemData.observers,
+      'proposedDeadline': date,
+      'weight': problemData.weight,
+      'status': problemData.status,
+      'urgency': problemData.urgency,
+      'problemType': problemData.problemType,
+      'product': problemData.product,
+      'component': problemData.component,
+      'keywords': problemData.keywords,
+      'relatedProblems': problemData.relatedProblems,
+      'commentMessage': newComment,
+      'commentMessageUsername': localStorage.getItem('username')
+    });
+
+  }
+    let config = {
+      headers: {
+        "Accept": "*/*",
+        "Content-Type": "application/json",
+      }
+    }
+
+    apsi_backend
+      .post(BackendRoutes.Problems+ '/' + localStorage.getItem('username')+'/'+id, bodyContent, config)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.log(error.response);
+          console.log("server responded");
+        } else if (error.request) {
+          console.log("network error");
+        } else {
+          console.log(error);
+        }
+      });
+    // KONIEC
+  };
+
+  const handleClosePopUpUpdate = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenPopUpUpdate(false);
   };
 
   const handleChangeUser = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -316,8 +492,11 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
   const handleChangeProblem = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newProblemData: ProblemData = { ...problemData };
     newProblemData.problemType = event.target.value;
+    newProblemData.product = 'None';
+    newProblemData.component = 'None';
     if (event.target.value === 'Service') {
       newProblemData.responsiblePerson = 'Bill Gates';
+
     } else if (event.target.value === 'Incident') {
       newProblemData.responsiblePerson = 'Elon Musk';
     } else if (event.target.value === 'Bug') {
@@ -361,11 +540,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
     setProblemData(newProblemData);
   };
 
-  const handleChangeComments = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newProblemData: ProblemData = { ...problemData };
-    newProblemData.comments = event.target.value;
-    setProblemData(newProblemData);
-  };
+
 
   const handleChangeNewComment = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewComment(event.target.value);
@@ -373,6 +548,12 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
 
   return (
     <>
+     <Box>
+    {(loading===true) && (<div style={{display: 'flex', justifyContent: 'center'}}>
+      <CircularProgress />
+      </div>
+      )}
+    {loading===false &&(
     <Box
       component="form"
       onSubmit={handleSubmit}
@@ -493,7 +674,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
               label="Version"
               value={problemData.version}
               onChange={handleChangeVersion}
-              placeholder="X.X.X"
+              placeholder="X"
               helperText="Add version of product related to the problem"
             />
           )}
@@ -506,7 +687,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
               label="Version"
               value={problemData.version}
               onChange={handleChangeVersion}
-              placeholder="X.X.X"
+              placeholder="X"
               helperText="Add version of product's component related to the problem"
             />
           )}
@@ -596,9 +777,8 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
         label="Comments"
         disabled
         multiline
-        rows={4}
-        value={problemData.comments}
-        onChange={handleChangeComments}
+        rows={8}
+        value= {prepareCommentToView()}
       />
     </div>
     <div style={{ display: 'flex', flexDirection: 'row' }}>
@@ -624,7 +804,6 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
           variant="contained"
           size="medium"
           type="submit"
-          onClick={handleClick}
           sx={{
             fontSize: 20,
             margin: 0.5,
@@ -635,11 +814,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
         >
           Submit changes
         </Button>
-        <Snackbar open={openPopUp} anchorOrigin={{vertical: 'bottom', horizontal: 'center' }} autoHideDuration={3000} onClose={handleClosePopUp}>
-        <Alert onClose={handleClosePopUp} severity="success" sx={{ width: '100%' }}>
-          You have been logged out
-        </Alert>
-      </Snackbar>
+
         <Button
         variant="contained"
         size="medium"
@@ -656,6 +831,13 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
       </Button>
       </div>
     </Box>
+        )}
+        </Box>
+        <Snackbar open={openPopUpUpdate} anchorOrigin={{vertical: 'bottom', horizontal: 'center' }} autoHideDuration={3000} onClose={handleClosePopUpUpdate}>
+        <Alert onClose={handleClosePopUpUpdate} severity="success" sx={{ width: '100%' }}>
+          Problem has been updated!
+        </Alert>
+      </Snackbar>
 </>
   );
 };

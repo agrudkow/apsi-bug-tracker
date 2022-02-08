@@ -33,6 +33,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
+import { CircularProgress } from '@mui/material';
+
 
 interface Column {
   id: 'number' | 'date' | 'type' | 'status' | 'description' | 'a';
@@ -126,13 +128,14 @@ function getStyles(name: string, statusName: string[], theme: Theme) {
 }
 
 export default function ProblemsTable() {
+  const [loading, setLoading] = React.useState(true);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [dataRows, setDataRows] = useState<Data[]>([]);
   const navigate = useNavigate();
   const [searched, setSearched] = useState<string>("");
   const [openPopUpSubmit, setOpenPopUpSubmit] = React.useState(false);
-  const [openPopUpUpdate, setOpenPopUpUpdate] = React.useState(false);
+
   const [openPopUpDelete, setOpenPopUpDelete] = React.useState(false);
   const [searchedRows, setSearchedRows] = useState<Data[]>(dataRows);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
@@ -185,16 +188,12 @@ const requestFilter = () => {
   const newSearchedRows = dataRows.filter((row) => {  
     let isGoodRowProblemTypeName: boolean = false;
     let isGoodRowStatusName: boolean = false;
-    console.log("Statusname: " + statusName)
     if (statusName.length === 0){
       isGoodRowStatusName = true;
-      console.log("in status name empty")
       
     }
-    console.log("Problem name: " + problemTypeName)
     if (problemTypeName.length === 0 ){
       isGoodRowProblemTypeName = true;
-      console.log("problemnName empty")
     }
     for (var val of statusName){
       if(row.status.toString().includes(val.toString())){
@@ -242,6 +241,7 @@ const cancelSearch = () => {
     let xd = (await apsi_backend.get<Data[]>(BackendRoutes.Problems+'/'+localStorage.getItem('username'))).data;
     setDataRows(xd);
     setSearchedRows(xd);
+    setLoading(false);
   }
     
 
@@ -253,11 +253,6 @@ const cancelSearch = () => {
     {
       setOpenPopUpSubmit(true);
       localStorage.setItem('isProblemSubmitted', 'false');
-    }
-    if (localStorage.getItem('isProblemUpdated')==='true')
-    {
-      setOpenPopUpUpdate(true);
-      localStorage.setItem('isProblemUpdated', 'false');
     }
     if (localStorage.getItem('isProblemDeleted')==='true')
     {
@@ -274,12 +269,7 @@ const cancelSearch = () => {
     setOpenPopUpSubmit(false);
   };
 
-  const handleClosePopUpUpdate = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenPopUpUpdate(false);
-  };
+
 
   const handleClosePopUpDelete = (event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
@@ -478,6 +468,11 @@ const cancelSearch = () => {
           </Grid>
         </Toolbar>
       </AppBar>
+      {(loading===true) && (<div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+      <CircularProgress />
+      </div>
+      )}
+    {loading===false &&(
       <Paper sx={{ width: '100%' }}>
         <TableContainer sx={{ maxHeight: 600 }}>
           <Table stickyHeader>
@@ -494,6 +489,7 @@ const cancelSearch = () => {
                 ))}
               </TableRow>
             </TableHead>
+            
             <TableBody>
               {searchedRows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -512,17 +508,13 @@ const cancelSearch = () => {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      </Paper>
+      </Paper>)}
       <Snackbar open={openPopUpSubmit} anchorOrigin={{vertical: 'bottom', horizontal: 'center' }} autoHideDuration={3000} onClose={handleClosePopUpSubmit}>
         <Alert onClose={handleClosePopUpSubmit} severity="success" sx={{ width: '100%' }}>
           Problem has been submitted!
         </Alert>
       </Snackbar>
-      <Snackbar open={openPopUpUpdate} anchorOrigin={{vertical: 'bottom', horizontal: 'center' }} autoHideDuration={3000} onClose={handleClosePopUpUpdate}>
-        <Alert onClose={handleClosePopUpUpdate} severity="success" sx={{ width: '100%' }}>
-          Problem has been updated!
-        </Alert>
-      </Snackbar>
+
       <Snackbar open={openPopUpDelete} anchorOrigin={{vertical: 'bottom', horizontal: 'center' }} autoHideDuration={3000} onClose={handleClosePopUpDelete}>
         <Alert onClose={handleClosePopUpDelete} severity="success" sx={{ width: '100%' }}>
           Problem has been deleted!

@@ -19,10 +19,10 @@ export interface ProblemData {
     keywords: string,
     description: string,
     relatedProblems: string,
-    proposedDeadline: Date | null,
+    proposedDeadline: any
     status: string,
     responsiblePerson: string
-    comments: string
+    comments: string[]
   }
 
   export interface NewProblemData {
