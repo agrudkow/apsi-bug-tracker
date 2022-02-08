@@ -28,7 +28,7 @@ class UpdateProblemData:
     status: str
     urgency: str
     problemType: str
-    product: Optional[str]
+    product: str
     component: Optional[str]
     keywords: str
     relatedProblems: Optional[str]
@@ -53,7 +53,7 @@ def update_problem(problem_id: int, data: UpdateProblemData, logger: Logger) -> 
             report.weight_name = data.weight
             report.status_name = data.status
             report.urgency_level = data.urgency
-            report.product_id = int(data.product) if data.product else None
+            report.product_id = int(data.product)
             report.component_id = int(data.component) if data.component else None
             report.version = report.version + 1
 
