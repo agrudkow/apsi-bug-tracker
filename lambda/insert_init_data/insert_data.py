@@ -211,7 +211,7 @@ def insert_data() -> int:
       session.flush()
 
       user = User()
-      user.username = 'jan.bugtracker'
+      user.username = 'jankowalski.bugtracker'
       user.name = 'Jan'
       user.surname = 'Kowalski'
       user.email = 'jankowalski.bugtracker@gmail.com'
@@ -221,7 +221,7 @@ def insert_data() -> int:
       session.flush()
 
       user_2 = User()
-      user_2.username = "Kasia"
+      user_2.username = "malinowska.kasia"
       user_2.name = "Kasia"
       user_2.surname = "Malinowska"
       user_2.email = "malinowska.kasia@protonmail.com"
@@ -231,7 +231,7 @@ def insert_data() -> int:
       session.flush()
 
       user_3 = User()
-      user_3.username = "Jeff"
+      user_3.username = "jeffbezos.bugtracker"
       user_3.name = "Jeff"
       user_3.surname = "Bezos"
       user_3.email = "jeffbezos.bugtracker@protonmail.com"
@@ -241,7 +241,7 @@ def insert_data() -> int:
       session.flush()
 
       user_4 = User()
-      user_4.username = "Elon"
+      user_4.username = "elonmusk.bugtracker"
       user_4.name = "Elon"
       user_4.surname = "Musk"
       user_4.email = "elonmusk.bugtracker@protonmail.com"
@@ -251,7 +251,7 @@ def insert_data() -> int:
       session.flush()
 
       user_5 = User()
-      user_5.username = "Bill"
+      user_5.username = "billgates.bugtracker"
       user_5.name = "Bill"
       user_5.surname = "Gates"
       user_5.email = "billgates.bugtracker@op.pl"
@@ -261,7 +261,7 @@ def insert_data() -> int:
       session.flush()
 
       user_6 = User()
-      user_6.username = "Andrzej"
+      user_6.username = "aduda.bugtracker"
       user_6.name = "Andrzej"
       user_6.surname = "Duda"
       user_6.email = "aduda.bugtracker@op.pl"
@@ -271,13 +271,23 @@ def insert_data() -> int:
       session.flush()
 
       user_7 = User()
-      user_7.username = "Steve"
+      user_7.username = "sjobs.bugtracker"
       user_7.name = "Steve"
       user_7.surname = "Jobs"
       user_7.email = "sjobs.bugtracker@op.pl"
       user_7.phone = "787643322"
       user_7.worker = True
       session.add(user_7)
+      session.flush()
+
+      user_8 = User()
+      user_8.username = "admin.bugtracker"
+      user_8.name = "Admin"
+      user_8.surname = "BugtrackerTeam"
+      user_8.email = "admin.bugtracker@protonmail.com"
+      user_8.phone = "782243322"
+      user_8.worker = True
+      session.add(user_8)
       session.flush()
 
       report = Report()
