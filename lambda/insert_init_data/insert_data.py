@@ -224,7 +224,7 @@ def insert_data() -> int:
       user_2.username = "Kasia"
       user_2.name = "Kasia"
       user_2.surname = "Malinowska"
-      user_2.email = "malinowska@please.dont.mail.me"
+      user_2.email = "malinowska.kasia@protonmail.com"
       user_2.phone = "987654321"
       user_2.worker = True
       session.add(user_2)
@@ -234,7 +234,7 @@ def insert_data() -> int:
       user_3.username = "Jeff"
       user_3.name = "Jeff"
       user_3.surname = "Bezos"
-      user_3.email = "jeff@please.dont.mail.me"
+      user_3.email = "jeffbezos.bugtracker@protonmail.com"
       user_3.phone = "987654322"
       user_3.worker = True
       session.add(user_3)
@@ -244,7 +244,7 @@ def insert_data() -> int:
       user_4.username = "Elon"
       user_4.name = "Elon"
       user_4.surname = "Musk"
-      user_4.email = "elon@please.dont.mail.me"
+      user_4.email = "elonmusk.bugtracker@protonmail.com"
       user_4.phone = "887654322"
       user_4.worker = True
       session.add(user_4)
@@ -254,7 +254,7 @@ def insert_data() -> int:
       user_5.username = "Bill"
       user_5.name = "Bill"
       user_5.surname = "Gates"
-      user_5.email = "bill@please.dont.mail.me"
+      user_5.email = "billgates.bugtracker@op.pl"
       user_5.phone = "787654322"
       user_5.worker = True
       session.add(user_5)
@@ -264,7 +264,7 @@ def insert_data() -> int:
       user_6.username = "Andrzej"
       user_6.name = "Andrzej"
       user_6.surname = "Duda"
-      user_6.email = "andrzej@please.dont.mail.me"
+      user_6.email = "aduda.bugtracker@op.pl"
       user_6.phone = "787644322"
       user_6.worker = True
       session.add(user_6)
@@ -274,7 +274,7 @@ def insert_data() -> int:
       user_7.username = "Steve"
       user_7.name = "Steve"
       user_7.surname = "Jobs"
-      user_7.email = "steve@please.dont.mail.me"
+      user_7.email = "sjobs.bugtracker@op.pl"
       user_7.phone = "787643322"
       user_7.worker = True
       session.add(user_7)
