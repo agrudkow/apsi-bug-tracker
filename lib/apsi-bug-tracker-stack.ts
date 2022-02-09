@@ -141,6 +141,7 @@ export class APSIBugTrackerStack extends cdk.Stack {
         DB_PASSWORD: DB_PASSWORD,
         DB_NAME: DB_NAME,
         DB_PORT: DB_PORT,
+        SEND_EMAIL_LAMBDA: mailerLambda.functionName,
       },
       layers: [databaseLayer],
     });
@@ -261,6 +262,14 @@ export class APSIBugTrackerStack extends cdk.Stack {
     );
 
     updateProblemLambda.addToRolePolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: ['lambda:InvokeFunction'],
+        resources: [mailerLambda.functionArn],
+      })
+    );
+
+    createProblemLambda.addToRolePolicy(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
         actions: ['lambda:InvokeFunction'],

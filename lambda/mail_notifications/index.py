@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+from pyexpat.errors import messages
 
 import boto3
 
@@ -18,6 +19,11 @@ def handler(event, _):
     try:
         client = boto3.client('ses')
 
+        if values["type"] == "update":
+                message_val = f'Zgłoszenie {values["issue"]} zostało zmodyfikowane.\nZespół BugTracker'
+        else:
+            message_val = f'Utworzono zgłoszenie {values["issue"]}.\nZespół BugTracker.'
+
         client.send_email(
             Source='apsibugtracker@gmail.com',
             Destination={
@@ -33,7 +39,7 @@ def handler(event, _):
                 'Body': {
                     'Text': {
                         'Data':
-                        f'Zgłoszenie {values["issue"]} zostało zmodyfikowane.\nZespół BugTracker',
+                        message_val,
                         'Charset': 'UTF-8',
                     }
                 }
