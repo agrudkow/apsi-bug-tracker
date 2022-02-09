@@ -140,12 +140,14 @@ const statuses = [
 
 interface Props {
   role: string;
+  setRole: Function;
 }
 
-export const ProblemFormContent: React.FC<Props> = ({ role }) => {
+export const ProblemFormContent: React.FC<Props> = ({ role, setRole}) => {
   const [loading, setLoading] = React.useState(true);
   const [openPopUpUpdate, setOpenPopUpUpdate] = React.useState(false);
   const [newComment, setNewComment] = React.useState<string>('');
+  const [disabledForObservers, setDisabledForObservers] = React.useState<boolean>(false);
   const [disabledFieldsForUserIfNotNewStatuses, setDisabledFieldsForUserIfNotNewStatuses] = React.useState<boolean>(true);
   const [problemData, setProblemData] = React.useState<ProblemData>({
     problemID: 1,
@@ -192,6 +194,23 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
     if (role === Roles.User && newData.status === 'New'){
       setDisabledFieldsForUserIfNotNewStatuses(false);
     }
+
+    if (newData.username !== localStorage.getItem('username'))
+    {
+      setRole(Roles.Admin);
+    }
+    else{
+      setRole(Roles.User);
+    }
+
+    let myUsername = localStorage.getItem('username');
+    if (myUsername){
+      if (newData.observers.toString().includes(myUsername))
+      {
+        setDisabledForObservers(true);
+      }
+    }
+ 
     setLoading(false);
   }
 
@@ -205,8 +224,9 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
   const deleteProblemHandler = () => {
     setLoading(true);
     deleteProblem();
-    localStorage.setItem('isProblemSuccessDeleted', 'true');
+    
     setTimeout(function() { navigate(`../${Routes.Dashboard}/${localStorage.getItem('username')}`, { replace: true }); }, 1000);
+    localStorage.setItem('isProblemSuccessDeleted', 'true');
   };
 
 
@@ -282,25 +302,6 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
       }
     }
 
-
-    console.log(problemData.description);
-    console.log(problemData.username);
-    console.log(problemData.responsiblePerson);
-    console.log(problemData.observers);
-    console.log(date);
-    console.log(problemData.weight);
-    
-    console.log(problemData.status);
-    console.log(problemData.urgency);
-    console.log(problemData.problemType);
-    console.log(problemData.product);
-    console.log(problemData.component);
-    console.log(problemData.keywords);
-    console.log(problemData.relatedProblems);
-    
-    
-    console.log(newComment);
-    console.log(problemData.username);
 
     let bodyContent: any;
 
@@ -575,6 +576,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
           id="Observers"
           label="Observers"
           multiline
+          disabled={disabledForObservers===true}
           value={problemData.observers}
           onChange={handleChangeObservers}
           helperText="Add problem observers by username"
@@ -719,9 +721,9 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
       </div>
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <TextField
-          disabled={role === Roles.Admin || disabledFieldsForUserIfNotNewStatuses === true}
           id="related_problems"
           label="Related problems"
+          disabled={disabledForObservers===true}
           value={problemData.relatedProblems}
           onChange={handleChangeRelProblems}
           helperText="Add related problems by problem ID "
@@ -750,7 +752,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
         <TextField
           required
           select
-          disabled={role === Roles.User}
+          disabled={role === Roles.User || disabledForObservers===true}
           id="status"
           label="Status"
           value={problemData.status}
@@ -764,7 +766,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role }) => {
         </TextField>
         <TextField
           required
-          disabled={role === Roles.User}
+          disabled={role === Roles.User || disabledForObservers===true}
           id="responsible_person"
           label="Responsible person"
           value={problemData.responsiblePerson}

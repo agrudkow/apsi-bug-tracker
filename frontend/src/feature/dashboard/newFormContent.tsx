@@ -151,7 +151,7 @@ export function NewFormContent() {
         problemData.product = '2';
       }
     }
-
+    console.log(problemData);
 
     let bodyContent = JSON.stringify({
       "description": problemData.description,
@@ -169,6 +169,8 @@ export function NewFormContent() {
       "keywords": problemData.keywords,
       "relatedProblems": problemData.relatedProblems
     });
+
+    
 
     let config = {
       headers: {
