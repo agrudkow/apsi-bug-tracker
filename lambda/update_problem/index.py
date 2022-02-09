@@ -32,7 +32,6 @@ def handler(event: Dict[str, Any], _):
         )
         logger.info(f'Problem with id {report_id} updated')
         logger.info(f'Sending email notification to users: {str(email_recipients)}')
-        # TODO: send proper email notification content
         client.invoke(
             FunctionName=SEND_EMAIL_LAMBDA,
             InvocationType='Event',
@@ -40,7 +39,7 @@ def handler(event: Dict[str, Any], _):
                 'recipients': email_recipients,
                 'issue': report_id,
                 'type': 'update',
-                'msg': 'TODO: add proper message'
+                'msg': f'Report with ID {report_id} updated.'
             }),
         )
     except (ValueError, MissingValueError) as ex:

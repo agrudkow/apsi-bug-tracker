@@ -36,7 +36,7 @@ def handler(event: Dict[str, Any], _):
                 'recipients': email_recipients,
                 'issue': report_id,
                 'type': 'create',
-                'msg': 'TODO: add proper message'
+                'msg': f'Created report with ID {report_id}.'
             }),
         )
     except (ValueError, MissingValueError) as ex:
