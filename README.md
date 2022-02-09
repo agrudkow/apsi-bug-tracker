@@ -1,6 +1,4 @@
 # APSI bug tracker
-TODO: description
-
 ## Contribution guide
 
 ### Dev tools
