@@ -50,13 +50,20 @@ export const SignIn: React.FC<Props> = ({setRole}) => {
 
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    setRole("User");
+
     event.preventDefault();
     
     const data = new FormData(event.currentTarget);
-    const email = data.get('email');
-    if (email !== null){
-      localStorage.setItem('username', email.toString().split("@")[0]);
+    const email = data.get('email') ?? 'user@apsi.com';
+    const username = email.toString().split('@', 1);
+
+    // Set current user data
+    localStorage.setItem('username', username.toString());
+    if (username.toString().toLowerCase().includes('admin')) {
+      setRole('Admin');
+    }
+    else {
+      setRole('User');
     }
 
     navigate(`../${Routes.Dashboard}/${localStorage.getItem('username')}`, { replace: true });

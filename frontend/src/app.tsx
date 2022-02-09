@@ -10,10 +10,11 @@ function App() {
   const [role, setRole] = React.useState<string>('User');
   React.useEffect(() => {
     localStorage.setItem('username', '');
-    localStorage.setItem('isLoggedOut', 'false')
-    localStorage.setItem('isProblemDeleted', 'false')
-    localStorage.setItem('isProblemSubmitted', 'false')
-    localStorage.setItem('isProblemUpdated', 'false')
+    localStorage.setItem('isLoggedOut', 'false');
+    localStorage.setItem('isProblemSuccessDeleted', 'false');
+    localStorage.setItem('isProblemUnsuccessDeleted', 'false')
+    localStorage.setItem('isProblemSubmitted', 'false');
+    localStorage.setItem('isProblemUpdated', 'false');
   }, []);
   return (
     <RouterRoutes>

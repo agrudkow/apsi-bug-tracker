@@ -140,7 +140,7 @@ export function NewFormContent() {
     if (problemData.problemType == 'Bug') {
       if (problemData.product == 'PetApp') {
         problemData.product = '1';
-        if (problemData.component == 'Interface') {
+        if (problemData.component == 'Database') {
           problemData.component = '1';
         }
         else {
@@ -306,6 +306,8 @@ export function NewFormContent() {
   const handleChangeProblem = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newProblemData: NewProblemData = { ...problemData };
     newProblemData.problemType = event.target.value;
+    newProblemData.product = '';
+    newProblemData.component = '';
     if (event.target.value === 'Service') {
       newProblemData.responsiblePerson = 'Bill Gates';
     } else if (event.target.value === 'Incident') {
@@ -485,7 +487,7 @@ export function NewFormContent() {
               label="Version"
               value={problemData.version}
               onChange={handleChangeVersion}
-              placeholder="X.X.X"
+              placeholder="X"
               helperText="Add version of product's component related to the problem"
             />
           )}
