@@ -13,7 +13,8 @@ logger.info('Lambda initialized.')
 
 def handler(event, _):
     logger.debug('request: {}'.format(json.dumps(event)))
-    values = eval(event["body"])
+    # values = eval(event["body"])
+    values = event
     try:
         client = boto3.client('ses')
 
