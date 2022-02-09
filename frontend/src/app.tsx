@@ -40,7 +40,7 @@ function App() {
         path={`${Routes.ProblemEditForm}/:username/:id`}
         element={
           <Layout>
-            <ProblemFormContent role={role} />
+            <ProblemFormContent role={role} setRole={setRole} />
           </Layout>
         }
       />
