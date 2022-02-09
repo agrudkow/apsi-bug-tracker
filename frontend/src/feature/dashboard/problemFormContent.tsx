@@ -199,6 +199,9 @@ export const ProblemFormContent: React.FC<Props> = ({ role, setRole}) => {
     {
       setRole(Roles.Admin);
     }
+    else{
+      setRole(Roles.User);
+    }
 
     let myUsername = localStorage.getItem('username');
     if (myUsername){
