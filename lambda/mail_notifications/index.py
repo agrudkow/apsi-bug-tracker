@@ -20,9 +20,11 @@ def handler(event, _):
         client = boto3.client('ses')
 
         if values["type"] == "update":
-                message_val = f'Zgłoszenie {values["issue"]} zostało zmodyfikowane.\nZespół BugTracker'
+            message_val = f'Zgłoszenie {values["issue"]} zostało zmodyfikowane.\nZespół BugTracker'
+        elif values["type"] == "create":
+            message_val = f'Utworzono zgłoszenie {values["issue"]}.\nZespół BugTracker'
         else:
-            message_val = f'Utworzono zgłoszenie {values["issue"]}.\nZespół BugTracker.'
+            message_val = f'Zgłoszenie {values["issue"]} zostało usunięte.\nZespół BugTracker'
 
         client.send_email(
             Source='apsibugtracker@gmail.com',

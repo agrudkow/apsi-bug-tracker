@@ -12,9 +12,15 @@ def delete_problem(id: int) -> None:
     """
     with get_db_session() as session:
         problem = session.query(Report).get(id)
+        problem_id = problem.id
         bug = problem.bug
         related_bugs = session.query(Bug).filter(Bug.parent_bug_id == problem.bug_id).all()
         related_users = session.query(RelatedUser).filter(RelatedUser.report_id == problem.id).all()
+
+        email_recipients = []
+        for recipient in related_users:
+            email_recipients.append(recipient.user.email)
+
         related_messages = session.query(Message).filter(Message.report_id == problem.id).all()
 
         if len(related_bugs) > 0:
@@ -29,3 +35,5 @@ def delete_problem(id: int) -> None:
             session.delete(message)
 
         session.commit()
+
+        return problem_id, email_recipients
