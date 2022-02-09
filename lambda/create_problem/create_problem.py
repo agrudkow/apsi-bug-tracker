@@ -69,6 +69,8 @@ def create_problem(data: CreateProblemData, logger: Logger) -> int:
             session.add(report)
             session.flush()
 
+            email_recipients = []
+
             # Get CREATOR role
             creator_role = session.query(Role).filter(Role.description == 'CREATOR').one()
             creator = RelatedUser()
@@ -76,6 +78,11 @@ def create_problem(data: CreateProblemData, logger: Logger) -> int:
             creator.role_id = creator_role.id
             creator.username = data.username
             session.add(creator)
+            session.flush()
+            creator_to_email = session.query(RelatedUser).\
+                filter(RelatedUser.report_id == report.id, RelatedUser.role_id == creator_role.id).one()
+            email_recipients.append(creator_to_email.user.email)
+            # email_recipients.append(creator.user.email)
 
             # Get RESPONSIBLE_PERSON role
             rp_role = session.query(Role).filter(Role.description == 'RESPONSIBLE_PERSON').one()
@@ -84,6 +91,11 @@ def create_problem(data: CreateProblemData, logger: Logger) -> int:
             responsible_person.role_id = rp_role.id
             responsible_person.username = data.responsiblePerson
             session.add(responsible_person)
+            session.flush()
+            responsible_person_to_email = session.query(RelatedUser).\
+                filter(RelatedUser.report_id == report.id, RelatedUser.role_id == rp_role.id).one()
+            email_recipients.append(responsible_person_to_email.user.email)
+            # email_recipients.append(responsible_person.user.email)
 
             for observer_username in data.observers.split(sep=', '):
                 # Get OBSERVER role
@@ -93,10 +105,20 @@ def create_problem(data: CreateProblemData, logger: Logger) -> int:
                 observer_person.role_id = observer_role.id
                 observer_person.username = observer_username
                 session.add(observer_person)
-
+                session.flush()
+                # email_recipients.append(observer_person.user.email)
+            
+            observer_role = session.query(Role).filter(Role.description == 'OBSERVER').one() # just in case
+            observers_to_email = session.query(RelatedUser).\
+                filter(RelatedUser.report_id == report.id, RelatedUser.role_id == observer_role.id).\
+                all()
+            # email_recipients.append(observer.user.email for observer in observers_to_email)
+            for observer in observers_to_email:
+                email_recipients.append(observer.user.email)
+                
             session.commit()
+            return report.id, email_recipients
 
-            return report.id
         except Exception as ex:
             logger.error(str(ex), stack_info=True)
             raise ex

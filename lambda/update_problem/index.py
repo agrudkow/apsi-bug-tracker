@@ -39,6 +39,7 @@ def handler(event: Dict[str, Any], _):
             Payload=json.dumps({
                 'recipients': email_recipients,
                 'issue': report_id,
+                'type': 'update',
                 'msg': 'TODO: add proper message'
             }),
         )

@@ -29,6 +29,15 @@ def get_problem_by_id(id: int):
             one_message.append(message.text)
             one_message = ' | '.join(element for element in one_message)
             gathered_messages.append(one_message)
+        
+        if parent_bug.parent_bug_id and related_bugs: # parent + children
+            related_problems_str = str(parent_bug.parent_bug_id) + "/" + ', '.join([str(bug.report.id) for bug in related_bugs]) # 1/2, 3, 5
+        elif parent_bug.parent_bug_id and not related_bugs: # only parent
+            related_problems_str = str(parent_bug.parent_bug_id) + "/" # 1/
+        elif related_bugs and not parent_bug.parent_bug_id: # only children
+            related_problems_str =  "/" + ', '.join([str(bug.report.id) for bug in related_bugs]) # /2, 3, 5
+        else: # no parent, no children
+            related_problems_str = ""
 
         output["problemID"] = str(report.id)
         output["username"] = str(creator.username)
@@ -41,7 +50,8 @@ def get_problem_by_id(id: int):
         output["version"] = str(report.version)
         output["keywords"] = ', '.join([key_word.text for key_word in report.key_words])
         output["description"] = str(report.bug.description)
-        output["relatedProblems"] = str(parent_bug.parent_bug_id) + "/" + ', '.join([str(bug.report.id) for bug in related_bugs])
+        # output["relatedProblems"] = str(parent_bug.parent_bug_id) + "/" + ', '.join([str(bug.report.id) for bug in related_bugs]) if parent_bug.parent_bug_id and related_bugs elif parent_bug.parent_bug_id""
+        output["relatedProblems"] = related_problems_str
         output["proposedDeadline"] = str(report.deadline)
         output["status"] = str(report.status_name)
         output["responsiblePerson"] = str(responsible_person[0].username) if len(responsible_person) == 1 else ''

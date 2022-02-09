@@ -152,8 +152,6 @@ export function NewFormContent() {
       }
     }
 
-    var splitted = problemData.responsiblePerson.split(" ", 10);
-    problemData.responsiblePerson = splitted[0];
 
     let bodyContent = JSON.stringify({
       "description": problemData.description,
@@ -248,19 +246,19 @@ export function NewFormContent() {
       event.target.value === 'SmartPet' &&
       problemData.problemType === 'Bug'
     ) {
-      newProblemData.responsiblePerson = 'Jeff Bezos';
+      newProblemData.responsiblePerson = 'jeffbezos.bugtracker';
     } else if (
       event.target.value === 'PetApp' &&
       problemData.problemType === 'Bug' &&
       problemData.component === 'Interface'
     ) {
-      newProblemData.responsiblePerson = 'Steve Jobs';
+      newProblemData.responsiblePerson = 'sjobs.bugtracker';
     } else if (
       event.target.value === 'PetApp' &&
       problemData.problemType === 'Bug' &&
       problemData.component === 'Database'
     ) {
-      newProblemData.responsiblePerson = 'Andrzej Duda';
+      newProblemData.responsiblePerson = 'aduda.bugtracker';
     } else {
       newProblemData.responsiblePerson = '';
     }
@@ -277,12 +275,12 @@ export function NewFormContent() {
       event.target.value === 'Interface' &&
       problemData.product === 'PetApp'
     ) {
-      newProblemData.responsiblePerson = 'Steve Jobs';
+      newProblemData.responsiblePerson = 'sjobs.bugtracker';
     } else if (
       event.target.value === 'Database' &&
       problemData.product === 'PetApp'
     ) {
-      newProblemData.responsiblePerson = 'Andrzej Duda';
+      newProblemData.responsiblePerson = 'aduda.bugtracker';
     } else {
       newProblemData.responsiblePerson = '';
     }
@@ -309,26 +307,26 @@ export function NewFormContent() {
     newProblemData.product = '';
     newProblemData.component = '';
     if (event.target.value === 'Service') {
-      newProblemData.responsiblePerson = 'Bill Gates';
+      newProblemData.responsiblePerson = 'billgates.bugtracker';
     } else if (event.target.value === 'Incident') {
-      newProblemData.responsiblePerson = 'Elon Musk';
+      newProblemData.responsiblePerson = 'elonmusk.bugtracker';
     } else if (event.target.value === 'Bug') {
       newProblemData.responsiblePerson = '';
     }
     if (problemData.product === 'SmartPet' && event.target.value === 'Bug') {
-      newProblemData.responsiblePerson = 'Jeff Bezos';
+      newProblemData.responsiblePerson = 'jeffbezos.bugtracker';
     } else if (
       problemData.product === 'PetApp' &&
       event.target.value === 'Bug' &&
       problemData.component === 'Interface'
     ) {
-      newProblemData.responsiblePerson = 'Steve Jobs';
+      newProblemData.responsiblePerson = 'sjobs.bugtracker';
     } else if (
       problemData.product === 'PetApp' &&
       event.target.value === 'Bug' &&
       problemData.component === 'Database'
     ) {
-      newProblemData.responsiblePerson = 'Andrzej Duda';
+      newProblemData.responsiblePerson = 'aduda.bugtracker';
     }
     setProblemData(newProblemData);
   };

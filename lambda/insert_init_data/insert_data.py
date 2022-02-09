@@ -211,73 +211,83 @@ def insert_data() -> int:
       session.flush()
 
       user = User()
-      user.username = 'Jan'
+      user.username = 'jankowalski.bugtracker'
       user.name = 'Jan'
       user.surname = 'Kowalski'
-      user.email = 'kowalski@please.dont.mail.me'
+      user.email = 'jankowalski.bugtracker@gmail.com'
       user.phone = '123456789'
       user.worker = True
       session.add(user)
       session.flush()
 
       user_2 = User()
-      user_2.username = "Kasia"
+      user_2.username = "malinowska.kasia"
       user_2.name = "Kasia"
       user_2.surname = "Malinowska"
-      user_2.email = "malinowska@please.dont.mail.me"
+      user_2.email = "malinowska.kasia@protonmail.com"
       user_2.phone = "987654321"
       user_2.worker = True
       session.add(user_2)
       session.flush()
 
       user_3 = User()
-      user_3.username = "Jeff"
+      user_3.username = "jeffbezos.bugtracker"
       user_3.name = "Jeff"
       user_3.surname = "Bezos"
-      user_3.email = "jeff@please.dont.mail.me"
+      user_3.email = "jeffbezos.bugtracker@protonmail.com"
       user_3.phone = "987654322"
       user_3.worker = True
       session.add(user_3)
       session.flush()
 
       user_4 = User()
-      user_4.username = "Elon"
+      user_4.username = "elonmusk.bugtracker"
       user_4.name = "Elon"
       user_4.surname = "Musk"
-      user_4.email = "elon@please.dont.mail.me"
+      user_4.email = "elonmusk.bugtracker@protonmail.com"
       user_4.phone = "887654322"
       user_4.worker = True
       session.add(user_4)
       session.flush()
 
       user_5 = User()
-      user_5.username = "Bill"
+      user_5.username = "billgates.bugtracker"
       user_5.name = "Bill"
       user_5.surname = "Gates"
-      user_5.email = "bill@please.dont.mail.me"
+      user_5.email = "billgates.bugtracker@op.pl"
       user_5.phone = "787654322"
       user_5.worker = True
       session.add(user_5)
       session.flush()
 
       user_6 = User()
-      user_6.username = "Andrzej"
+      user_6.username = "aduda.bugtracker"
       user_6.name = "Andrzej"
       user_6.surname = "Duda"
-      user_6.email = "andrzej@please.dont.mail.me"
+      user_6.email = "aduda.bugtracker@op.pl"
       user_6.phone = "787644322"
       user_6.worker = True
       session.add(user_6)
       session.flush()
 
       user_7 = User()
-      user_7.username = "Steve"
+      user_7.username = "sjobs.bugtracker"
       user_7.name = "Steve"
       user_7.surname = "Jobs"
-      user_7.email = "steve@please.dont.mail.me"
+      user_7.email = "sjobs.bugtracker@op.pl"
       user_7.phone = "787643322"
       user_7.worker = True
       session.add(user_7)
+      session.flush()
+
+      user_8 = User()
+      user_8.username = "admin.bugtracker"
+      user_8.name = "Admin"
+      user_8.surname = "BugtrackerTeam"
+      user_8.email = "admin.bugtracker@protonmail.com"
+      user_8.phone = "782243322"
+      user_8.worker = True
+      session.add(user_8)
       session.flush()
 
       report = Report()
@@ -290,8 +300,8 @@ def insert_data() -> int:
       report.urgency_level = urgency.level
       report.report_class_id = rp.id
       report.bug_id = bug.id
-      report.product_id = product.id
-      report.component_id = component.id
+      # report.product_id = product.id
+      # report.component_id = component.id
       report.key_words.append(kw)
       report.version = 1
       session.add(report)
@@ -305,19 +315,19 @@ def insert_data() -> int:
       related_user_observer = RelatedUser()
       related_user_observer.report_id = report.id
       related_user_observer.role_id = role_creator.id
-      related_user_observer.username = user.name
+      related_user_observer.username = user.username
       session.add(related_user_observer)
 
       related_user_creator = RelatedUser()
       related_user_creator.report_id = report.id
       related_user_creator.role_id = role_observer.id
-      related_user_creator.username = user_2.name
+      related_user_creator.username = user_2.username
       session.add(related_user_creator)
 
       related_user_rp = RelatedUser()
       related_user_rp.report_id = report.id
       related_user_rp.role_id = role_rp.id
-      related_user_rp.username = user_3.name
+      related_user_rp.username = user_3.username
       session.add(related_user_rp)
 
       session.commit()

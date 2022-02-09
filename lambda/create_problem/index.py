@@ -3,7 +3,8 @@ import json
 import logging
 from typing import Any, Dict
 
-from dacite import from_dict
+import boto3
+from dacite import MissingValueError, from_dict
 
 from create_problem import create_problem, CreateProblemData
 
@@ -12,7 +13,8 @@ logger = logging.getLogger('create_issue')
 logger.setLevel(int(os.environ['LOG_LEVEL']))
 
 logger.info('Create problem lambda initialized.')
-
+SEND_EMAIL_LAMBDA = os.environ['SEND_EMAIL_LAMBDA']
+client = boto3.client('lambda')
 
 def handler(event: Dict[str, Any], _):
     """
@@ -21,11 +23,32 @@ def handler(event: Dict[str, Any], _):
     logger.debug(json.dumps(event))
     reqest_body = json.loads(event['body'])
     try:
-        report_id = create_problem(
+        report_id, email_recipients = create_problem(
             data=from_dict(data_class=CreateProblemData, data=reqest_body),
             logger=logger,
         )
         logger.info(f'Problem with id {report_id} created')
+        logger.info(f'Sending email notification to users: {str(email_recipients)}')
+        client.invoke(
+            FunctionName=SEND_EMAIL_LAMBDA,
+            InvocationType='Event',
+            Payload=json.dumps({
+                'recipients': email_recipients,
+                'issue': report_id,
+                'type': 'create',
+                'msg': 'TODO: add proper message'
+            }),
+        )
+    except (ValueError, MissingValueError) as ex:
+        logger.error(ex, stack_info=True)
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': True,
+            },
+            'msg': str(ex)
+        }
     except Exception as ex:
         logger.error(ex, stack_info=True)
         return {

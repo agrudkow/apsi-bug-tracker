@@ -43,7 +43,25 @@ def update_problem(problem_id: int, data: UpdateProblemData, logger: Logger) -> 
             bug = report.bug
 
             bug.description = data.description
-            bug.parent_bug_id = int(data.relatedProblems) if data.relatedProblems else None
+            related_problems = data.relatedProblems.split(sep="/")
+            # 8/- spr
+            # /9 lub /9, 5 - spr
+            # 8/9, 10
+            # None
+            if data.relatedProblems is not '':
+                if related_problems[0] is not '' and related_problems[1] is '':
+                    bug.parent_bug_id = int(related_problems[0])
+                elif related_problems[0] is '' and related_problems[1] is not '':
+                    bug.parent_bug_id = None
+                elif related_problems[0] is not '' and related_problems[1] is not '':
+                    bug.parent_bug_id = int(related_problems[0])
+                else:
+                    bug.parent_bug_id = None
+            else:
+                bug.parent_bug_id = None
+
+
+            # bug.parent_bug_id = int(data.relatedProblems) if data.relatedProblems and data.relatedProblems is not 'None/' else None
             session.add(bug)
             session.flush()
 
@@ -86,6 +104,11 @@ def update_problem(problem_id: int, data: UpdateProblemData, logger: Logger) -> 
             responsible_person.username = data.responsiblePerson
             session.add(responsible_person)
 
+            # Get CREATOR role
+            creator_role = session.query(Role).filter(Role.description == 'CREATOR').one()
+            creator = session.query(RelatedUser).\
+                filter(RelatedUser.report_id == report.id, RelatedUser.role_id == creator_role.id).one()
+
             # Get OBSERVER role
             observer_role = session.query(Role).filter(Role.description == 'OBSERVER').one()
             observers = session.query(RelatedUser).\
@@ -119,12 +142,10 @@ def update_problem(problem_id: int, data: UpdateProblemData, logger: Logger) -> 
                 filter(RelatedUser.report_id == report.id, RelatedUser.role_id == observer_role.id).\
                 all()
             email_recipients = [observer.user.email for observer in observers]
+            email_recipients.append(responsible_person.user.email)
+            email_recipients.append(creator.user.email)
 
             # Add new comment
-            # Get 'old' messages (comments)
-            old_messages = session.query(Message).\
-                filter(Message.report_id == report.id).all()
-
             # Create new comment record in DB
             message_item = Message()
             message_item.report_id = report.id

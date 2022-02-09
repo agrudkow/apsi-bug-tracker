@@ -85,6 +85,14 @@ export class APSIBugTrackerStack extends cdk.Stack {
       }),
       handler: 'index.handler',
       runtime: lambda.Runtime.PYTHON_3_9,
+      environment: {
+        LOG_LEVEL: '10', // Debug log level - https://docs.python.org/3/library/logging.html
+        DB_HOST: instance.instanceEndpoint.hostname,
+        DB_USERNAME: DB_USERNAME,
+        DB_PASSWORD: DB_PASSWORD,
+        DB_NAME: DB_NAME,
+        DB_PORT: DB_PORT,
+      },
     });
 
     // Get all problems lambda
@@ -133,6 +141,7 @@ export class APSIBugTrackerStack extends cdk.Stack {
         DB_PASSWORD: DB_PASSWORD,
         DB_NAME: DB_NAME,
         DB_PORT: DB_PORT,
+        SEND_EMAIL_LAMBDA: mailerLambda.functionName,
       },
       layers: [databaseLayer],
     });
@@ -253,6 +262,14 @@ export class APSIBugTrackerStack extends cdk.Stack {
     );
 
     updateProblemLambda.addToRolePolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: ['lambda:InvokeFunction'],
+        resources: [mailerLambda.functionArn],
+      })
+    );
+
+    createProblemLambda.addToRolePolicy(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
         actions: ['lambda:InvokeFunction'],
