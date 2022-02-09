@@ -221,8 +221,9 @@ export const ProblemFormContent: React.FC<Props> = ({ role, setRole}) => {
   const deleteProblemHandler = () => {
     setLoading(true);
     deleteProblem();
-    localStorage.setItem('isProblemSuccessDeleted', 'true');
+    
     setTimeout(function() { navigate(`../${Routes.Dashboard}/${localStorage.getItem('username')}`, { replace: true }); }, 1000);
+    localStorage.setItem('isProblemSuccessDeleted', 'true');
   };
 
 
@@ -298,25 +299,6 @@ export const ProblemFormContent: React.FC<Props> = ({ role, setRole}) => {
       }
     }
 
-
-    console.log(problemData.description);
-    console.log(problemData.username);
-    console.log(problemData.responsiblePerson);
-    console.log(problemData.observers);
-    console.log(date);
-    console.log(problemData.weight);
-    
-    console.log(problemData.status);
-    console.log(problemData.urgency);
-    console.log(problemData.problemType);
-    console.log(problemData.product);
-    console.log(problemData.component);
-    console.log(problemData.keywords);
-    console.log(problemData.relatedProblems);
-    
-    
-    console.log(newComment);
-    console.log(problemData.username);
 
     let bodyContent: any;
 
