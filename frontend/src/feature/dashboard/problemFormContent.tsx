@@ -225,7 +225,7 @@ export const ProblemFormContent: React.FC<Props> = ({ role, setRole}) => {
     setLoading(true);
     deleteProblem();
     
-    setTimeout(function() { navigate(`../${Routes.Dashboard}/${localStorage.getItem('username')}`, { replace: true }); }, 1000);
+    setTimeout(function() { navigate(`../${Routes.Dashboard}/${localStorage.getItem('username')}`, { replace: true }); }, 3000);
     localStorage.setItem('isProblemSuccessDeleted', 'true');
   };
 
