@@ -300,8 +300,8 @@ def insert_data() -> int:
       report.urgency_level = urgency.level
       report.report_class_id = rp.id
       report.bug_id = bug.id
-      report.product_id = product.id
-      report.component_id = component.id
+      # report.product_id = product.id
+      # report.component_id = component.id
       report.key_words.append(kw)
       report.version = 1
       session.add(report)
@@ -315,19 +315,19 @@ def insert_data() -> int:
       related_user_observer = RelatedUser()
       related_user_observer.report_id = report.id
       related_user_observer.role_id = role_creator.id
-      related_user_observer.username = user.name
+      related_user_observer.username = user.username
       session.add(related_user_observer)
 
       related_user_creator = RelatedUser()
       related_user_creator.report_id = report.id
       related_user_creator.role_id = role_observer.id
-      related_user_creator.username = user_2.name
+      related_user_creator.username = user_2.username
       session.add(related_user_creator)
 
       related_user_rp = RelatedUser()
       related_user_rp.report_id = report.id
       related_user_rp.role_id = role_rp.id
-      related_user_rp.username = user_3.name
+      related_user_rp.username = user_3.username
       session.add(related_user_rp)
 
       session.commit()
